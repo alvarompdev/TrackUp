@@ -7,45 +7,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Entidad 'Habit' que representa los hábitos de los usuarios
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Entity
+@Entity // Se indica que se trata de una entidad
 public class Habit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // ID, clave primaria del hábito
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
+    private Long id; // Identificador que tiene cada hábito
 
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false) // Campo obligatorio
+    private String name; // Nombre del hábito
 
-    private String description;
+    private String description; // Descrioción del hábito, opcional
 
-    @Column(nullable = false, length = 50)
-    private String frequency;
+    @Column(nullable = false, length = 50) // Campo obligatorio y con una longitud máxima de 50 caracteres
+    private String frequency; // Frequencia del hábito
 
-    @Column(nullable = false)
-    private LocalDate startDate;
+    @Column(nullable = false) // Campo obligatorio
+    private LocalDate startDate; // Fecha de inicio del hábito
 
-    @Column(nullable = false)
-    private LocalDate endDate;
+    @Column(nullable = false) // Campo obligatorio
+    private LocalDate endDate; // Fecha de fin del hábito
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToOne(optional = false) //Campo obligatorio
+    @JoinColumn(name = "user_id", nullable = false) // Relación de muchos hábitos a un usuario, obligatorio
+    private User user; // Usuario al que pertenece el hábito
 
-    @ManyToOne(optional = false)
+    //@ManyToOne(optional = false) // Relación de muchos hábitos a un usuario, obligatorio
+    @ManyToOne(optional = true)
     @JoinColumn(name = "habit_type_id", nullable = false)
-    private HabitType habitType;
+    private HabitType habitType; // Tipo de hábito
 
-    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DailyRecord> dailyRecords = new ArrayList<>();
+    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true) // Relación de uno a muchos; se eliminan automáticamente los registros diarios si se elimina el hábito
+    private List<DailyRecord> dailyRecords = new ArrayList<>(); // Lista de registros diarios del hábito
 
+    /**
+     * Constructor vacío de la entidad
+     */
     public Habit() {
     }
 
+    /**
+     * Constructor con parámetros de la entidad
+     *
+     * @param id ID del hábito
+     * @param name Nombre del hábito
+     * @param description Descripción del hábito
+     * @param frequency Frecuencia del hábito
+     * @param startDate Fecha de inicio del hábito
+     * @param endDate Fecha de fin del hábito
+     * @param user Usuario al que pertenece el hábito
+     * @param habitType Tipo de hábito
+     * @param dailyRecords Lista de registros diarios del hábito
+     */
     public Habit(Long id, String name, String description, String frequency, LocalDate startDate, LocalDate endDate, User user, HabitType habitType, List<DailyRecord> dailyRecords) {
         this.id = id;
         this.name = name;
@@ -58,6 +75,9 @@ public class Habit {
         this.dailyRecords = dailyRecords;
     }
 
+    /**
+     * Getters y setters de la entidad
+     */
     public Long getId() {
         return id;
     }

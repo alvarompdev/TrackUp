@@ -10,6 +10,7 @@ import trackup.entity.User;
 import trackup.services.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -17,7 +18,11 @@ public class UserController {
 
     private final UserService userService;
 
-    // Constructor con inyección de dependencias
+    /**
+     * Constructor con inyección de dependencias
+     *
+     * @param userService Servicio de usuario
+     */
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -43,7 +48,7 @@ public class UserController {
      * GET <a href="http://localhost:8080/api/user/">...</a>{id}
      */
     @GetMapping("/user/id/{id}")
-    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
+    /*public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
         if (id < 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -54,7 +59,20 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }*/
+    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
+        if (id < 0) {
+            return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
+        }
+
+        // Usamos el Optional para comprobar si el usuario existe
+        Optional<UserResponseDTO> userResponseDTO = userService.getUserById(id);
+
+        // Si el usuario existe, devolvemos el DTO con 200 OK, si no, devolvemos 404 Not Found
+        return userResponseDTO.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     /**
      * Obtener un usuario por su nombre de usuario

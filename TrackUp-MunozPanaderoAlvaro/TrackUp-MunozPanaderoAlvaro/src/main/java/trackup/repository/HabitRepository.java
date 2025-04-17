@@ -4,10 +4,31 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import trackup.entity.Habit;
 
-@Repository
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Repositorio para la entidad Habit
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
+@Repository // Indica que esta clase es un repositorio de Spring
 public interface HabitRepository extends JpaRepository<Habit, Long> {
-    // Aquí puedes agregar métodos personalizados si es necesario
-    // Por ejemplo, para buscar hábitos por fecha o por mascota
-    // List<Habit> findByDate(LocalDate date);
-    // List<Habit> findByPetId(Long petId);
+
+    /**
+     * Busca por el nombre del hábito
+     *
+     * @param name Nombre del hábito
+     * @return Hábito correspondiente al nombre proporcionado en el caso de que exista
+     */
+    Optional<Habit> findByName(String name);
+
+    /**
+     * Busca todos los hábitos de un usuario mediante su ID de usuario
+     *
+     * @param userId ID del usuario
+     * @return Lista de hábitos del usuario
+     */
+    List<Habit> findAllByUserId(Long userId);
+
 }

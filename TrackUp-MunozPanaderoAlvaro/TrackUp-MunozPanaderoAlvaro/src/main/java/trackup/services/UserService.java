@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Servicio que define todas las operaciones relaciones con los usuarios
+ * Servicio que define todas las operaciones relacionadas con los usuarios
  * Proporciona métodos para obtener, crear, actualizar y eliminar usuarios
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
@@ -20,14 +20,28 @@ public interface UserService {
      */
 
     /**
-     * Obtiene un usuario en base a su id
+     * Obtiene un usuario por su ID
      *
-     * @param id Identificador del usuario que se va a buscar
-     * @return Usuario correspondiente al id proporcionado en el caso de que exista
+     * @param id ID del usuario que se va a buscar
+     * @return Usuario correspondiente al ID proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    UserResponseDTO getUserById(Long id);
+    Optional<UserResponseDTO> getUserById(Long id);
 
+    /**
+     * Obtiene un usuario por su ID
+     *
+     * @param id ID del usuario que se va a buscar
+     * @return Usuario correspondiente al ID proporcionado en el caso de que exista (por eso es un objeto Optional)
+     */
     Optional<User> getUserEntityById(Long id);
+
+    /**
+     * Obtiene un usuario por su nombre de usuario
+     *
+     * @param username Nombre de usuario que se va a buscar
+     * @return Usuario correspondiente al nombre de usuario proporcionado en el caso de que exista (por eso es un objeto Optional)
+     */
+    Optional<User> getUserByUsername(String username);
 
     /**
      * Obtiene una lista con todos los usuarios registrados
@@ -36,12 +50,10 @@ public interface UserService {
      */
     List<UserResponseDTO> getAllUsers();
 
-    Optional<User> getUserByUsername(String username);
-
     /**
      * Crea un nuevo usuario
      *
-     * @param userRequestDTO Datos de usuario que se va a crear
+     * @param userRequestDTO Datos del usuario que se va a crear
      * @return Usuario creado con sus datos de respuesta
      */
     UserResponseDTO createUser(UserRequestDTO userRequestDTO);

@@ -7,37 +7,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Entidad 'User' que representa los usuarios
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Entity
-@Table(name = "users") // la tabla no puede llamarse 'user' ya que es un nombre reservado
+@Entity // Se indica que se trata de una entidad
+@Table(name = "users") // La tabla no puede llamarse 'user' ya que es un nombre reservado
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // ID, clave primaria del usuario
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
+    private Long id; // Identificador que tiene cada hábito
 
-    @Column(nullable = false)
-    private String username;
+    @Column(nullable = false) // Campo obligatorio
+    private String username; // Nombre del usuario
 
-    @Column(unique = true, nullable = false)
-    @Email
-    private String email;
+    @Column(unique = true, nullable = false) // Campo único y obligatorio
+    @Email // Validación, el email debe de tener un formato correcto
+    private String email; // Email del usuario
 
-    @Column(nullable = false)
-    private String password;
+    @Column(nullable = false) // Campo obligatorio
+    private String password; // Contraseña del usuario
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Habit> habits = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) // Relación de uno a muchos, un usuario puede tener muchos hábitos; se eliminan automáticamente los hábitos diarios si se elimina el hábito
+    private List<Habit> habits = new ArrayList<>(); // Lista de hábitos del usuario
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Goal> goals = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) // Relación de uno a muchos, un usuario puede tener muchos objetivos; se eliminan automáticamente las metas si se elimina el hábito
+    private List<Goal> goals = new ArrayList<>(); // Lista de objetivos del usuario
 
+    /**
+     * Constructor vacío de la entidad
+     */
     public User() {
     }
 
+    /**
+     * Constructor con parámetros de la entidad
+     *
+     * @param id ID del usuario
+     * @param username Nombre del usuario
+     * @param password Contraseña del usuario
+     * @param email Email del usuario
+     * @param habits Lista de hábitos del usuario
+     * @param goals Lista de objetivos del usuario
+     */
     public User(Long id, String username, String password, String email, List<Habit> habits, List<Goal> goals) {
         this.id = id;
         this.username = username;
@@ -47,6 +60,9 @@ public class User {
         this.goals = goals;
     }
 
+    /**
+     * Getters y Setters
+     */
     public Long getId() {
         return id;
     }

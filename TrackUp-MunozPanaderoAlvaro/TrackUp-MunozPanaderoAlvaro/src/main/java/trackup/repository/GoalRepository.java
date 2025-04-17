@@ -6,4 +6,7 @@ import trackup.entity.Goal;
 
 @Repository
 public interface GoalRepository extends JpaRepository<Goal, Long> {
+
+
+
 }
