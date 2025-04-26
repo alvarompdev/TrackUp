@@ -10,6 +10,7 @@ import trackup.services.UserService;
 import trackup.services.impl.UserServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 // @RequestMapping("/api")
@@ -38,12 +39,13 @@ public class HabitController {
             return ResponseEntity.badRequest().build();
         }
 
-        try {
-            HabitResponseDTO habit = habitService.getHabitById(id);
-            return ResponseEntity.ok(habit);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        // Alternativa más corta, posiblemente cambie a esta para reducir las líneas de código ya que es un simple checkeo
+        // if (id < 0) return ResponseEntity.badRequest().build();
+
+        Optional<HabitResponseDTO> habitOpt = habitService.getHabitById(id);
+        return habitOpt.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 
     @GetMapping("/habit/name/{name}")
@@ -52,13 +54,9 @@ public class HabitController {
             return ResponseEntity.badRequest().build();
         }
 
-        try {
-            Habit habit = habitService.getHabitByName(name)
-                    .orElseThrow(() -> new RuntimeException("Habit not found"));
-            return ResponseEntity.ok(habit);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Habit> habitOpt = habitService.getHabitByName(name);
+        return habitOpt.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/habits/user/{userId}")

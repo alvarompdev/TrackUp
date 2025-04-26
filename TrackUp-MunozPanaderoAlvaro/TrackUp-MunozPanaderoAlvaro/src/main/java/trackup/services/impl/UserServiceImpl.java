@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Constructor con inyección de dependencias
      *
-     * @param userRepository Repositorio de usuarios
+     * @param userRepository Repositorio de usuariosA
      */
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -67,12 +67,17 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username); // Busca un usuario por su nombre de usuario
+    }*/
+    @Override
+    public Optional<UserResponseDTO> getUserByUsername(String username) {
+        return userRepository.findByUsername(username) // Busca al usuario por su ID, y si lo encuentra lo transforma a un DTO
+                .map(this::mapToDTO);
     }
 
-    @Override
+    /*@Override
     public UserResponseDTO createUser(UserRequestDTO userDTO) {
         User user = new User(); // Se crea una nueva entidad User a partir del DTO recibido
         user.setUsername(userDTO.getUsername()); // Se asignan los valores del DTO a la entidad
@@ -81,6 +86,25 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user); // Se guarda la entidad en la base de datos
         return mapToDTO(savedUser); // Se transforma la entidad guardada a un DTO y se devuelve
+    }*/
+
+    @Override
+    public UserResponseDTO createUser(UserRequestDTO userDTO) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            throw new RuntimeException("El nombre de usuario ya está en uso");
+        }
+
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("El correo electrónico ya está en uso");
+        }
+
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+
+        User savedUser = userRepository.save(user);
+        return mapToDTO(savedUser);
     }
 
     @Override

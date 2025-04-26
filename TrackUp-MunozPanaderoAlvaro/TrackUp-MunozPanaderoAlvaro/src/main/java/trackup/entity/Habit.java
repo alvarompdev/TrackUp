@@ -12,6 +12,13 @@ import java.util.List;
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @Entity // Se indica que se trata de una entidad
+/*
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "name"})
+        }
+)
+*/
 public class Habit {
 
     @Id // ID, clave primaria del hábito
@@ -21,7 +28,7 @@ public class Habit {
     @Column(nullable = false) // Campo obligatorio
     private String name; // Nombre del hábito
 
-    private String description; // Descrioción del hábito, opcional
+    private String description; // Descripoión del hábito, opcional
 
     @Column(nullable = false, length = 50) // Campo obligatorio y con una longitud máxima de 50 caracteres
     private String frequency; // Frequencia del hábito

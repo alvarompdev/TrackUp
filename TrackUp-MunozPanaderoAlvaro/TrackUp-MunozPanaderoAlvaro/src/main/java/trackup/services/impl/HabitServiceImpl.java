@@ -159,7 +159,7 @@ public class HabitServiceImpl implements HabitService {
         dto.setHabitTypeName(habit.getHabitType() != null ? habit.getHabitType().getName() : null);
         dto.setUserId(habit.getUser().getId());  // Este es opcional, pero útil si necesitas la información del usuario relacionado
 
-        return dto; 
+        return dto;
     }
 
     /*private Habit mapToEntity(HabitResponseDTO dto) {

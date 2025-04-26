@@ -6,7 +6,6 @@ import trackup.dto.request.UserRequestDTO;
 import trackup.dto.response.GoalResponseDTO;
 import trackup.dto.response.HabitResponseDTO;
 import trackup.dto.response.UserResponseDTO;
-import trackup.entity.User;
 import trackup.services.UserService;
 
 import java.util.List;
@@ -30,6 +29,8 @@ public class UserController {
     /**
      * Obtener todos los usuarios
      *
+     * FUNCIONA
+     *
      * GET <a href="http://localhost:8080/api/users">...</a>
      */
     @GetMapping("/users")
@@ -45,31 +46,18 @@ public class UserController {
     /**
      * Obtener un usuario por su ID
      *
+     * FUNCIONA
+     *
      * GET <a href="http://localhost:8080/api/user/">...</a>{id}
      */
     @GetMapping("/user/id/{id}")
-    /*public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
-        if (id < 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        try {
-            UserResponseDTO user = userService.getUserById(id);
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
         if (id < 0) {
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
         }
 
-        // Usamos el Optional para comprobar si el usuario existe
-        Optional<UserResponseDTO> userResponseDTO = userService.getUserById(id);
-
-        // Si el usuario existe, devolvemos el DTO con 200 OK, si no, devolvemos 404 Not Found
-        return userResponseDTO.map(ResponseEntity::ok)
+        Optional<UserResponseDTO> userOpt = userService.getUserById(id);
+        return userOpt.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -77,17 +65,19 @@ public class UserController {
     /**
      * Obtener un usuario por su nombre de usuario
      *
+     * FUNCIONA
+     *
      * GET <a href="http://localhost:8080/api/user/username/">...</a>{username}
      */
     // @GetMapping("/user/username/{username}")
     @GetMapping("/user/username/{username}")
-    public ResponseEntity<User> findUserByUsername(@PathVariable String username) {
+    public ResponseEntity<UserResponseDTO> findUserByUsername(@PathVariable String username) {
         if (username == null || username.trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        return userService.getUserByUsername(username)
-                .map(ResponseEntity::ok)
+        Optional<UserResponseDTO> userOpt = userService.getUserByUsername(username);
+        return userOpt.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -95,10 +85,10 @@ public class UserController {
     public ResponseEntity<List<HabitResponseDTO>> findUserHabits(@PathVariable Long id) {
         return userService.getUserEntityById(id)
                 .map(user -> {
-                    List<HabitResponseDTO> habitDTOs = user.getHabits().stream()
+                    List<HabitResponseDTO> habitsList = user.getHabits().stream()
                             .map(HabitResponseDTO::new)
                             .toList();
-                    return ResponseEntity.ok(habitDTOs);
+                    return ResponseEntity.ok(habitsList);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -107,10 +97,10 @@ public class UserController {
     public ResponseEntity<List<GoalResponseDTO>> findUserGoals(@PathVariable Long id) {
         return userService.getUserEntityById(id)
                 .map(user -> {
-                    List<GoalResponseDTO> goalDTOs = user.getGoals().stream()
+                    List<GoalResponseDTO> goalsList = user.getGoals().stream()
                             .map(GoalResponseDTO::new)
                             .toList();
-                    return ResponseEntity.ok(goalDTOs);
+                    return ResponseEntity.ok(goalsList);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -120,29 +110,77 @@ public class UserController {
      *
      * POST <a href="http://localhost:8080/api/user">...</a>
      */
-    @PostMapping("/user")
+    /*@PostMapping("/user")
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        return ResponseEntity.ok(userService.createUser(userRequestDTO));
+        if (userRequestDTO == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserResponseDTO createdUser = userService.createUser(userRequestDTO);
+        return ResponseEntity.status(201).body(createdUser);
+    }*/
+
+    /**
+     * FUNCIONA
+     *
+     *
+     * @param userRequestDTO
+     * @return
+     */
+    @PostMapping("/user")
+    public ResponseEntity<?> createUser(@RequestBody UserRequestDTO userRequestDTO) {
+        if (userRequestDTO == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            UserResponseDTO createdUser = userService.createUser(userRequestDTO);
+            return ResponseEntity.status(201).body(createdUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
     /**
      * Actualizar un usuario existente
      *
+     * FUNCIONA (TAMBIEN SE PODRIA HACER A RAIZ DE USERNAME O TAL VEZ SOLO USERNAME PODRIA SER MEJOR)
+     *
      * PUT <a href="http://localhost:8080/api/user/">...</a>{id}
      */
     @PutMapping("/user/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
-        return ResponseEntity.ok(userService.updateUser(id, userRequestDTO));
+        if (id < 0 || userRequestDTO == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
      * Eliminar un usuario por su ID
      *
+     * FUNCIONA
+     *
      * DELETE <a href="http://localhost:8080/api/user/">...</a>{id}
      */
     @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        if (id < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

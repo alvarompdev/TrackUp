@@ -41,7 +41,7 @@ public interface UserService {
      * @param username Nombre de usuario que se va a buscar
      * @return Usuario correspondiente al nombre de usuario proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<User> getUserByUsername(String username);
+    Optional<UserResponseDTO> getUserByUsername(String username);
 
     /**
      * Obtiene una lista con todos los usuarios registrados

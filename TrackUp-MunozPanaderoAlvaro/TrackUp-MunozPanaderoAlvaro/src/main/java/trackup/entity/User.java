@@ -19,7 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
     private Long id; // Identificador que tiene cada hábito
 
-    @Column(nullable = false) // Campo obligatorio
+    @Column(unique = true, nullable = false) // Campo único y obligatorio
     private String username; // Nombre del usuario
 
     @Column(unique = true, nullable = false) // Campo único y obligatorio
