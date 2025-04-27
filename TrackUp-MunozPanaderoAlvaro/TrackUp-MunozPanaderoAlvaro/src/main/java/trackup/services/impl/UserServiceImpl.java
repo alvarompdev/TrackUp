@@ -37,12 +37,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    /*@Override
-    public UserResponseDTO getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return mapToDTO(user);
-    }*/
     @Override
     public Optional<UserResponseDTO> getUserById(Long id) {
         return userRepository.findById(id) // Busca al usuario por su ID, y si lo encuentra lo transforma a un DTO
@@ -63,47 +57,32 @@ public class UserServiceImpl implements UserService {
         }
 
         return users.stream() // Transforma cada entidad User a un UserResponseDTO y lo devuelve
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .map(this::mapToDTO) // Transforma cada entidad User a un UserResponseDTO
+                .collect(Collectors.toList()); // Recoge todos los DTOs en una lista
     }
 
-    /*@Override
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username); // Busca un usuario por su nombre de usuario
-    }*/
     @Override
     public Optional<UserResponseDTO> getUserByUsername(String username) {
         return userRepository.findByUsername(username) // Busca al usuario por su ID, y si lo encuentra lo transforma a un DTO
                 .map(this::mapToDTO);
     }
 
-    /*@Override
-    public UserResponseDTO createUser(UserRequestDTO userDTO) {
-        User user = new User(); // Se crea una nueva entidad User a partir del DTO recibido
-        user.setUsername(userDTO.getUsername()); // Se asignan los valores del DTO a la entidad
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-
-        User savedUser = userRepository.save(user); // Se guarda la entidad en la base de datos
-        return mapToDTO(savedUser); // Se transforma la entidad guardada a un DTO y se devuelve
-    }*/
-
     @Override
     public UserResponseDTO createUser(UserRequestDTO userDTO) {
-        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) { // Verifica si el nombre de usuario ya existe
             throw new RuntimeException("El nombre de usuario ya está en uso");
         }
 
-        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) { // Verifica si el correo electrónico ya existe
             throw new RuntimeException("El correo electrónico ya está en uso");
         }
 
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
+        User user = new User(); // Crea una nueva entidad User
+        user.setUsername(userDTO.getUsername()); // Asigna los valores del DTO a la entidad
+        user.setEmail(userDTO.getEmail()); // Se asigna el correo electrónico
+        user.setPassword(userDTO.getPassword()); // Se asigna la contraseña
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(user); // Guarda la entidad en la base de datos
         return mapToDTO(savedUser);
     }
 
@@ -146,10 +125,12 @@ public class UserServiceImpl implements UserService {
     /**
      * Convierte un DTO UserRequestDTO a una entidad User
      *
+     * COMENTADO PORQUE SE MARCA COMO NO USADO HASTA EL MOMENTO
+     *
      * @param userDTO DTO a convertir
      * @return Entidad User
      */
-    private User mapToEntity(UserRequestDTO userDTO) {
+    /*private User mapToEntity(UserRequestDTO userDTO) {
         User user = new User(); // Crea una nueva entidad User
 
         user.setUsername(userDTO.getUsername()); // Asigna los valores del DTO a la entidad
@@ -157,6 +138,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userDTO.getPassword());
 
         return user; // Devuelve la entidad User
-    }
+    }*/
 
 }

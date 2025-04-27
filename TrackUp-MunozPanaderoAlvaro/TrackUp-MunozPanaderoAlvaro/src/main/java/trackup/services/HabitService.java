@@ -25,8 +25,8 @@ public interface HabitService {
      * @param id ID del hábito
      * @return Un objeto Optional que contiene el hábito si se encuentra, o vacío si no
      */
-    // HabitResponseDTO getHabitById(Long id);
     Optional<HabitResponseDTO> getHabitById(Long id);
+
 
     /**
      * Busca un hábito por su nombre

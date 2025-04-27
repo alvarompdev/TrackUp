@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 // @RequestMapping("/api")
-@RequestMapping("/habit")
+@RequestMapping("/habits")
 public class HabitController {
 
     private final HabitService habitService;

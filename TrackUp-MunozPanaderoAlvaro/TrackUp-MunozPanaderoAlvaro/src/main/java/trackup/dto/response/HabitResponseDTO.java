@@ -1,5 +1,6 @@
 package trackup.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import trackup.entity.Habit;
 import java.time.LocalDate;
 
@@ -17,6 +18,8 @@ public class HabitResponseDTO {
     private LocalDate startDate; // Fecha de inicio del hábito
     private LocalDate endDate; // Fecha de fin del hábito
     private String habitTypeName; // Nombre del tipo de hábito
+
+    @JsonInclude(JsonInclude.Include.NON_NULL) // Excluir el campo si es null
     private Long userId; // ID del usuario al que pertenece el hábito
 
     /**
