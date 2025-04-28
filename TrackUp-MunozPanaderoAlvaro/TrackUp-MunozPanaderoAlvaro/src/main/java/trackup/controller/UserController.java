@@ -14,10 +14,11 @@ import java.util.Optional;
 /**
  * Controlador REST para gestionar usuarios
  *
+ * Acceso: <a href="http://localhost:8080/api/users">...</a>
+ *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @RestController // Indica que esta clase es un controlador REST
-// @RequestMapping("/api")
 @RequestMapping("/api/users") // Prefijo para todas las rutas de este controlador
 public class UserController {
 
@@ -37,7 +38,7 @@ public class UserController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/users">...</a>
+     * GET <a href="http://localhost:8080/api/users/users">...</a>
      */
     @GetMapping("/users")
     public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
@@ -54,7 +55,7 @@ public class UserController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/user/">...</a>{id}
+     * GET <a href="http://localhost:8080/api/users/user/1">...</a>{id}
      */
     @GetMapping("/user/{id}")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
@@ -76,7 +77,7 @@ public class UserController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/user/username/">...</a>{username}
+     * GET <a href="http://localhost:8080/api/users/user/username/alvaromp">...</a>{username}
      */
     // @GetMapping("/user/username/{username}")
     @GetMapping("/user/username/{username}")
@@ -98,7 +99,7 @@ public class UserController {
      * @param id ID de usuario del que se quiere obtener la lista de hábitos
      * @return Lista de hábitos del usuario
      *
-     * GET <a href="http://localhost:8080/api/user/7/habits">...</a>
+     * GET <a href="http://localhost:8080/api/users/user/1/habits">...</a>
      */
     @GetMapping("/user/{id}/habits")
     public ResponseEntity<List<HabitResponseDTO>> findUserHabits(@PathVariable Long id) {
@@ -119,6 +120,8 @@ public class UserController {
      *
      * @param id ID de usuario del que se quiere obtener la lista de objetivos
      * @return Lista de objetivos del usuario
+     *
+     * GET <a href="http://localhost:8080/api/users/user/1/goals">...</a>
      */
     @GetMapping("/user/{id}/goals")
     public ResponseEntity<List<GoalResponseDTO>> findUserGoals(@PathVariable Long id) {
@@ -148,11 +151,14 @@ public class UserController {
     }*/
 
     /**
+     * Crear un nuevo usuario
+     *
      * FUNCIONA
      *
+     * @param userRequestDTO Datos del usuario que se va a crear
+     * @return Usuario creado con sus datos de respuesta
      *
-     * @param userRequestDTO
-     * @return
+     * POST <a href="http://localhost:8080/api/users/user">...</a>
      */
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody UserRequestDTO userRequestDTO) {
@@ -173,7 +179,7 @@ public class UserController {
      *
      * FUNCIONA (TAMBIEN SE PODRIA HACER A RAIZ DE USERNAME O TAL VEZ SOLO USERNAME PODRIA SER MEJOR)
      *
-     * PUT <a href="http://localhost:8080/api/user/">...</a>{id}
+     * PUT <a href="http://localhost:8080/api/users/user">...</a>{id}
      */
     @PutMapping("/user/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
@@ -194,7 +200,7 @@ public class UserController {
      *
      * FUNCIONA
      *
-     * DELETE <a href="http://localhost:8080/api/user/">...</a>{id}
+     * DELETE <a href="http://localhost:8080/api/users/user/1">...</a>{id}
      */
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

@@ -2,9 +2,7 @@ package trackup.services;
 
 import trackup.dto.request.HabitTypeRequestDTO;
 import trackup.dto.response.HabitTypeResponseDTO;
-import trackup.dto.response.UserResponseDTO;
 import trackup.entity.HabitType;
-import trackup.entity.User;
 
 import java.util.List;
 import java.util.Optional;
