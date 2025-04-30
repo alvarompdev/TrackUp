@@ -3,30 +3,41 @@ package trackup.entity;
 import jakarta.persistence.*;
 
 /**
- *
+ * Entidad 'Goal' que representa los objetivos de los usuarios
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @Entity
 public class Goal {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // ID, clave primaria del objetivo
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
+    private Long id; // Identificador que tiene cada objetivo
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @Column(nullable = false, length = 100) // Campo obligatorio y con longitud máxima de 100 caracteres
+    private String name; // Nombre del objetivo
 
-    @Column(nullable = false)
-    private String description;
+    @Column(nullable = false) // Campo obligatorio
+    private String description; // Descripción del objetivo
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToOne(optional = false) // Relación de muchos a uno, un objetivo pertenece a un usuario
+    @JoinColumn(name = "user_id", nullable = false) // Se indica la columna de unión y que no puede ser nula
+    private User user; // Usuario al que pertenece el objetivo
 
+    /**
+     * Constructor vacío de la entidad
+     */
     public Goal() {
     }
 
+    /**
+     * Constructor con parámetros de la entidad
+     *
+     * @param id          ID del objetivo
+     * @param name        Nombre del objetivo
+     * @param description Descripción del objetivo
+     * @param user        Usuario al que pertenece el objetivo
+     */
     public Goal(Long id, String name, String description, User user) {
         this.id = id;
         this.name = name;
@@ -34,6 +45,9 @@ public class Goal {
         this.user = user;
     }
 
+    /**
+     * Getters y Setters de la entidad
+     */
     public Long getId() {
         return id;
     }

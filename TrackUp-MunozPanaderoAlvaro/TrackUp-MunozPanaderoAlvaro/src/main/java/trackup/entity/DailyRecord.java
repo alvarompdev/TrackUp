@@ -5,30 +5,41 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 /**
- *
+ * Entidad 'DailyRecord' que representa los registros diarios de los hábitos
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @Entity
 public class DailyRecord {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // ID, clave primaria del registro diario
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
+    private Long id; // Identificador que tiene cada registro diario
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(nullable = false) // Campo obligatorio
+    private LocalDate date; // Fecha del registro diario
 
-    @Column(nullable = false)
-    private Boolean completed;
+    @Column(nullable = false) // Campo obligatorio
+    private Boolean completed; // Indica si el hábito se ha completado o no
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "habit_id", nullable = false)
-    private Habit habit;
+    @ManyToOne(optional = false) // Relación de muchos a uno, un registro diario pertenece a un hábito
+    @JoinColumn(name = "habit_id", nullable = false) // Se indica la columna de unión y que no puede ser nula
+    private Habit habit; // Hábito al que pertenece el registro diario
 
+    /**
+     * Constructor vacío de la entidad
+     */
     public DailyRecord() {
     }
 
+    /**
+     * Constructor con parámetros de la entidad
+     *
+     * @param id        ID del registro diario
+     * @param date      Fecha del registro diario
+     * @param completed Indica si el hábito se ha completado o no
+     * @param habit     Hábito al que pertenece el registro diario
+     */
     public DailyRecord(Long id, LocalDate date, Boolean completed, Habit habit) {
         this.id = id;
         this.date = date;
@@ -36,6 +47,9 @@ public class DailyRecord {
         this.habit = habit;
     }
 
+    /**
+     * Getters y Setters de la entidad
+     */
     public Long getId() {
         return id;
     }

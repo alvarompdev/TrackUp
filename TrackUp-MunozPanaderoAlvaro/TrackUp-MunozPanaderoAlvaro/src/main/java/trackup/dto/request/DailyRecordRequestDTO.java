@@ -2,20 +2,39 @@ package trackup.dto.request;
 
 import java.time.LocalDate;
 
+/**
+ * DTO para la creación de un nuevo registro diario
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 public class DailyRecordRequestDTO {
-    private LocalDate date;
-    private Boolean completed;
-    private Long habitId;
 
+    private LocalDate date; // Fecha del registro diario
+    private Boolean completed; // Indica si el hábito se ha completado o no
+    private Long habitId; // ID del hábito al que pertenece el registro diario
+
+    /**
+     * Constructor vacío del DTO
+     */
     public DailyRecordRequestDTO() {
     }
 
+    /**
+     * Constructor con parámetros del DTO
+     *
+     * @param date      Fecha del registro diario
+     * @param completed Indica si el hábito se ha completado o no
+     * @param habitId   ID del hábito al que pertenece el registro diario
+     */
     public DailyRecordRequestDTO(LocalDate date, Boolean completed, Long habitId) {
         this.date = date;
         this.completed = completed;
         this.habitId = habitId;
     }
 
+    /**
+     * Getters y Setters
+     */
     public LocalDate getDate() {
         return date;
     }
