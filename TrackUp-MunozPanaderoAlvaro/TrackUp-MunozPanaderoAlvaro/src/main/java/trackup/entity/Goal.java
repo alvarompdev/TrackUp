@@ -33,10 +33,10 @@ public class Goal {
     /**
      * Constructor con parámetros de la entidad
      *
-     * @param id          ID del objetivo
-     * @param name        Nombre del objetivo
+     * @param id ID del objetivo
+     * @param name Nombre del objetivo
      * @param description Descripción del objetivo
-     * @param user        Usuario al que pertenece el objetivo
+     * @param user Usuario al que pertenece el objetivo
      */
     public Goal(Long id, String name, String description, User user) {
         this.id = id;
