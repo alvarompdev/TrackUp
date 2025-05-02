@@ -116,7 +116,7 @@ public class UserController {
     /**
      * Obtiene todos los objetivos que tiene un usuario
      *
-     * FALTA PROBAR, HAY QUE HACER ANTES LA IMPLEMENTACION DE LA CLASE Goal
+     * FUNCIONA
      *
      * @param id ID de usuario del que se quiere obtener la lista de objetivos
      * @return Lista de objetivos del usuario

@@ -1,5 +1,6 @@
 package trackup.services;
 
+import trackup.dto.request.GoalRequestDTO;
 import trackup.dto.response.GoalResponseDTO;
 
 import java.util.List;
@@ -35,22 +36,24 @@ public interface GoalService {
      */
     List<GoalResponseDTO> getAllGoals();
 
+    Optional<GoalResponseDTO> getGoalByNameAndUserId(String name, Long userId);
+
     /**
      * Crea un nuevo objetivo
      *
-     * @param goalResponseDTO Datos del objetivo que se va a crear
+     * @param goalRequestDTO Datos del objetivo que se va a crear
      * @return Objetivo creado
      */
-    GoalResponseDTO createGoal(GoalResponseDTO goalResponseDTO);
+    GoalResponseDTO createGoal(GoalRequestDTO goalRequestDTO);
 
     /**
      * Actualiza un objetivo existente
      *
      * @param id              ID del objetivo que se va a actualizar
-     * @param goalResponseDTO Datos del objetivo que se va a actualizar
+     * @param goalRequestDTO Datos del objetivo que se va a actualizar
      * @return Objetivo actualizado
      */
-    GoalResponseDTO updateGoal(Long id, GoalResponseDTO goalResponseDTO);
+    GoalResponseDTO updateGoal(Long id, GoalRequestDTO goalRequestDTO);
 
     /**
      * Elimina un objetivo existente

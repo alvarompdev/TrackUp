@@ -35,7 +35,7 @@ public class HabitController {
     /**
      * Obtener todos los hábitos
      *
-     *
+     * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habits/habits">...</a>
      */
@@ -52,7 +52,7 @@ public class HabitController {
     /**
      * Obtener un hábito por su ID
      *
-     *
+     * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habits/habit/1">...</a>{id}
      */
@@ -74,11 +74,11 @@ public class HabitController {
     /**
      * Obtener un hábito por su nombre
      *
-     *
+     * LO DEJO PARA EL FINAL
      *
      * GET <a href="http://localhost:8080/api/habits/habit/name/Dejar de fumar">...</a>{name}
      */
-    @GetMapping("/habit/name/{name}")
+    /*@GetMapping("/habit/name/{name}")
     public ResponseEntity<Habit> getHabitByName(@PathVariable String name) {
         if (name.trim().isEmpty()) { // Validación de nombre vacío
             return ResponseEntity.badRequest().build(); // Devuelve error si el nombre está vacío
@@ -87,12 +87,25 @@ public class HabitController {
         Optional<Habit> habitOpt = habitService.getHabitByName(name); // Busca el hábito por nombre
         return habitOpt.map(ResponseEntity::ok) // Si el hábito existe, devuelve un código 200 OK con el DTO
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
+    }*/
+
+    /**
+     * FUNCIONA
+     */
+    @GetMapping("/habit/by-name-and-user")
+    public ResponseEntity<HabitResponseDTO> getHabitByNameAndUserId(
+            @RequestParam String name,
+            @RequestParam Long userId) {
+
+        return habitService.getHabitByNameAndUserId(name, userId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
      * Obtener todos los hábitos de un usuario por su ID
      *
-     *
+     * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habits/habits/user/1">...</a>{userId}
      */
@@ -113,7 +126,7 @@ public class HabitController {
     /**
      * Crear un nuevo hábito
      *
-     *
+     * FUNCIONA
      *
      * POST <a href="http://localhost:8080/api/habits/habit">...</a>
      */
@@ -130,7 +143,7 @@ public class HabitController {
     /**
      * Actualizar un hábito existente
      *
-     *
+     * FUNCIONA
      *
      * PUT <a href="http://localhost:8080/api/habits/habit/1">...</a>{id}
      */
@@ -151,7 +164,7 @@ public class HabitController {
     /**
      * Eliminar un hábito por su ID
      *
-     *
+     * FUNCIONA
      *
      * DELETE <a href="http://localhost:8080/api/habits/habit/1">...</a>{id}
      */

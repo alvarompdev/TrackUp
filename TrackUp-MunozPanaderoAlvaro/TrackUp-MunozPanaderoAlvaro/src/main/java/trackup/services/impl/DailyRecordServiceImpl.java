@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import trackup.dto.response.DailyRecordResponseDTO;
 import trackup.entity.DailyRecord;
+import trackup.entity.Habit;
 import trackup.repository.DailyRecordRepository;
+import trackup.repository.HabitRepository;
 import trackup.services.DailyRecordService;
 
 import java.time.LocalDate;
@@ -20,6 +22,8 @@ import java.util.Optional;
 public class DailyRecordServiceImpl implements DailyRecordService {
 
     private final DailyRecordRepository dailyRecordRepository;
+    private final HabitRepository habitRepository;
+    private final HabitServiceImpl habitService; // Servicio para acceder a la información del hábito
 
     /**
      * Constructor de la clase
@@ -27,8 +31,10 @@ public class DailyRecordServiceImpl implements DailyRecordService {
      * @param dailyRecordRepository Repositorio de registros diarios
      */
     @Autowired
-    public DailyRecordServiceImpl(DailyRecordRepository dailyRecordRepository) {
+    public DailyRecordServiceImpl(DailyRecordRepository dailyRecordRepository, HabitRepository habitRepository, HabitServiceImpl habitService) {
         this.dailyRecordRepository = dailyRecordRepository;
+        this.habitRepository = habitRepository;
+        this.habitService = habitService;
     }
 
     @Override
@@ -37,7 +43,8 @@ public class DailyRecordServiceImpl implements DailyRecordService {
                 .map(dailyRecord -> new DailyRecordResponseDTO( // Si lo encuentra, lo transforma a un DTO
                         dailyRecord.getId(),
                         dailyRecord.getDate(),
-                        dailyRecord.getCompleted()
+                        dailyRecord.getCompleted(),
+                        dailyRecord.getHabit().getId() // Asigna el ID del hábito asociado
                 ));
     }
 
@@ -47,7 +54,8 @@ public class DailyRecordServiceImpl implements DailyRecordService {
                 .map(dailyRecord -> new DailyRecordResponseDTO( // Si lo encuentra, lo transforma a un DTO
                         dailyRecord.getId(),
                         dailyRecord.getDate(),
-                        dailyRecord.getCompleted()
+                        dailyRecord.getCompleted(),
+                        dailyRecord.getHabit().getId() // Asigna el ID del hábito asociado
                 ));
     }
 
@@ -57,7 +65,8 @@ public class DailyRecordServiceImpl implements DailyRecordService {
                 .map(dailyRecord -> new DailyRecordResponseDTO( // Si lo encuentra, lo transforma a un DTO
                         dailyRecord.getId(),
                         dailyRecord.getDate(),
-                        dailyRecord.getCompleted()
+                        dailyRecord.getCompleted(),
+                        dailyRecord.getHabit().getId() // Asigna el ID del hábito asociado
                 ));
     }
 
@@ -68,28 +77,36 @@ public class DailyRecordServiceImpl implements DailyRecordService {
                 .map(dailyRecord -> new DailyRecordResponseDTO( // Transforma cada registro diario a un DTO
                         dailyRecord.getId(),
                         dailyRecord.getDate(),
-                        dailyRecord.getCompleted()
+                        dailyRecord.getCompleted(),
+                        dailyRecord.getHabit().getId() // Asigna el ID del hábito asociado
                 ))
                 .toList(); // Convierte el stream de vuelta a una lista
     }
 
     @Override
     public DailyRecordResponseDTO createDailyRecord(DailyRecordResponseDTO dailyRecordResponseDTO) {
-        // Crea un nuevo registro diario a partir del DTO
+        // Crear nueva entidad
         DailyRecord dailyRecord = new DailyRecord();
         dailyRecord.setDate(dailyRecordResponseDTO.getDate());
         dailyRecord.setCompleted(dailyRecordResponseDTO.getCompleted());
 
-        // Guarda el nuevo registro diario en la base de datos
-        DailyRecord savedDailyRecord = dailyRecordRepository.save(dailyRecord);
+        // Buscar y asignar el hábito (usando la entidad como en HabitServiceImpl)
+        Habit habit = habitService.getHabitEntityById(dailyRecordResponseDTO.getHabitId())
+                .orElseThrow(() -> new RuntimeException("Habit not found with id: " + dailyRecordResponseDTO.getHabitId()));
+        dailyRecord.setHabit(habit);
 
-        // Devuelve el DTO del registro diario creado
+        // Guardar en base de datos
+        DailyRecord saved = dailyRecordRepository.save(dailyRecord);
+
+        // Devolver respuesta DTO
         return new DailyRecordResponseDTO(
-                savedDailyRecord.getId(),
-                savedDailyRecord.getDate(),
-                savedDailyRecord.getCompleted()
+                saved.getId(),
+                saved.getDate(),
+                saved.getCompleted(),
+                saved.getHabit().getId()
         );
     }
+
 
     @Override
     public DailyRecordResponseDTO updateDailyRecord(Long id, DailyRecordResponseDTO dailyRecordResponseDTO) {
@@ -108,7 +125,8 @@ public class DailyRecordServiceImpl implements DailyRecordService {
         return new DailyRecordResponseDTO(
                 updatedDailyRecord.getId(),
                 updatedDailyRecord.getDate(),
-                updatedDailyRecord.getCompleted()
+                updatedDailyRecord.getCompleted(),
+                updatedDailyRecord.getHabit().getId() // Asigna el ID del hábito asociado
         );
     }
 
@@ -122,4 +140,5 @@ public class DailyRecordServiceImpl implements DailyRecordService {
         // Elimina el registro diario de la base de datos
         dailyRecordRepository.deleteById(id);
     }
+
 }

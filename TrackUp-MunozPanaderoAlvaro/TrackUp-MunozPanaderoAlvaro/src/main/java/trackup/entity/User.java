@@ -1,5 +1,7 @@
 package trackup.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
@@ -13,6 +15,7 @@ import java.util.List;
  */
 @Entity // Se indica que se trata de una entidad
 @Table(name = "users") // La tabla no puede llamarse 'user' ya que es un nombre reservado
+@JsonIgnoreProperties({"habits"})  // Ignora la propiedad 'habits' cuando se serializa el objeto User
 public class User {
 
     @Id // ID, clave primaria del usuario
@@ -29,6 +32,7 @@ public class User {
     @Column(nullable = false) // Campo obligatorio
     private String password; // Contraseña del usuario
 
+    @JsonManagedReference // Se utiliza para evitar la recursividad infinita en la serialización de JSON
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) // Relación de uno a muchos, un usuario puede tener muchos hábitos; se eliminan automáticamente los hábitos diarios si se elimina el hábito
     private List<Habit> habits = new ArrayList<>(); // Lista de hábitos del usuario
 

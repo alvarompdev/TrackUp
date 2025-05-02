@@ -40,7 +40,7 @@ public class HabitResponseDTO {
      * @param habitTypeName Nombre del tipo de hábito
      * @param userId ID del usuario al que pertenece el hábito
      */
-    public HabitResponseDTO(Long id, String name, String description, String frequency, LocalDate startDate, LocalDate endDate, String habitTypeName, Long userId) {
+    /*public HabitResponseDTO(Long id, String name, String description, String frequency, LocalDate startDate, LocalDate endDate, String habitTypeName, Long userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,7 +49,7 @@ public class HabitResponseDTO {
         this.endDate = endDate;
         this.habitTypeName = habitTypeName;
         this.userId = userId;
-    }
+    }*/
 
     /**
      * Constructor con parámetros del DTO a partir de una entidad Habit
@@ -64,6 +64,7 @@ public class HabitResponseDTO {
         this.startDate = habit.getStartDate();
         this.endDate = habit.getEndDate();
         this.habitTypeName = habit.getHabitType() != null ? habit.getHabitType().getName() : null;
+        this.userId = habit.getUser() != null ? habit.getUser().getId() : null;
     }
 
     /**

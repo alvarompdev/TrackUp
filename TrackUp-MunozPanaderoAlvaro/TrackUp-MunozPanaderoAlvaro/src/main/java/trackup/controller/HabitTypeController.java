@@ -17,7 +17,7 @@ import java.util.Optional;
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @RestController // Indica que esta clase es un controlador REST
-@RequestMapping("/api/habit_types") // Prefijo para todas las rutas de este controlador
+@RequestMapping("/api/habit-types") // Prefijo para todas las rutas de este controlador
 public class HabitTypeController {
 
     private final HabitTypeService habitTypeService; // Servicio de tipos de hábito
@@ -34,11 +34,11 @@ public class HabitTypeController {
     /**
      * Obtener todos los tipos de hábito
      *
-     *
+     * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habit_types/habit_types">...</a>
      */
-    @GetMapping("habit_types")
+    @GetMapping("/habit-types")
     public ResponseEntity<List<HabitTypeResponseDTO>> getAllHabitTypes() {
         List<HabitTypeResponseDTO> habitTypesList = habitTypeService.getAllHabitTypes(); // Obtiene todos los tipos de hábito
         if (habitTypesList.isEmpty()) { // Si la lista está vacía, devuelve un código 204 No Content
@@ -51,11 +51,11 @@ public class HabitTypeController {
     /**
      * Obtener un tipo de hábito por su ID
      *
-     *
+     * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>{id}
      */
-    @GetMapping("habit_type/id/{id}")
+    @GetMapping("/habit-type/{id}")
     public ResponseEntity<HabitTypeResponseDTO> findHabitTypeById(@PathVariable Long id) {
         if (id < 0) { // Verifica que el ID sea válido
             return ResponseEntity.badRequest().build();
@@ -69,11 +69,11 @@ public class HabitTypeController {
     /**
      * Obtener un tipo de hábito por su nombre
      *
-     *
+     * FUNCIONA (ES CASE SENSITIVE, SEGURAMENTE HABRIA QUE CORREGIR ESO)
      *
      * GET <a href="http://localhost:8080/api/habit_types/habit_type/name/ejemplo">...</a>{name}
      */
-    @GetMapping("Habit_type/name/{name}")
+    @GetMapping("/habit-type/name/{name}")
     public ResponseEntity<HabitTypeResponseDTO> findHabitTypeByName(@PathVariable String name) {
         if (name == null || name.trim().isEmpty()) { // Verifica que el nombre no sea nulo o vacío
             return ResponseEntity.badRequest().build(); // Devuelve error si el nombre es nulo o vacío
@@ -87,11 +87,11 @@ public class HabitTypeController {
     /**
      * Crear un nuevo tipo de hábito
      *
-     *
+     * FUNCIONA
      *
      * POST <a href="http://localhost:8080/api/habit_types/habit_type">...</a>
      */
-    @PostMapping("/habit_type")
+    @PostMapping("/habit-type")
     public ResponseEntity<HabitTypeResponseDTO> createHabitType(@RequestBody HabitTypeRequestDTO habitTypeRequest) {
         if (habitTypeRequest == null) { // Verifica que la solicitud no sea nula
             return ResponseEntity.badRequest().build(); // Devuelve error si la solicitud es nula
@@ -104,11 +104,11 @@ public class HabitTypeController {
     /**
      * Actualizar un tipo de hábito existente
      *
-     *
+     * FUNCIONA
      *
      * PUT <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>{id}
      */
-    @PutMapping("/habit_type/{id}")
+    @PutMapping("/habit-type/{id}")
     public ResponseEntity<HabitTypeResponseDTO> updateHabitType(@PathVariable Long id, @RequestBody HabitTypeRequestDTO habitTypeRequest) {
         if (id < 0 || habitTypeRequest == null) { // Verifica que el ID sea válido y la solicitud no sea nula
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo o la solicitud es nula
@@ -125,11 +125,11 @@ public class HabitTypeController {
     /**
      * Eliminar un tipo de hábito por su ID
      *
-     *
+     * FUNCIONA
      *
      * DELETE <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>{id}
      */
-    @DeleteMapping("/habit_type/{id}")
+    @DeleteMapping("/habit-type/{id}")
     public ResponseEntity<Void> deleteHabitType(@PathVariable Long id) {
         if (id < 0) { // Verifica que el ID sea válido
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo

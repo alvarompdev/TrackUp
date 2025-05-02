@@ -12,6 +12,7 @@ public class GoalResponseDTO {
     private Long id; // ID del objetivo
     private String name; // Nombre del objetivo
     private String description; // Descripción del objetivo
+    private Long userId; // ID del usuario al que pertenece el objetivo
 
     /**
      * Constructor vacío del DTO
@@ -26,10 +27,11 @@ public class GoalResponseDTO {
      * @param name Nombre del objetivo
      * @param description Descripción del objetivo
      */
-    public GoalResponseDTO(Long id, String name, String description) {
+    public GoalResponseDTO(Long id, String name, String description, Long userId) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.userId = userId;
     }
 
     /**
@@ -41,6 +43,7 @@ public class GoalResponseDTO {
         this.id = goal.getId();
         this.name = goal.getName();
         this.description = goal.getDescription();
+        this.userId = goal.getUser() != null ? goal.getUser().getId() : null;
     }
 
     /**

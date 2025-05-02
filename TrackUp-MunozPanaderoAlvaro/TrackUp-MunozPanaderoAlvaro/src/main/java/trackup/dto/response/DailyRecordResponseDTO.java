@@ -12,6 +12,7 @@ public class DailyRecordResponseDTO {
     private Long id; // ID del registro diario
     private LocalDate date; // Fecha del registro diario
     private Boolean completed; // Indica si el hábito se ha completado o no
+    private Long habitId; // ID del hábito al que pertenece el registro diario
 
     /**
      * Constructor vacío del DTO
@@ -26,10 +27,11 @@ public class DailyRecordResponseDTO {
      * @param date      Fecha del registro diario
      * @param completed Indica si el hábito se ha completado o no
      */
-    public DailyRecordResponseDTO(Long id, LocalDate date, Boolean completed) {
+    public DailyRecordResponseDTO(Long id, LocalDate date, Boolean completed, Long habitId) {
         this.id = id;
         this.date = date;
         this.completed = completed;
+        this.habitId = habitId;
     }
 
     /**
@@ -57,6 +59,14 @@ public class DailyRecordResponseDTO {
 
     public void setCompleted(Boolean completed) {
         this.completed = completed;
+    }
+
+    public Long getHabitId() {
+        return habitId;
+    }
+
+    public void setHabitId(Long habitId) {
+        this.habitId = habitId;
     }
 
 }

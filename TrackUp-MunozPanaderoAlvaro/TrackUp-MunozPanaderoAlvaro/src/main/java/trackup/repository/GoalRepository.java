@@ -2,7 +2,10 @@ package trackup.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import trackup.dto.response.GoalResponseDTO;
 import trackup.entity.Goal;
+
+import java.util.Optional;
 
 /**
  * Repositorio para la entidad 'Goal'
@@ -19,5 +22,7 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
      * @return Objetivo encontrado
      */
     Goal findGoalByName(String name);
+
+    Optional<Goal> findGoalByNameAndUserId(String name, Long userId);
 
 }

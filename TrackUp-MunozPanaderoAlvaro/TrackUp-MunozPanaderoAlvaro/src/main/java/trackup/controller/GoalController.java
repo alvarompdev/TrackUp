@@ -2,6 +2,7 @@ package trackup.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trackup.dto.request.GoalRequestDTO;
 import trackup.dto.response.GoalResponseDTO;
 import trackup.services.GoalService;
 
@@ -26,6 +27,8 @@ public class GoalController {
     /**
      * Obtiene todos los objetivos
      *
+     * FUNCIONA
+     *
      * @return Lista de objetivos
      */
     @GetMapping("/goals")
@@ -40,6 +43,8 @@ public class GoalController {
 
     /**
      * Obtiene un objetivo por su ID
+     *
+     * FUNCIONA
      *
      * @param id ID del objetivo
      * @return Objetivo encontrado
@@ -58,10 +63,12 @@ public class GoalController {
     /**
      * Obtiene un objetivo por su nombre
      *
+     *
+     *
      * @param name Nombre del objetivo
      * @return Objetivo encontrado
      */
-    @GetMapping("/goal/name/{name}")
+    /*@GetMapping("/goal/name/{name}")
     public ResponseEntity<GoalResponseDTO> findGoalByName(@PathVariable String name) {
         if (name.isEmpty()) { // Verifica si el nombre está vacío
             return ResponseEntity.badRequest().build();  // Devuelve error si el nombre está vacío
@@ -70,43 +77,72 @@ public class GoalController {
         Optional<GoalResponseDTO> goalOpt = goalService.getGoalByName(name); // Obtiene el objetivo de acuerdo al nombre proporcionado
         return goalOpt.map(ResponseEntity::ok) // Si el objetivo existe, devuelve el objeto GoalResponseDTO
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }*/
+
+    /**
+     * FUNCIONA (ES EL TEMPORAL)
+     */
+    @GetMapping("/goal/by-name")
+    public ResponseEntity<GoalResponseDTO> findGoalByName(
+            @RequestParam String name,
+            @RequestParam(required = false) Long userId  // opcional
+    ) {
+        if (name.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Optional<GoalResponseDTO> goalOpt;
+        if (userId != null) {
+            goalOpt = goalService.getGoalByNameAndUserId(name, userId);
+        } else {
+            goalOpt = goalService.getGoalByName(name);
+        }
+
+        return goalOpt.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
      * Crea un nuevo objetivo
      *
-     * @param goalResponseDTO Datos del objetivo que se va a crear
+     * FUNCIONA
+     *
+     * @param goalRequestDTO Datos del objetivo que se va a crear
      * @return Objetivo creado
      */
     @PostMapping("/goal")
-    public ResponseEntity<GoalResponseDTO> createGoal(@RequestBody GoalResponseDTO goalResponseDTO) {
-        if (goalResponseDTO.getName().isEmpty()) { // Verifica si el nombre está vacío
+    public ResponseEntity<GoalResponseDTO> createGoal(@RequestBody GoalRequestDTO goalRequestDTO) {
+        if (goalRequestDTO.getName().isEmpty()) { // Verifica si el nombre está vacío
             return ResponseEntity.badRequest().build();  // Devuelve error si el nombre está vacío
         }
 
-        GoalResponseDTO createdGoal = goalService.createGoal(goalResponseDTO); // Crea un nuevo objetivo
+        GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO); // Crea un nuevo objetivo
         return ResponseEntity.ok(createdGoal); // Devuelve el objetivo creado con un código 200 OK
     }
 
     /**
      * Actualiza un objetivo existente
      *
-     * @param id              ID del objetivo que se va a actualizar
-     * @param goalResponseDTO Datos del objetivo que se va a actualizar
+     * FUNCIONA
+     *
+     * @param id ID del objetivo que se va a actualizar
+     * @param goalRequestDTO Datos del objetivo que se va a actualizar
      * @return Objetivo actualizado
      */
     @PutMapping("/goal/{id}")
-    public ResponseEntity<GoalResponseDTO> updateGoal(@PathVariable Long id, @RequestBody GoalResponseDTO goalResponseDTO) {
+    public ResponseEntity<GoalResponseDTO> updateGoal(@PathVariable Long id, @RequestBody GoalRequestDTO goalRequestDTO) {
         if (id < 0) { // Verifica si el ID es negativo
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
         }
 
-        GoalResponseDTO updatedGoal = goalService.updateGoal(id, goalResponseDTO); // Actualiza el objetivo existente
+        GoalResponseDTO updatedGoal = goalService.updateGoal(id, goalRequestDTO); // Actualiza el objetivo existente
         return ResponseEntity.ok(updatedGoal); // Devuelve el objetivo actualizado con un código 200 OK
     }
 
     /**
      * Elimina un objetivo existente
+     *
+     * FUNCIONA
      *
      * @param id ID del objetivo que se va a eliminar
      */

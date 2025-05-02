@@ -59,6 +59,13 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    public Optional<HabitResponseDTO> getHabitByNameAndUserId(String name, Long userId) {
+        return habitRepository
+                .findByNameAndUserId(name, userId)      // Optional<Habit>
+                .map(HabitResponseDTO::new);            // lo convierte en Optional<HabitResponseDTO>
+    }
+
+    @Override
     public Optional<Habit> getHabitEntityById(Long id) {
         return habitRepository.findById(id); // Buscar el hábito por ID
     }

@@ -36,6 +36,8 @@ public interface HabitService {
      */
     Optional<Habit> getHabitByName(String name);
 
+    Optional<HabitResponseDTO> getHabitByNameAndUserId(String name, Long userId);
+
     /**
      * Busca un hábito por su ID
      *

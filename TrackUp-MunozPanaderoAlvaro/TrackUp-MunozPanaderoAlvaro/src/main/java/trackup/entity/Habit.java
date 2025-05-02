@@ -1,5 +1,6 @@
 package trackup.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -12,13 +13,11 @@ import java.util.List;
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @Entity // Se indica que se trata de una entidad
-/*
-@Table(
+/*@Table(
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"user_id", "name"})
         }
-)
-*/
+)*/
 public class Habit {
 
     @Id // ID, clave primaria del hábito
@@ -39,6 +38,7 @@ public class Habit {
     @Column(nullable = false) // Campo obligatorio
     private LocalDate endDate; // Fecha de fin del hábito
 
+    @JsonBackReference  // Evita la referencia circular desde el Habit hacia el User
     @ManyToOne(optional = false) //Campo obligatorio
     @JoinColumn(name = "user_id", nullable = false) // Relación de muchos hábitos a un usuario, obligatorio
     private User user; // Usuario al que pertenece el hábito
