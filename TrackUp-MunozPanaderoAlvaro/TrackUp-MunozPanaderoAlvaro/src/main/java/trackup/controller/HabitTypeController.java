@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * Controlador REST para gestionar tipos de hábito
  *
- * Acceso: <a href="http://localhost:8080/api/habit_types">...</a>
+ * Acceso: <a href="http://localhost:8080/api/habit-types">...</a>
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
@@ -37,6 +37,8 @@ public class HabitTypeController {
      * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habit_types/habit_types">...</a>
+     *
+     * @return Lista de tipos de hábito
      */
     @GetMapping("/habit-types")
     public ResponseEntity<List<HabitTypeResponseDTO>> getAllHabitTypes() {
@@ -53,15 +55,18 @@ public class HabitTypeController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>{id}
+     * GET <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>
+     *
+     * @param id ID del tipo de hábito
+     * @return Tipo de hábito encontrado
      */
     @GetMapping("/habit-type/{id}")
-    public ResponseEntity<HabitTypeResponseDTO> findHabitTypeById(@PathVariable Long id) {
+    public ResponseEntity<HabitTypeResponseDTO> getHabitTypeById(@PathVariable Long id) {
         if (id < 0) { // Verifica que el ID sea válido
             return ResponseEntity.badRequest().build();
         }
 
-        Optional<HabitTypeResponseDTO> habitTypeOpt = habitTypeService.getHabitTypeById(id); // Busca el tipo de hábito por ID
+        Optional<HabitTypeResponseDTO> habitTypeOpt = habitTypeService.findHabitTypeById(id); // Busca el tipo de hábito por ID
         return habitTypeOpt.map(ResponseEntity::ok) // Si lo encuentra, lo devuelve con un código 200 OK
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no lo encuentra, devuelve un código 404 Not Found
     }
@@ -71,15 +76,18 @@ public class HabitTypeController {
      *
      * FUNCIONA (ES CASE SENSITIVE, SEGURAMENTE HABRIA QUE CORREGIR ESO)
      *
-     * GET <a href="http://localhost:8080/api/habit_types/habit_type/name/ejemplo">...</a>{name}
+     * GET <a href="http://localhost:8080/api/habit_types/habit_type/name/ejemplo">...</a>
+     *
+     * @param name Nombre del tipo de hábito
+     * @return Tipo de hábito encontrado
      */
     @GetMapping("/habit-type/name/{name}")
-    public ResponseEntity<HabitTypeResponseDTO> findHabitTypeByName(@PathVariable String name) {
+    public ResponseEntity<HabitTypeResponseDTO> getHabitTypeByName(@PathVariable String name) {
         if (name == null || name.trim().isEmpty()) { // Verifica que el nombre no sea nulo o vacío
             return ResponseEntity.badRequest().build(); // Devuelve error si el nombre es nulo o vacío
         }
 
-        Optional<HabitTypeResponseDTO> habitTypeOpt = habitTypeService.getHabitTypeByName(name); // Busca el tipo de hábito por nombre
+        Optional<HabitTypeResponseDTO> habitTypeOpt = habitTypeService.findHabitTypeByName(name); // Busca el tipo de hábito por nombre
         return habitTypeOpt.map(ResponseEntity::ok) // Si lo encuentra, lo devuelve con un código 200 OK
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no lo encuentra, devuelve un código 404 Not Found
     }
@@ -90,6 +98,9 @@ public class HabitTypeController {
      * FUNCIONA
      *
      * POST <a href="http://localhost:8080/api/habit_types/habit_type">...</a>
+     *
+     * @param habitTypeRequest Datos del nuevo tipo de hábito
+     * @return Tipo de hábito creado
      */
     @PostMapping("/habit-type")
     public ResponseEntity<HabitTypeResponseDTO> createHabitType(@RequestBody HabitTypeRequestDTO habitTypeRequest) {
@@ -106,7 +117,11 @@ public class HabitTypeController {
      *
      * FUNCIONA
      *
-     * PUT <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>{id}
+     * PUT <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>
+     *
+     * @param id ID del tipo de hábito que se va a actualizar
+     * @param habitTypeRequest Datos del tipo de hábito que se va a actualizar
+     * @return Tipo de hábito actualizado
      */
     @PutMapping("/habit-type/{id}")
     public ResponseEntity<HabitTypeResponseDTO> updateHabitType(@PathVariable Long id, @RequestBody HabitTypeRequestDTO habitTypeRequest) {
@@ -127,7 +142,10 @@ public class HabitTypeController {
      *
      * FUNCIONA
      *
-     * DELETE <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>{id}
+     * DELETE <a href="http://localhost:8080/api/habit_types/habit_type/id/1">...</a>
+     *
+     * @param id ID del tipo de hábito que se va a eliminar
+     * @return Código de respuesta HTTP
      */
     @DeleteMapping("/habit-type/{id}")
     public ResponseEntity<Void> deleteHabitType(@PathVariable Long id) {

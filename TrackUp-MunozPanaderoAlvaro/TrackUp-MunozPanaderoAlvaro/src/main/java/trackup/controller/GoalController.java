@@ -9,11 +9,18 @@ import trackup.services.GoalService;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/goals")
+/**
+ * Controlador REST para gestionar los objetivos
+ *
+ * Acceso: <a href="http://localhost:8080/api/goals">...</a>
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
+@RestController // Indica que esta clase es un controlador REST
+@RequestMapping("/api/goals") // Prefijo para todas las rutas de este controlador
 public class GoalController {
 
-    private final GoalService goalService;
+    private final GoalService goalService; // Servicio de objetivos
 
     /**
      * Constructor con inyección de dependencias
@@ -29,10 +36,12 @@ public class GoalController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/goals/goals">...</a>
+     *
      * @return Lista de objetivos
      */
     @GetMapping("/goals")
-    public ResponseEntity<List<GoalResponseDTO>> findAllGoals() {
+    public ResponseEntity<List<GoalResponseDTO>> getAllGoals() {
         List<GoalResponseDTO> goalsList = goalService.getAllGoals(); // Obtiene todos los objetivos
         if (goalsList.isEmpty()) { // Si la lista está vacía, devuelve un código 204 No Content
             return ResponseEntity.noContent().build();
@@ -46,66 +55,57 @@ public class GoalController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/goals/goal/id/1">...</a>
+     *
      * @param id ID del objetivo
      * @return Objetivo encontrado
      */
     @GetMapping("/goal/{id}")
-    public ResponseEntity<GoalResponseDTO> findGoalById(@PathVariable Long id) {
+    public ResponseEntity<GoalResponseDTO> getGoalById(@PathVariable Long id) {
         if (id < 0) { // Verifica si el ID es negativo
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
         }
 
-        Optional<GoalResponseDTO> goalOpt = goalService.getGoalById(id); // Obtiene el objetivo de acuerdo al ID proporcionado
+        Optional<GoalResponseDTO> goalOpt = goalService.findGoalById(id); // Obtiene el objetivo de acuerdo al ID proporcionado
         return goalOpt.map(ResponseEntity::ok) // Si el objetivo existe, devuelve el objeto GoalResponseDTO
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
-     * Obtiene un objetivo por su nombre
+     * Obtiene un objetivo por su nombre o por su nombre e ID de usuario
      *
+     * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/goals/goal/by-name?name=No%20fumar">...</a>
+     * GET <a href="http://localhost:8080/api/goals/goal/by-name?name=No%20fumar&userId=1">...</a>
      *
      * @param name Nombre del objetivo
+     * @param userId ID del usuario (opcional)
      * @return Objetivo encontrado
      */
-    /*@GetMapping("/goal/name/{name}")
-    public ResponseEntity<GoalResponseDTO> findGoalByName(@PathVariable String name) {
-        if (name.isEmpty()) { // Verifica si el nombre está vacío
-            return ResponseEntity.badRequest().build();  // Devuelve error si el nombre está vacío
-        }
-
-        Optional<GoalResponseDTO> goalOpt = goalService.getGoalByName(name); // Obtiene el objetivo de acuerdo al nombre proporcionado
-        return goalOpt.map(ResponseEntity::ok) // Si el objetivo existe, devuelve el objeto GoalResponseDTO
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }*/
-
-    /**
-     * FUNCIONA (ES EL TEMPORAL)
-     */
     @GetMapping("/goal/by-name")
-    public ResponseEntity<GoalResponseDTO> findGoalByName(
-            @RequestParam String name,
-            @RequestParam(required = false) Long userId  // opcional
-    ) {
-        if (name.trim().isEmpty()) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<GoalResponseDTO> getGoalByName(@RequestParam String name, @RequestParam(required = false) Long userId) {
+        if (name.trim().isEmpty()) { // Verifica si el nombre está vacío
+            return ResponseEntity.badRequest().build(); // Devuelve error si el nombre está vacío
         }
 
-        Optional<GoalResponseDTO> goalOpt;
-        if (userId != null) {
-            goalOpt = goalService.getGoalByNameAndUserId(name, userId);
+        Optional<GoalResponseDTO> goalOpt; // Variable para almacenar el objetivo encontrado
+        if (userId != null) { // Si se proporciona un ID de usuario, busca el objetivo por nombre y ID de usuario
+            goalOpt = goalService.findGoalByNameAndUserId(name, userId); // Busca el objetivo por nombre y ID de usuario
         } else {
-            goalOpt = goalService.getGoalByName(name);
+            goalOpt = goalService.findGoalByName(name); // Busca el objetivo solo por nombre
         }
 
-        return goalOpt.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return goalOpt.map(ResponseEntity::ok) // Si el objetivo existe, devuelve el objeto GoalResponseDTO
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
     }
 
     /**
      * Crea un nuevo objetivo
      *
      * FUNCIONA
+     *
+     * POST <a href="http://localhost:8080/api/goals/goal">...</a>
      *
      * @param goalRequestDTO Datos del objetivo que se va a crear
      * @return Objetivo creado
@@ -125,6 +125,8 @@ public class GoalController {
      *
      * FUNCIONA
      *
+     * PUT <a href="http://localhost:8080/api/goals/goal/id/1">...</a>
+     *
      * @param id ID del objetivo que se va a actualizar
      * @param goalRequestDTO Datos del objetivo que se va a actualizar
      * @return Objetivo actualizado
@@ -143,6 +145,8 @@ public class GoalController {
      * Elimina un objetivo existente
      *
      * FUNCIONA
+     *
+     * DELETE <a href="http://localhost:8080/api/goals/goal/id/1">...</a>
      *
      * @param id ID del objetivo que se va a eliminar
      */

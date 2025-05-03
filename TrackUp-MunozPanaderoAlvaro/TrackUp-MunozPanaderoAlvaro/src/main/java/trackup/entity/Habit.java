@@ -13,24 +13,24 @@ import java.util.List;
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
 @Entity // Se indica que se trata de una entidad
-/*@Table(
+@Table(
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"user_id", "name"})
         }
-)*/
+)
 public class Habit {
 
     @Id // ID, clave primaria del hábito
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
     private Long id; // Identificador que tiene cada hábito
 
-    @Column(nullable = false) // Campo obligatorio
+    @Column(unique = true, nullable = false) // Campo obligatorio y único
     private String name; // Nombre del hábito
 
-    private String description; // Descripoión del hábito, opcional
+    private String description; // Descripción del hábito, opcional
 
     @Column(nullable = false, length = 50) // Campo obligatorio y con una longitud máxima de 50 caracteres
-    private String frequency; // Frequencia del hábito
+    private String frequency; // Frecuencia del hábito
 
     @Column(nullable = false) // Campo obligatorio
     private LocalDate startDate; // Fecha de inicio del hábito
@@ -43,8 +43,7 @@ public class Habit {
     @JoinColumn(name = "user_id", nullable = false) // Relación de muchos hábitos a un usuario, obligatorio
     private User user; // Usuario al que pertenece el hábito
 
-    //@ManyToOne(optional = false) // Relación de muchos hábitos a un usuario, obligatorio
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false) // Relación de muchos hábitos a un usuario, obligatorio
     @JoinColumn(name = "habit_type_id", nullable = false)
     private HabitType habitType; // Tipo de hábito
 

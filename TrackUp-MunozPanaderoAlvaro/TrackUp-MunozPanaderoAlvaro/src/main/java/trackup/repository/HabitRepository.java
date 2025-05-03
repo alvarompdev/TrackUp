@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Repository // Indica que esta clase es un repositorio de Spring
+@Repository // Indica que esta clase es un repositorio
 public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     /**
@@ -23,7 +23,14 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
      */
     Optional<Habit> findByName(String name);
 
-    Optional<Habit> findByNameAndUserId(String name, Long userId);
+    /**
+     * Busca un hábito por su nombre y el ID del usuario
+     *
+     * @param name Nombre del hábito
+     * @param userId ID del usuario
+     * @return Hábito correspondiente al nombre y ID de usuario proporcionados en el caso de que exista
+     */
+    Optional<Habit> findHabitByNameAndUserId(String name, Long userId);
 
     /**
      * Busca todos los hábitos de un usuario mediante su ID de usuario
@@ -31,6 +38,6 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
      * @param userId ID del usuario
      * @return Lista de hábitos del usuario
      */
-    List<Habit> findAllByUserId(Long userId);
+    List<Habit> findAllHabitsByUserId(Long userId);
 
 }

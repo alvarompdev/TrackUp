@@ -1,7 +1,7 @@
 package trackup.dto.request;
 
 /**
- * DTO para la creación de un nuevo usuario
+ * DTO para los cuerpos de las solicitudes (Usuarios)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

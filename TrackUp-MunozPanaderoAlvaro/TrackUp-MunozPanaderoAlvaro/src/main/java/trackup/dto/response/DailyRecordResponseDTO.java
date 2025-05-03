@@ -3,7 +3,7 @@ package trackup.dto.response;
 import java.time.LocalDate;
 
 /**
- * DTO para la respuesta de un registro diario
+ * DTO para las respuestas de las solicitudes (Registros Diarios)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

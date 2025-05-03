@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trackup.dto.request.HabitRequestDTO;
 import trackup.dto.response.HabitResponseDTO;
-import trackup.entity.Habit;
 import trackup.services.HabitService;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Optional;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@RestController
+@RestController // Indica que esta clase es un controlador REST
 @RequestMapping("/api/habits") // Prefijo para todas las rutas de este controlador
 public class HabitController {
 
@@ -38,6 +37,8 @@ public class HabitController {
      * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/habits/habits">...</a>
+     *
+     * @return Lista de hábitos
      */
     @GetMapping("/habits")
     public ResponseEntity<List<HabitResponseDTO>> getAllHabits() {
@@ -54,7 +55,10 @@ public class HabitController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/habits/habit/1">...</a>{id}
+     * GET <a href="http://localhost:8080/api/habits/habit/1">...</a>
+     *
+     * @param id ID del hábito
+     * @return Hábito encontrado
      */
     @GetMapping("/habit/{id}")
     public ResponseEntity<HabitResponseDTO> getHabitById(@PathVariable Long id) {
@@ -62,44 +66,27 @@ public class HabitController {
             return ResponseEntity.badRequest().build();
         }
 
-        // Alternativa más corta, posiblemente cambie a esta para reducir las líneas de código ya que es un simple checkeo
-        // if (id < 0) return ResponseEntity.badRequest().build();
-
-        Optional<HabitResponseDTO> habitOpt = habitService.getHabitById(id); // Busca el hábito por ID, y si lo encuentra lo transforma a un DTO
+        Optional<HabitResponseDTO> habitOpt = habitService.findHabitById(id); // Busca el hábito por ID, y si lo encuentra lo transforma a un DTO
         return habitOpt.map(ResponseEntity::ok) // Si el hábito existe, devuelve un código 200 OK con el DTO
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
-
     }
 
     /**
      * Obtener un hábito por su nombre
      *
-     * LO DEJO PARA EL FINAL
-     *
-     * GET <a href="http://localhost:8080/api/habits/habit/name/Dejar de fumar">...</a>{name}
-     */
-    /*@GetMapping("/habit/name/{name}")
-    public ResponseEntity<Habit> getHabitByName(@PathVariable String name) {
-        if (name.trim().isEmpty()) { // Validación de nombre vacío
-            return ResponseEntity.badRequest().build(); // Devuelve error si el nombre está vacío
-        }
-
-        Optional<Habit> habitOpt = habitService.getHabitByName(name); // Busca el hábito por nombre
-        return habitOpt.map(ResponseEntity::ok) // Si el hábito existe, devuelve un código 200 OK con el DTO
-                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
-    }*/
-
-    /**
      * FUNCIONA
+     *
+     * <a href="http://localhost:8080/api/habits/habit/by-name-and-user?name=Dejar%20de%20fumar&userId=1">...</a>
+     *
+     * @param name Nombre del hábito
+     * @param userId ID del usuario
+     * @return Hábito encontrado
      */
     @GetMapping("/habit/by-name-and-user")
-    public ResponseEntity<HabitResponseDTO> getHabitByNameAndUserId(
-            @RequestParam String name,
-            @RequestParam Long userId) {
-
-        return habitService.getHabitByNameAndUserId(name, userId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<HabitResponseDTO> getHabitByNameAndUserId(@RequestParam String name, @RequestParam Long userId) {
+        return habitService.findHabitByNameAndUserId(name, userId) // Busca el hábito por nombre y ID de usuario
+                .map(ResponseEntity::ok) // Si el hábito existe, devuelve un código 200 OK con el DTO
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
     }
 
     /**
@@ -107,7 +94,9 @@ public class HabitController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/habits/habits/user/1">...</a>{userId}
+     * GET <a href="http://localhost:8080/api/habits/habits/user/1">...</a>
+     *
+     * @param userId ID del usuario
      */
     @GetMapping("/habits/user/{userId}")
     public ResponseEntity<List<HabitResponseDTO>> getHabitsByUserId(@PathVariable Long userId) {
@@ -129,6 +118,9 @@ public class HabitController {
      * FUNCIONA
      *
      * POST <a href="http://localhost:8080/api/habits/habit">...</a>
+     *
+     * @param habitRequestDTO Objeto DTO con los datos del nuevo hábito
+     * @return Hábito creado
      */
     @PostMapping("/habit")
     public ResponseEntity<HabitResponseDTO> createHabit(@RequestBody HabitRequestDTO habitRequestDTO) {
@@ -145,7 +137,11 @@ public class HabitController {
      *
      * FUNCIONA
      *
-     * PUT <a href="http://localhost:8080/api/habits/habit/1">...</a>{id}
+     * PUT <a href="http://localhost:8080/api/habits/habit/1">...</a>
+     *
+     * @param id ID del hábito a actualizar
+     * @param habitRequestDTO Objeto DTO con los datos actualizados del hábito
+     * @return Hábito actualizado
      */
     @PutMapping("/habit/{id}")
     public ResponseEntity<HabitResponseDTO> updateHabit(@PathVariable Long id, @RequestBody HabitRequestDTO habitRequestDTO) {
@@ -166,7 +162,10 @@ public class HabitController {
      *
      * FUNCIONA
      *
-     * DELETE <a href="http://localhost:8080/api/habits/habit/1">...</a>{id}
+     * DELETE <a href="http://localhost:8080/api/habits/habit/1">...</a>
+     *
+     * @param id ID del hábito a eliminar
+     * @return Código de respuesta HTTP
      */
     @DeleteMapping("/habit/{id}")
     public ResponseEntity<Void> deleteHabit(@PathVariable Long id) {

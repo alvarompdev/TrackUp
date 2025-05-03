@@ -39,9 +39,11 @@ public class UserController {
      * FUNCIONA
      *
      * GET <a href="http://localhost:8080/api/users/users">...</a>
+     *
+     * @return Lista de usuarios
      */
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> usersList = userService.getAllUsers(); // Obtiene todos los usuarios
         if (usersList.isEmpty()) { // Si la lista está vacía, devuelve un código 204 No Content
             return ResponseEntity.noContent().build();
@@ -55,38 +57,39 @@ public class UserController {
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/users/user/1">...</a>{id}
+     * GET <a href="http://localhost:8080/api/users/user/1">...</a>
+     *
+     * @param id ID del usuario
+     * @return Usuario encontrado
      */
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         if (id < 0) { // Verifica si el ID es negativo
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
         }
 
-        // otra posible forma corta
-        // if (id < 0) return ResponseEntity.badRequest().build();
-
-        Optional<UserResponseDTO> userOpt = userService.getUserById(id); // Obtiene el usuario de acuerdo al ID proporcionado
+        Optional<UserResponseDTO> userOpt = userService.findUserById(id); // Obtiene el usuario de acuerdo al ID proporcionado
         return userOpt.map(ResponseEntity::ok) // Si el usuario existe, devuelve el objeto UserResponseDTO
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 
     /**
      * Obtener un usuario por su nombre de usuario
      *
      * FUNCIONA
      *
-     * GET <a href="http://localhost:8080/api/users/user/username/alvaromp">...</a>{username}
+     * GET <a href="http://localhost:8080/api/users/user/username/alvaromp">...</a>
+     *
+     * @param username Nombre de usuario
+     * @return Usuario encontrado
      */
-    // @GetMapping("/user/username/{username}")
     @GetMapping("/user/username/{username}")
-    public ResponseEntity<UserResponseDTO> findUserByUsername(@PathVariable String username) {
+    public ResponseEntity<UserResponseDTO> getUserByUsername(@PathVariable String username) {
         if (username == null || username.trim().isEmpty()) { // Verifica si el nombre de usuario es nulo o vacío
             return ResponseEntity.badRequest().build(); // Devuelve error si el nombre de usuario es nulo o vacío
         }
 
-        Optional<UserResponseDTO> userOpt = userService.getUserByUsername(username); // Obtiene el usuario de acuerdo al nombre de usuario proporcionado
+        Optional<UserResponseDTO> userOpt = userService.findUserByUsername(username); // Obtiene el usuario de acuerdo al nombre de usuario proporcionado
         return userOpt.map(ResponseEntity::ok) // Si el usuario existe, devuelve el objeto UserResponseDTO
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -96,14 +99,14 @@ public class UserController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/users/user/1/habits">...</a>
+     *
      * @param id ID de usuario del que se quiere obtener la lista de hábitos
      * @return Lista de hábitos del usuario
-     *
-     * GET <a href="http://localhost:8080/api/users/user/1/habits">...</a>
      */
     @GetMapping("/user/{id}/habits")
-    public ResponseEntity<List<HabitResponseDTO>> findUserHabits(@PathVariable Long id) {
-        return userService.getUserEntityById(id) // Obtiene el usuario de acuerdo al ID proporcionado
+    public ResponseEntity<List<HabitResponseDTO>> getUserHabits(@PathVariable Long id) {
+        return userService.findUserEntityById(id) // Obtiene el usuario de acuerdo al ID proporcionado
                 .map(user -> { // Si el usuario existe, transforma la lista de hábitos a una lista de HabitResponseDTO
                     List<HabitResponseDTO> habitsList = user.getHabits().stream() // Obtiene la lista de hábitos del usuario
                             .map(HabitResponseDTO::new) // Transforma cada hábito a un HabitResponseDTO
@@ -118,14 +121,14 @@ public class UserController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/users/user/1/goals">...</a>
+     *
      * @param id ID de usuario del que se quiere obtener la lista de objetivos
      * @return Lista de objetivos del usuario
-     *
-     * GET <a href="http://localhost:8080/api/users/user/1/goals">...</a>
      */
     @GetMapping("/user/{id}/goals")
-    public ResponseEntity<List<GoalResponseDTO>> findUserGoals(@PathVariable Long id) {
-        return userService.getUserEntityById(id) // Obtiene el usuario de acuerdo al ID proporcionado
+    public ResponseEntity<List<GoalResponseDTO>> getUserGoals(@PathVariable Long id) {
+        return userService.findUserEntityById(id) // Obtiene el usuario de acuerdo al ID proporcionado
                 .map(user -> { // Si el usuario existe, transforma la lista de objetivos a una lista de GoalResponseDTO
                     List<GoalResponseDTO> goalsList = user.getGoals().stream() // Obtiene la lista de objetivos del usuario
                             .map(GoalResponseDTO::new)  // Transforma cada hábito a un GoalResponseDTO
@@ -138,48 +141,34 @@ public class UserController {
     /**
      * Crear un nuevo usuario
      *
-     * POST <a href="http://localhost:8080/api/user">...</a>
-     */
-    /*@PostMapping("/user")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        if (userRequestDTO == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        UserResponseDTO createdUser = userService.createUser(userRequestDTO);
-        return ResponseEntity.status(201).body(createdUser);
-    }*/
-
-    /**
-     * Crear un nuevo usuario
-     *
      * FUNCIONA
+     *
+     * POST <a href="http://localhost:8080/api/users/user">...</a>
      *
      * @param userRequestDTO Datos del usuario que se va a crear
      * @return Usuario creado con sus datos de respuesta
-     *
-     * POST <a href="http://localhost:8080/api/users/user">...</a>
      */
     @PostMapping("/user")
-    public ResponseEntity<?> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        if (userRequestDTO == null) { // Verifica si el objeto UserRequestDTO es nulo
-            return ResponseEntity.badRequest().build(); // Devuelve error si el objeto UserRequestDTO es nulo
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
+        if (userRequestDTO == null) {
+            return ResponseEntity.badRequest().build(); // Devuelve 400 si el cuerpo es nulo
         }
 
-        try {
-            UserResponseDTO createdUser = userService.createUser(userRequestDTO); // Crea un nuevo usuario a partir del objeto UserRequestDTO
-            return ResponseEntity.status(201).body(createdUser); // Devuelve el usuario creado con un código 201 Created
-        } catch (RuntimeException e) { // Captura cualquier excepción que se produzca al crear el usuario
-            return ResponseEntity.status(409).body(e.getMessage()); // Devuelve un error 409 Conflict con el mensaje de la excepción
-        }
+        UserResponseDTO createdUser = userService.createUser(userRequestDTO); // Crea el usuario
+        return ResponseEntity.status(201).body(createdUser); // Devuelve 201 Created con el usuario creado
     }
+
 
     /**
      * Actualizar un usuario existente
      *
      * FUNCIONA (TAMBIEN SE PODRIA HACER A RAIZ DE USERNAME O TAL VEZ SOLO USERNAME PODRIA SER MEJOR)
      *
-     * PUT <a href="http://localhost:8080/api/users/user">...</a>{id}
+     * PUT <a href="http://localhost:8080/api/users/user">...</a>
+     *
+     * @param id ID del usuario que se va a actualizar
+     * @param userRequestDTO Datos del usuario que se va a actualizar
+     * @return Usuario actualizado
      */
     @PutMapping("/user/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
@@ -200,7 +189,10 @@ public class UserController {
      *
      * FUNCIONA
      *
-     * DELETE <a href="http://localhost:8080/api/users/user/1">...</a>{id}
+     * DELETE <a href="http://localhost:8080/api/users/user/1">...</a>
+     *
+     * @param id ID del usuario que se va a eliminar
+     * @return Código de respuesta HTTP
      */
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

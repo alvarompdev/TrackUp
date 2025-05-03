@@ -3,7 +3,7 @@ package trackup.dto.response;
 import trackup.entity.Goal;
 
 /**
- * DTO para la respuesta de un objetivo
+ * DTO para las respuestas de las solicitudes (Objetivos)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

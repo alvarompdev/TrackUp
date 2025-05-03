@@ -5,7 +5,7 @@ import trackup.entity.Habit;
 import java.time.LocalDate;
 
 /**
- * DTO para la respuesta de un usuario
+ * DTO para las respuestas de las solicitudes (Hábitos)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
@@ -40,7 +40,7 @@ public class HabitResponseDTO {
      * @param habitTypeName Nombre del tipo de hábito
      * @param userId ID del usuario al que pertenece el hábito
      */
-    /*public HabitResponseDTO(Long id, String name, String description, String frequency, LocalDate startDate, LocalDate endDate, String habitTypeName, Long userId) {
+    public HabitResponseDTO(Long id, String name, String description, String frequency, LocalDate startDate, LocalDate endDate, String habitTypeName, Long userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,7 +49,7 @@ public class HabitResponseDTO {
         this.endDate = endDate;
         this.habitTypeName = habitTypeName;
         this.userId = userId;
-    }*/
+    }
 
     /**
      * Constructor con parámetros del DTO a partir de una entidad Habit

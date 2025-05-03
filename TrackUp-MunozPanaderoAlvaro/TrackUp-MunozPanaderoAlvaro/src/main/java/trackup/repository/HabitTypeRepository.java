@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Repository
+@Repository // Indica que esta clase es un repositorio
 public interface HabitTypeRepository extends JpaRepository<HabitType, Long> {
 
     /**

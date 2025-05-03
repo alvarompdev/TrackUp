@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Interfaz del servicio 'DailyRecordService'
+ * Servicio que define todas las operaciones relacionadas con los registros diarios
+ * Proporciona métodos para obtener, crear, actualizar y eliminar registros diarios
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
@@ -19,7 +20,7 @@ public interface DailyRecordService {
      * @param id ID del registro diario
      * @return Registro diario encontrado
      */
-    Optional<DailyRecordResponseDTO> getDailyRecordById(Long id);
+    Optional<DailyRecordResponseDTO> findDailyRecordById(Long id);
 
     /**
      * Encuentra un registro diario por su fecha
@@ -27,7 +28,7 @@ public interface DailyRecordService {
      * @param date Fecha del registro diario
      * @return Registro diario encontrado
      */
-    Optional<DailyRecordResponseDTO> getDailyRecordByDate(LocalDate date);
+    Optional<DailyRecordResponseDTO> findDailyRecordByDate(LocalDate date);
 
     /**
      * Encuentra un registro diario por su estado de completado
@@ -35,7 +36,7 @@ public interface DailyRecordService {
      * @param completed Estado de completado del registro diario
      * @return Registro diario encontrado
      */
-    Optional<DailyRecordResponseDTO> getDailyRecordByCompleted(Boolean completed);
+    Optional<DailyRecordResponseDTO> findDailyRecordByCompleted(Boolean completed);
 
     /**
      * Crea un nuevo registro diario

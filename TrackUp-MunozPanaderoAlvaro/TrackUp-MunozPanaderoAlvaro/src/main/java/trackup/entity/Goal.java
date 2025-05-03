@@ -7,14 +7,14 @@ import jakarta.persistence.*;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Entity
+@Entity // Se indica que se trata de una entidad
 public class Goal {
 
     @Id // ID, clave primaria del objetivo
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Se indica que esta clave primaria será generada automáticamente
     private Long id; // Identificador que tiene cada objetivo
 
-    @Column(nullable = false, length = 100) // Campo obligatorio y con longitud máxima de 100 caracteres
+    @Column(unique = true, nullable = false, length = 100) // Campo obligatorio, único  y con longitud máxima de 100 caracteres
     private String name; // Nombre del objetivo
 
     @Column(nullable = false) // Campo obligatorio

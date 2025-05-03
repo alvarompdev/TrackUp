@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Service
+@Service // Anotación que indica que esta clase es un servicio
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository; // Repositorio de usuarios
@@ -38,14 +38,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserResponseDTO> getUserById(Long id) {
+    public Optional<UserResponseDTO> findUserById(Long id) {
         return userRepository.findById(id) // Busca al usuario por su ID, y si lo encuentra lo transforma a un DTO
                 .map(this::mapToDTO);
     }
 
     @Override
-    public Optional<User> getUserEntityById(Long id) {
+    public Optional<User> findUserEntityById(Long id) {
         return userRepository.findById(id); // Retorna directamente la entidad User en el caso de que exista
+    }
+
+    @Override
+    public Optional<UserResponseDTO> findUserByUsername(String username) {
+        return userRepository.findByUsername(username) // Busca al usuario por su ID, y si lo encuentra lo transforma a un DTO
+                .map(this::mapToDTO);
     }
 
     @Override
@@ -59,12 +65,6 @@ public class UserServiceImpl implements UserService {
         return users.stream() // Transforma cada entidad User a un UserResponseDTO y lo devuelve
                 .map(this::mapToDTO) // Transforma cada entidad User a un UserResponseDTO
                 .collect(Collectors.toList()); // Recoge todos los DTOs en una lista
-    }
-
-    @Override
-    public Optional<UserResponseDTO> getUserByUsername(String username) {
-        return userRepository.findByUsername(username) // Busca al usuario por su ID, y si lo encuentra lo transforma a un DTO
-                .map(this::mapToDTO);
     }
 
     @Override

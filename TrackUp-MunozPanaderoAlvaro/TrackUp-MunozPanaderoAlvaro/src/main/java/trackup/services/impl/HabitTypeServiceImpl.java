@@ -13,11 +13,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Implementación del servicio de tipos de hábito
- * Se encarga de la lógica de negocio relacionada con los tipos de hábito,
- * incluyendo la creación, actualización, eliminación y obtención de tipos de hábito
+ * Implementación del servicio de tipos de hábitos
+ * Se encarga de la lógica de negocio relacionada con los tipos de hábitos,
+ * incluyendo la creación, actualización, eliminación y obtención de hábitos
+ *
+ * Utiliza un repositorio para acceder a la base de datos y
+ * convierte las entidades a DTOs para mantener la separación de capas
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Service
+@Service // Anotación que indica que esta clase es un servicio
 public class HabitTypeServiceImpl implements HabitTypeService {
 
     private final HabitTypeRepository habitTypeRepository; // Repositorio de tipos de hábito
@@ -33,18 +38,18 @@ public class HabitTypeServiceImpl implements HabitTypeService {
     }
 
     @Override
-    public Optional<HabitTypeResponseDTO> getHabitTypeById(Long id) {
+    public Optional<HabitTypeResponseDTO> findHabitTypeById(Long id) {
         return habitTypeRepository.findById(id) // Busca el tipo de hábito por ID, y si lo encuentra lo transforma a un DTO
                 .map(this::mapToDTO);
     }
 
     @Override
-    public Optional<HabitType> getHabitTypeEntityById(Long id) {
+    public Optional<HabitType> findHabitTypeEntityById(Long id) {
         return habitTypeRepository.findById(id); // Retorna directamente la entidad HabitType en el caso de que exista
     }
 
     @Override
-    public Optional<HabitTypeResponseDTO> getHabitTypeByName(String name) {
+    public Optional<HabitTypeResponseDTO> findHabitTypeByName(String name) {
         return habitTypeRepository.findByName(name) // Busca el tipo de hábito por nombre
                 .map(this::mapToDTO);
     }

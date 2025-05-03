@@ -1,7 +1,7 @@
 package trackup.dto.response;
 
 /**
- * DTO para la respuesta de un usuario
+ * DTO para las respuestas de las solicitudes (Usuarios)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

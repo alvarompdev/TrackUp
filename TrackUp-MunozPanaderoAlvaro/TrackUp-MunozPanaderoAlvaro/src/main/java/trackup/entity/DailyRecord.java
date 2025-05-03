@@ -9,7 +9,7 @@ import java.time.LocalDate;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Entity
+@Entity // Se indica que se trata de una entidad
 public class DailyRecord {
 
     @Id // ID, clave primaria del registro diario
@@ -35,10 +35,10 @@ public class DailyRecord {
     /**
      * Constructor con parámetros de la entidad
      *
-     * @param id        ID del registro diario
-     * @param date      Fecha del registro diario
+     * @param id ID del registro diario
+     * @param date Fecha del registro diario
      * @param completed Indica si el hábito se ha completado o no
-     * @param habit     Hábito al que pertenece el registro diario
+     * @param habit Hábito al que pertenece el registro diario
      */
     public DailyRecord(Long id, LocalDate date, Boolean completed, Habit habit) {
         this.id = id;

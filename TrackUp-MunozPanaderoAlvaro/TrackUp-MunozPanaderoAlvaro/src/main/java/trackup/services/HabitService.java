@@ -25,18 +25,7 @@ public interface HabitService {
      * @param id ID del hábito
      * @return Un objeto Optional que contiene el hábito si se encuentra, o vacío si no
      */
-    Optional<HabitResponseDTO> getHabitById(Long id);
-
-
-    /**
-     * Busca un hábito por su nombre
-     *
-     * @param name Nombre del hábito
-     * @return Un objeto Optional que contiene el hábito si se encuentra, o vacío si no
-     */
-    Optional<Habit> getHabitByName(String name);
-
-    Optional<HabitResponseDTO> getHabitByNameAndUserId(String name, Long userId);
+    Optional<HabitResponseDTO> findHabitById(Long id);
 
     /**
      * Busca un hábito por su ID
@@ -44,7 +33,24 @@ public interface HabitService {
      * @param id ID del hábito
      * @return Un objeto Optional que contiene el hábito si se encuentra, o vacío si no
      */
-    Optional<Habit> getHabitEntityById(Long id);
+    Optional<Habit> findHabitEntityById(Long id);
+
+    /**
+     * Busca un hábito por su nombre
+     *
+     * @param name Nombre del hábito
+     * @return Un objeto Optional que contiene el hábito si se encuentra, o vacío si no
+     */
+    Optional<Habit> findHabitByName(String name);
+
+    /**
+     * Busca un hábito por su nombre y el ID del usuario
+     *
+     * @param name   Nombre del hábito
+     * @param userId ID del usuario
+     * @return Un objeto Optional que contiene el hábito si se encuentra, o vacío si no
+     */
+    Optional<HabitResponseDTO> findHabitByNameAndUserId(String name, Long userId);
 
     /**
      * Obtiene todos los hábitos

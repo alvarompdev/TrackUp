@@ -7,6 +7,12 @@ import trackup.entity.HabitType;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Servicio que define todas las operaciones relacionadas con los tipos de hábitos
+ * Proporciona métodos para obtener, crear, actualizar y eliminar tipos de hábitos
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 public interface HabitTypeService {
 
     /**
@@ -19,7 +25,7 @@ public interface HabitTypeService {
      * @param id ID del tipo de hábito que se va a buscar
      * @return Tipo de hábito correspondiente al ID proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<HabitTypeResponseDTO> getHabitTypeById(Long id);
+    Optional<HabitTypeResponseDTO> findHabitTypeById(Long id);
 
     /**
      * Obtiene un tipo de hábito por su ID
@@ -27,7 +33,7 @@ public interface HabitTypeService {
      * @param id ID del tipo de hábito que se va a buscar
      * @return Tipo de hábito correspondiente al ID proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<HabitType> getHabitTypeEntityById(Long id);
+    Optional<HabitType> findHabitTypeEntityById(Long id);
 
     /**
      * Obtiene un tipo de hábito por su nombre
@@ -35,7 +41,7 @@ public interface HabitTypeService {
      * @param name Nombre del tipo de hábito que se va a buscar
      * @return Tipo de hábito correspondiente al nombre proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<HabitTypeResponseDTO> getHabitTypeByName(String name);
+    Optional<HabitTypeResponseDTO> findHabitTypeByName(String name);
 
     /**
      * Obtiene todos los tipos de hábito

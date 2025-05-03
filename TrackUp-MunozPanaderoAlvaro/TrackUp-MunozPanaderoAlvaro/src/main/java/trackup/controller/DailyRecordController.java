@@ -10,6 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controlador REST para gestionar los registros diarios
+ *
+ * Acceso: <a href="http://localhost:8080/api/daily-records">...</a>
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @RestController // Indica que esta clase es un controlador REST
 @RequestMapping("/api/daily-records") // Prefijo para todas las rutas de este controlador
 public class DailyRecordController {
@@ -30,10 +37,12 @@ public class DailyRecordController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/daily-records/daily-records">...</a>
+     *
      * @return Lista de registros diarios
      */
     @GetMapping("/daily-records")
-    public ResponseEntity<List<DailyRecordResponseDTO>> findAllDailyRecords() {
+    public ResponseEntity<List<DailyRecordResponseDTO>> getAllDailyRecords() {
         List<DailyRecordResponseDTO> dailyRecordsList = dailyRecordService.getAllDailyRecords(); // Obtiene todos los registros diarios
         if (dailyRecordsList.isEmpty()) { // Si la lista está vacía, devuelve un código 204 No Content
             return ResponseEntity.noContent().build();
@@ -47,16 +56,18 @@ public class DailyRecordController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/daily-records/daily-record/id/1">...</a>
+     *
      * @param id ID del registro diario
      * @return Registro diario encontrado
      */
     @GetMapping("/daily-record/{id}")
-    public ResponseEntity<DailyRecordResponseDTO> findDailyRecordById(@PathVariable  Long id) {
+    public ResponseEntity<DailyRecordResponseDTO> getDailyRecordById(@PathVariable  Long id) {
         if (id < 0) { // Verifica si el ID es negativo
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
         }
 
-        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.getDailyRecordById(id); // Obtiene el usuario de acuerdo al ID proporcionado
+        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.findDailyRecordById(id); // Obtiene el usuario de acuerdo al ID proporcionado
         return dailyRecordOpt.map(ResponseEntity::ok) // Si el usuario existe, devuelve el objeto UserResponseDTO
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -66,28 +77,18 @@ public class DailyRecordController {
      *
      * FUNCIONA CON EL METODO TEMPORAL QUE LE PERMITE PONER UNA FECHA EN LA URL
      *
+     * GET <a href="http://localhost:8080/api/daily-records/daily-record/date/2023-10-01">...</a>
+     *
      * @param date Fecha del registro diario
      * @return Registro diario encontrado
      */
-    /*@GetMapping("/daily-record/date/{date}")
-    public ResponseEntity<DailyRecordResponseDTO> findDailyRecordByDate(@PathVariable LocalDate date) {
-        if (date == null) { // Verifica si la fecha es nula o vacía
-            return ResponseEntity.badRequest().build();  // Devuelve error si la fecha es nula o vacía
-        }
-
-        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.getDailyRecordByDate(date); // Obtiene el usuario de acuerdo al ID proporcionado
-        return dailyRecordOpt.map(ResponseEntity::ok) // Si el usuario existe, devuelve el objeto UserResponseDTO
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }*/
-
-    @GetMapping("/daily-record/date/{date}") //TEMPORAL
-    public ResponseEntity<DailyRecordResponseDTO> findDailyRecordByDate(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    @GetMapping("/daily-record/date/{date}")
+    public ResponseEntity<DailyRecordResponseDTO> getDailyRecordByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         if (date == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.getDailyRecordByDate(date);
+        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.findDailyRecordByDate(date);
         return dailyRecordOpt.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -98,12 +99,14 @@ public class DailyRecordController {
      *
      * FUNCIONA
      *
+     * GET <a href="http://localhost:8080/api/daily-records/daily-record/completed/true">...</a>
+     *
      * @param completed Estado de completado del registro diario
      * @return Registro diario encontrado
      */
     @GetMapping("/daily-record/completed/{completed}")
-    public ResponseEntity<DailyRecordResponseDTO> findDailyRecordByCompleted(@PathVariable Boolean completed) {
-        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.getDailyRecordByCompleted(completed); // Obtiene el usuario de acuerdo al ID proporcionado
+    public ResponseEntity<DailyRecordResponseDTO> getDailyRecordByCompleted(@PathVariable Boolean completed) {
+        Optional<DailyRecordResponseDTO> dailyRecordOpt = dailyRecordService.findDailyRecordByCompleted(completed); // Obtiene el usuario de acuerdo al ID proporcionado
         return dailyRecordOpt.map(ResponseEntity::ok) // Si el usuario existe, devuelve el objeto UserResponseDTO
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -112,6 +115,8 @@ public class DailyRecordController {
      * Crea un nuevo registro diario
      *
      * FUNCIONA
+     *
+     * POST <a href="http://localhost:8080/api/daily-records/daily-record">...</a>
      *
      * @param dailyRecordResponseDTO Datos del registro diario que se va a crear
      * @return Registro diario creado
@@ -131,6 +136,8 @@ public class DailyRecordController {
      *
      * FUNCIONA
      *
+     * PUT <a href="http://localhost:8080/api/daily-records/daily-record/id/1">...</a>
+     *
      * @param id ID del registro diario que se va a actualizar
      * @param dailyRecordResponseDTO Datos del registro diario que se va a actualizar
      * @return Registro diario actualizado
@@ -149,6 +156,8 @@ public class DailyRecordController {
      * Elimina un registro diario existente
      *
      * FUNCIONA
+     *
+     * DELETE <a href="http://localhost:8080/api/daily-records/daily-record/id/1">...</a>
      *
      * @param id ID del registro diario que se va a eliminar
      * @return Código de respuesta HTTP

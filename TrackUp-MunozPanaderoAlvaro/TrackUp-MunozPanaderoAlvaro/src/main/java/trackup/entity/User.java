@@ -1,6 +1,5 @@
 package trackup.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -15,7 +14,7 @@ import java.util.List;
  */
 @Entity // Se indica que se trata de una entidad
 @Table(name = "users") // La tabla no puede llamarse 'user' ya que es un nombre reservado
-@JsonIgnoreProperties({"habits"})  // Ignora la propiedad 'habits' cuando se serializa el objeto User
+// @JsonIgnoreProperties({"habits"})  // Ignora la propiedad 'habits' cuando se serializa el objeto User
 public class User {
 
     @Id // ID, clave primaria del usuario

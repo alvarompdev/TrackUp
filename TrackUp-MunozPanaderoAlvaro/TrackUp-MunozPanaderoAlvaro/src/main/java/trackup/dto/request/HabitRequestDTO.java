@@ -3,7 +3,7 @@ package trackup.dto.request;
 import java.time.LocalDate;
 
 /**
- * DTO para la creación de un nuevo hábito
+ * DTO para los cuerpos de las solicitudes (Hábitos)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

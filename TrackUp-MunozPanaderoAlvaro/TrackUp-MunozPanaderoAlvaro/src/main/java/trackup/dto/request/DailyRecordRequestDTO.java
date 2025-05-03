@@ -3,7 +3,7 @@ package trackup.dto.request;
 import java.time.LocalDate;
 
 /**
- * DTO para la creación de un nuevo registro diario
+ * DTO para los cuerpos de las solicitudes (Registros Diarios)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Repository // Indica que esta clase es un repositorio de Spring
+@Repository // Indica que esta clase es un repositorio
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**

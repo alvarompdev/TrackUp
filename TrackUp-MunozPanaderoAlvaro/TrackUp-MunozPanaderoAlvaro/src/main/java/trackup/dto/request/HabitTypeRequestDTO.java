@@ -1,7 +1,7 @@
 package trackup.dto.request;
 
 /**
- * DTO para la creación de un nuevo tipo de hábito
+ * DTO para los cuerpos de las solicitudes (Tipos de Hábitos)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */

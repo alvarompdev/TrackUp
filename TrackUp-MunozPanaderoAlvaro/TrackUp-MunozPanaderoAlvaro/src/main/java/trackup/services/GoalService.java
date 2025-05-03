@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Servicio para la entidad 'Goal'
+ * Servicio que define todas las operaciones relacionadas con los objetivos
+ * Proporciona métodos para obtener, crear, actualizar y eliminar objetivos
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
@@ -19,7 +20,7 @@ public interface GoalService {
      * @param id ID del objetivo
      * @return Objetivo encontrado
      */
-    Optional<GoalResponseDTO> getGoalById(Long id);
+    Optional<GoalResponseDTO> findGoalById(Long id);
 
     /**
      * Encuentra un objetivo por su nombre
@@ -27,7 +28,16 @@ public interface GoalService {
      * @param name Nombre del objetivo
      * @return Objetivo encontrado
      */
-    Optional<GoalResponseDTO> getGoalByName(String name);
+    Optional<GoalResponseDTO> findGoalByName(String name);
+
+    /**
+     * Encuentra un objetivo por su nombre y el ID del usuario
+     *
+     * @param name   Nombre del objetivo
+     * @param userId ID del usuario
+     * @return Objetivo encontrado
+     */
+    Optional<GoalResponseDTO> findGoalByNameAndUserId(String name, Long userId);
 
     /**
      * Obtiene todos los objetivos del usuario
@@ -35,8 +45,6 @@ public interface GoalService {
      * @return Lista de objetivos
      */
     List<GoalResponseDTO> getAllGoals();
-
-    Optional<GoalResponseDTO> getGoalByNameAndUserId(String name, Long userId);
 
     /**
      * Crea un nuevo objetivo

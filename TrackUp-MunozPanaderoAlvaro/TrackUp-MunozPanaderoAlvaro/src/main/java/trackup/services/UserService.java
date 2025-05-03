@@ -25,7 +25,7 @@ public interface UserService {
      * @param id ID del usuario que se va a buscar
      * @return Usuario correspondiente al ID proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<UserResponseDTO> getUserById(Long id);
+    Optional<UserResponseDTO> findUserById(Long id);
 
     /**
      * Obtiene un usuario por su ID
@@ -33,7 +33,7 @@ public interface UserService {
      * @param id ID del usuario que se va a buscar
      * @return Usuario correspondiente al ID proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<User> getUserEntityById(Long id);
+    Optional<User> findUserEntityById(Long id);
 
     /**
      * Obtiene un usuario por su nombre de usuario
@@ -41,7 +41,7 @@ public interface UserService {
      * @param username Nombre de usuario que se va a buscar
      * @return Usuario correspondiente al nombre de usuario proporcionado en el caso de que exista (por eso es un objeto Optional)
      */
-    Optional<UserResponseDTO> getUserByUsername(String username);
+    Optional<UserResponseDTO> findUserByUsername(String username);
 
     /**
      * Obtiene una lista con todos los usuarios registrados

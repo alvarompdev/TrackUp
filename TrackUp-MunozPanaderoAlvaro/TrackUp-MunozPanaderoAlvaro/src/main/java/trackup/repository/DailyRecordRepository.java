@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@Repository // Indica que esta interfaz es un repositorio de Spring
+@Repository // Indica que esta clase es un repositorio
 public interface DailyRecordRepository extends JpaRepository<DailyRecord, Long> {
 
     /**
@@ -21,7 +21,7 @@ public interface DailyRecordRepository extends JpaRepository<DailyRecord, Long> 
      * @param date Fecha del registro diario
      * @return Registro diario encontrado
      */
-    Optional<DailyRecord> findDailyRecordByDate(LocalDate date);
+    Optional<DailyRecord> findByDate(LocalDate date);
 
     /**
      * Encuentra un registro diario por su estado de completado
@@ -29,6 +29,6 @@ public interface DailyRecordRepository extends JpaRepository<DailyRecord, Long> 
      * @param completed Estado de completado del registro diario
      * @return Registro diario encontrado
      */
-    Optional<DailyRecord> findDailyRecordByCompleted(Boolean completed);
+    Optional<DailyRecord> findByCompleted(Boolean completed);
 
 }
