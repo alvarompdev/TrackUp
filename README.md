@@ -32,7 +32,7 @@ TrackUp ayuda a los usuarios a adoptar y mantener hábitos saludables mediante:
 Para un detalle exhaustivo de cada sección (introducción, análisis, diseño, implementación, pruebas, mantenimiento y conclusiones), consulta el PDF:
 
 ```
-/docs/Documentación_TrackUp.pdf
+/docs/AnexoI-MunozPanaderoAlvaro.pdf
 ```
 
 ## Características principales
@@ -92,7 +92,13 @@ Accede a la documentación interactiva:
 http://localhost:8080/swagger-ui.html
 ```
 
-Allí podrás ver y probar todos los endpoints.
+O si lo desea, también puede consultar un PDF con el mismo contenido en:
+
+```
+/docs/swagger-documentation.pdf
+```
+
+Así podrás ver y probar todos los endpoints.
 
 <!--
 ## Pruebas

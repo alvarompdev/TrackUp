@@ -99,8 +99,7 @@ public class DailyRecordServiceImpl implements DailyRecordService {
 
     @Override
     public void deleteDailyRecord(Long id) {
-        // Verifica si el registro diario existe
-        if (!dailyRecordRepository.existsById(id)) {
+        if (!dailyRecordRepository.existsById(id)) { // Verifica si el registro diario existe
             throw new RuntimeException("Registro diario no encontrado");
         }
 
