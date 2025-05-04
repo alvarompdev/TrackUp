@@ -2,6 +2,7 @@ package trackup.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import trackup.dto.request.DailyRecordRequestDTO;
 import trackup.dto.response.DailyRecordResponseDTO;
 import trackup.entity.DailyRecord;
 import trackup.entity.Habit;
@@ -66,15 +67,15 @@ public class DailyRecordServiceImpl implements DailyRecordService {
     }
 
     @Override
-    public DailyRecordResponseDTO createDailyRecord(DailyRecordResponseDTO dailyRecordResponseDTO) {
+    public DailyRecordResponseDTO createDailyRecord(DailyRecordRequestDTO dailyRecordRequestDTO) {
         // Crear nueva entidad
         DailyRecord dailyRecord = new DailyRecord();
-        dailyRecord.setDate(dailyRecordResponseDTO.getDate());
-        dailyRecord.setCompleted(dailyRecordResponseDTO.getCompleted());
+        dailyRecord.setDate(dailyRecordRequestDTO.getDate());
+        dailyRecord.setCompleted(dailyRecordRequestDTO.getCompleted());
 
         // Buscar y asignar el hábito (usando la entidad como en HabitServiceImpl)
-        Habit habit = habitService.findHabitEntityById(dailyRecordResponseDTO.getHabitId())
-                .orElseThrow(() -> new RuntimeException("Habit not found with id: " + dailyRecordResponseDTO.getHabitId()));
+        Habit habit = habitService.findHabitEntityById(dailyRecordRequestDTO.getHabitId())
+                .orElseThrow(() -> new RuntimeException("Habit not found with id: " + dailyRecordRequestDTO.getHabitId()));
         dailyRecord.setHabit(habit);
 
         DailyRecord savedDailyRecord = dailyRecordRepository.save(dailyRecord); // Guardar en base de datos
@@ -84,13 +85,13 @@ public class DailyRecordServiceImpl implements DailyRecordService {
 
 
     @Override
-    public DailyRecordResponseDTO updateDailyRecord(Long id, DailyRecordResponseDTO dailyRecordResponseDTO) {
+    public DailyRecordResponseDTO updateDailyRecord(Long id, DailyRecordRequestDTO dailyRecordRequestDTO) {
         DailyRecord dailyRecord = dailyRecordRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Registro diario no encontrado")); // Busca el registro diario por su ID
 
         // Actualiza los valores del registro diario
-        dailyRecord.setDate(dailyRecordResponseDTO.getDate());
-        dailyRecord.setCompleted(dailyRecordResponseDTO.getCompleted());
+        dailyRecord.setDate(dailyRecordRequestDTO.getDate());
+        dailyRecord.setCompleted(dailyRecordRequestDTO.getCompleted());
 
         DailyRecord updatedDailyRecord = dailyRecordRepository.save(dailyRecord); // Guarda el registro diario actualizado en la base de datos
         return mapToDTO(updatedDailyRecord); // Devuelve el DTO del registro diario actualizado

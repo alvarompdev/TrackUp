@@ -3,6 +3,7 @@ package trackup.controller;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trackup.dto.request.DailyRecordRequestDTO;
 import trackup.dto.response.DailyRecordResponseDTO;
 import trackup.services.DailyRecordService;
 
@@ -157,7 +158,7 @@ public class DailyRecordController {
      *
      * POST <a href="http://localhost:8080/api/daily-records/daily-record">...</a>
      *
-     * @param dailyRecordResponseDTO Datos del registro diario que se va a crear
+     * @param dailyRecordRequestDTO Datos del registro diario que se va a crear
      * @return Registro diario creado
      */
     @Operation(summary = "Crear nuevo registro", description = "Registra un nuevo registro diario en el sistema")
@@ -170,16 +171,16 @@ public class DailyRecordController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos del nuevo registro",
                     required = true,
-                    content = @Content(schema = @Schema(implementation = DailyRecordResponseDTO.class))
+                    content = @Content(schema = @Schema(implementation = DailyRecordRequestDTO.class))
             )
-            @RequestBody DailyRecordResponseDTO dailyRecordResponseDTO
+            @RequestBody DailyRecordRequestDTO dailyRecordRequestDTO
     ) {
-        if (dailyRecordResponseDTO == null) { // Verifica si el objeto es nulo
-            return ResponseEntity.badRequest().build();  // Devuelve error si el objeto es nulo
+        if (dailyRecordRequestDTO == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-        DailyRecordResponseDTO createdDailyRecord = dailyRecordService.createDailyRecord(dailyRecordResponseDTO); // Crea un nuevo registro diario
-        return ResponseEntity.ok(createdDailyRecord); // Devuelve el registro diario creado con un código 200 OK
+        DailyRecordResponseDTO createdDailyRecord = dailyRecordService.createDailyRecord(dailyRecordRequestDTO);
+        return ResponseEntity.ok(createdDailyRecord);
     }
 
     /**
@@ -190,7 +191,7 @@ public class DailyRecordController {
      * PUT <a href="http://localhost:8080/api/daily-records/daily-record/id/1">...</a>
      *
      * @param id ID del registro diario que se va a actualizar
-     * @param dailyRecordResponseDTO Datos del registro diario que se va a actualizar
+     * @param dailyRecordRequestDTO Datos del registro diario que se va a actualizar
      * @return Registro diario actualizado
      */
     @Operation(summary = "Actualizar registro", description = "Modifica los datos de un registro diario existente")
@@ -207,13 +208,13 @@ public class DailyRecordController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = DailyRecordResponseDTO.class))
             )
-            @RequestBody DailyRecordResponseDTO dailyRecordResponseDTO
+            @RequestBody DailyRecordRequestDTO dailyRecordRequestDTO
     ) {
-        if (id < 0 || dailyRecordResponseDTO == null) { // Verifica si el ID es negativo o el objeto es nulo
+        if (id < 0 || dailyRecordRequestDTO == null) { // Verifica si el ID es negativo o el objeto es nulo
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo o el objeto es nulo
         }
 
-        DailyRecordResponseDTO updatedDailyRecord = dailyRecordService.updateDailyRecord(id, dailyRecordResponseDTO); // Actualiza el registro diario
+        DailyRecordResponseDTO updatedDailyRecord = dailyRecordService.updateDailyRecord(id, dailyRecordRequestDTO); // Actualiza el registro diario
         return ResponseEntity.ok(updatedDailyRecord); // Devuelve el registro diario actualizado con un código 200 OK
     }
 

@@ -1,5 +1,6 @@
 package trackup.services;
 
+import trackup.dto.request.DailyRecordRequestDTO;
 import trackup.dto.response.DailyRecordResponseDTO;
 
 import java.time.LocalDate;
@@ -48,19 +49,19 @@ public interface DailyRecordService {
     /**
      * Crea un nuevo registro diario
      *
-     * @param dailyRecordResponseDTO Datos del registro diario que se va a crear
+     * @param dailyRecordRequestDTO Datos del registro diario que se va a crear
      * @return Registro diario creado
      */
-    DailyRecordResponseDTO createDailyRecord(DailyRecordResponseDTO dailyRecordResponseDTO);
+    DailyRecordResponseDTO createDailyRecord(DailyRecordRequestDTO dailyRecordRequestDTO);
 
     /**
      * Actualiza un registro diario existente
      *
      * @param id                      ID del registro diario que se va a actualizar
-     * @param dailyRecordResponseDTO Datos del registro diario que se va a actualizar
+     * @param dailyRecordRequestDTO Datos del registro diario que se va a actualizar
      * @return Registro diario actualizado
      */
-    DailyRecordResponseDTO updateDailyRecord(Long id, DailyRecordResponseDTO dailyRecordResponseDTO);
+    DailyRecordResponseDTO updateDailyRecord(Long id, DailyRecordRequestDTO dailyRecordRequestDTO);
 
     /**
      * Elimina un registro diario existente
