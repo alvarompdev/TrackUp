@@ -8,6 +8,14 @@ import trackup.dto.response.HabitResponseDTO;
 import trackup.dto.response.UserResponseDTO;
 import trackup.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +28,7 @@ import java.util.Optional;
  */
 @RestController // Indica que esta clase es un controlador REST
 @RequestMapping("/api/users") // Prefijo para todas las rutas de este controlador
+@Tag(name = "Users", description = "API para gestión de usuarios") // Anotación de Swagger para la documentación
 public class UserController {
 
     private final UserService userService; // Servicio de usuario
@@ -42,6 +51,11 @@ public class UserController {
      *
      * @return Lista de usuarios
      */
+    @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista completa de todos los usuarios registrados")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios encontrada", content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "204", description = "No hay usuarios registrados", content = @Content)
+    })
     @GetMapping("/users")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> usersList = userService.getAllUsers(); // Obtiene todos los usuarios
@@ -62,8 +76,17 @@ public class UserController {
      * @param id ID del usuario
      * @return Usuario encontrado
      */
+    @Operation(summary = "Obtener usuario por ID", description = "Busca un usuario específico utilizando su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
+    })
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(
+            @Parameter(description = "ID del usuario (debe ser positivo)", required = true, schema = @Schema(minimum = "0"))
+            @PathVariable Long id
+    ) {
         if (id < 0) { // Verifica si el ID es negativo
             return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
         }
@@ -83,8 +106,17 @@ public class UserController {
      * @param username Nombre de usuario
      * @return Usuario encontrado
      */
+    @Operation(summary = "Obtener usuario por nombre de usuario", description = "Busca un usuario por su nombre de usuario único")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Nombre de usuario inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
+    })
     @GetMapping("/user/username/{username}")
-    public ResponseEntity<UserResponseDTO> getUserByUsername(@PathVariable String username) {
+    public ResponseEntity<UserResponseDTO> getUserByUsername(
+            @Parameter(description = "Nombre de usuario a buscar", required = true)
+            @PathVariable String username
+    ) {
         if (username == null || username.trim().isEmpty()) { // Verifica si el nombre de usuario es nulo o vacío
             return ResponseEntity.badRequest().build(); // Devuelve error si el nombre de usuario es nulo o vacío
         }
@@ -104,8 +136,16 @@ public class UserController {
      * @param id ID de usuario del que se quiere obtener la lista de hábitos
      * @return Lista de hábitos del usuario
      */
+    @Operation(summary = "Obtener hábitos del usuario", description = "Retorna todos los hábitos asociados a un usuario específico")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de hábitos encontrada", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
+    })
     @GetMapping("/user/{id}/habits")
-    public ResponseEntity<List<HabitResponseDTO>> getUserHabits(@PathVariable Long id) {
+    public ResponseEntity<List<HabitResponseDTO>> getUserHabits(
+            @Parameter(description = "ID del usuario", required = true)
+            @PathVariable Long id
+    ) {
         return userService.findUserEntityById(id) // Obtiene el usuario de acuerdo al ID proporcionado
                 .map(user -> { // Si el usuario existe, transforma la lista de hábitos a una lista de HabitResponseDTO
                     List<HabitResponseDTO> habitsList = user.getHabits().stream() // Obtiene la lista de hábitos del usuario
@@ -126,8 +166,16 @@ public class UserController {
      * @param id ID de usuario del que se quiere obtener la lista de objetivos
      * @return Lista de objetivos del usuario
      */
+    @Operation(summary = "Obtener objetivos del usuario", description = "Retorna todos los objetivos asociados a un usuario específico")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de objetivos encontrada", content = @Content(schema = @Schema(implementation = GoalResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
+    })
     @GetMapping("/user/{id}/goals")
-    public ResponseEntity<List<GoalResponseDTO>> getUserGoals(@PathVariable Long id) {
+    public ResponseEntity<List<GoalResponseDTO>> getUserGoals(
+            @Parameter(description = "ID del usuario", required = true)
+            @PathVariable Long id
+    ) {
         return userService.findUserEntityById(id) // Obtiene el usuario de acuerdo al ID proporcionado
                 .map(user -> { // Si el usuario existe, transforma la lista de objetivos a una lista de GoalResponseDTO
                     List<GoalResponseDTO> goalsList = user.getGoals().stream() // Obtiene la lista de objetivos del usuario
@@ -148,8 +196,20 @@ public class UserController {
      * @param userRequestDTO Datos del usuario que se va a crear
      * @return Usuario creado con sus datos de respuesta
      */
+    @Operation(summary = "Crear nuevo usuario", description = "Registra un nuevo usuario en el sistema")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de usuario inválidos", content = @Content)
+    })
     @PostMapping("/user")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos del nuevo usuario",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
+            )
+            @RequestBody UserRequestDTO userRequestDTO
+    ) {
         if (userRequestDTO == null) {
             return ResponseEntity.badRequest().build(); // Devuelve 400 si el cuerpo es nulo
         }
@@ -157,7 +217,6 @@ public class UserController {
         UserResponseDTO createdUser = userService.createUser(userRequestDTO); // Crea el usuario
         return ResponseEntity.status(201).body(createdUser); // Devuelve 201 Created con el usuario creado
     }
-
 
     /**
      * Actualizar un usuario existente
@@ -170,8 +229,23 @@ public class UserController {
      * @param userRequestDTO Datos del usuario que se va a actualizar
      * @return Usuario actualizado
      */
+    @Operation(summary = "Actualizar usuario existente", description = "Actualiza los datos de un usuario utilizando su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente", content = @Content(schema = @Schema(implementation = UserResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de solicitud inválidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
+    })
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @Parameter(description = "ID del usuario a actualizar", required = true)
+            @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Nuevos datos del usuario",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
+            )
+            @RequestBody UserRequestDTO userRequestDTO
+    ) {
         if (id < 0 || userRequestDTO == null) { // Verifica si el ID es negativo o si el objeto UserRequestDTO es nulo
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo o si el objeto UserRequestDTO es nulo
         }
@@ -194,8 +268,17 @@ public class UserController {
      * @param id ID del usuario que se va a eliminar
      * @return Código de respuesta HTTP
      */
+    @Operation(summary = "Eliminar usuario", description = "Elimina un usuario del sistema utilizando su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuario eliminado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
+    })
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(
+            @Parameter(description = "ID del usuario a eliminar", required = true)
+            @PathVariable Long id
+    ) {
         if (id < 0) { // Verifica si el ID es negativo
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo
         }
@@ -207,5 +290,4 @@ public class UserController {
             return ResponseEntity.notFound().build(); // Devuelve un error 404 Not Found si el usuario no existe
         }
     }
-
 }

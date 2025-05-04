@@ -6,6 +6,14 @@ import trackup.dto.request.HabitRequestDTO;
 import trackup.dto.response.HabitResponseDTO;
 import trackup.services.HabitService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +26,7 @@ import java.util.Optional;
  */
 @RestController // Indica que esta clase es un controlador REST
 @RequestMapping("/api/habits") // Prefijo para todas las rutas de este controlador
+@Tag(name = "Habits", description = "API para gestión de hábitos") // Anotación Swagger
 public class HabitController {
 
     private final HabitService habitService; // Servicio de hábitos
@@ -40,6 +49,11 @@ public class HabitController {
      *
      * @return Lista de hábitos
      */
+    @Operation(summary = "Obtener todos los hábitos", description = "Retorna una lista completa de hábitos")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de hábitos encontrada", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "204", description = "No hay hábitos registrados", content = @Content)
+    })
     @GetMapping("/habits")
     public ResponseEntity<List<HabitResponseDTO>> getAllHabits() {
         List<HabitResponseDTO> habitsList = habitService.getAllHabits(); // Obtiene todos los hábitos
@@ -60,8 +74,17 @@ public class HabitController {
      * @param id ID del hábito
      * @return Hábito encontrado
      */
+    @Operation(summary = "Obtener hábito por ID", description = "Busca un hábito específico por su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Hábito encontrado", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Hábito no encontrado", content = @Content)
+    })
     @GetMapping("/habit/{id}")
-    public ResponseEntity<HabitResponseDTO> getHabitById(@PathVariable Long id) {
+    public ResponseEntity<HabitResponseDTO> getHabitById(
+            @Parameter(description = "ID del hábito (debe ser positivo)", required = true, schema = @Schema(minimum = "0"))
+            @PathVariable Long id
+    ) {
         if (id < 0) { // Validación de ID negativo
             return ResponseEntity.badRequest().build();
         }
@@ -82,8 +105,16 @@ public class HabitController {
      * @param userId ID del usuario
      * @return Hábito encontrado
      */
+    @Operation(summary = "Buscar hábito por nombre y usuario", description = "Busca un hábito por su nombre y ID de usuario asociado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Hábito encontrado", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Hábito no encontrado", content = @Content)
+    })
     @GetMapping("/habit/by-name-and-user")
-    public ResponseEntity<HabitResponseDTO> getHabitByNameAndUserId(@RequestParam String name, @RequestParam Long userId) {
+    public ResponseEntity<HabitResponseDTO> getHabitByNameAndUserId(
+            @Parameter(description = "Nombre del hábito", required = true) @RequestParam String name,
+            @Parameter(description = "ID del usuario", required = true) @RequestParam Long userId
+    ) {
         return habitService.findHabitByNameAndUserId(name, userId) // Busca el hábito por nombre y ID de usuario
                 .map(ResponseEntity::ok) // Si el hábito existe, devuelve un código 200 OK con el DTO
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
@@ -98,8 +129,16 @@ public class HabitController {
      *
      * @param userId ID del usuario
      */
+    @Operation(summary = "Obtener hábitos por usuario", description = "Retorna todos los hábitos asociados a un usuario específico")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de hábitos encontrada", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "204", description = "No hay hábitos registrados", content = @Content),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content)
+    })
     @GetMapping("/habits/user/{userId}")
-    public ResponseEntity<List<HabitResponseDTO>> getHabitsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<HabitResponseDTO>> getHabitsByUserId(
+            @Parameter(description = "ID del usuario", required = true) @PathVariable Long userId
+    ) {
         if (userId < 0) { // Validación de ID negativo
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo
         }
@@ -122,8 +161,18 @@ public class HabitController {
      * @param habitRequestDTO Objeto DTO con los datos del nuevo hábito
      * @return Hábito creado
      */
+    @Operation(summary = "Crear nuevo hábito", description = "Registra un nuevo hábito en el sistema")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Hábito creado exitosamente", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
     @PostMapping("/habit")
-    public ResponseEntity<HabitResponseDTO> createHabit(@RequestBody HabitRequestDTO habitRequestDTO) {
+    public ResponseEntity<HabitResponseDTO> createHabit(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos del nuevo hábito",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HabitRequestDTO.class))
+            ) @RequestBody HabitRequestDTO habitRequestDTO) {
         if (habitRequestDTO == null) { // Validación de objeto nulo
             return ResponseEntity.badRequest().build(); // Devuelve error si el objeto es nulo
         }
@@ -143,8 +192,21 @@ public class HabitController {
      * @param habitRequestDTO Objeto DTO con los datos actualizados del hábito
      * @return Hábito actualizado
      */
+    @Operation(summary = "Actualizar hábito", description = "Modifica los datos de un hábito existente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Hábito actualizado exitosamente", content = @Content(schema = @Schema(implementation = HabitResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Hábito no encontrado", content = @Content)
+    })
     @PutMapping("/habit/{id}")
-    public ResponseEntity<HabitResponseDTO> updateHabit(@PathVariable Long id, @RequestBody HabitRequestDTO habitRequestDTO) {
+    public ResponseEntity<HabitResponseDTO> updateHabit(
+            @Parameter(description = "ID del hábito a actualizar", required = true) @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos actualizados del hábito",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HabitRequestDTO.class))
+            ) @RequestBody HabitRequestDTO habitRequestDTO
+    ) {
         if (id < 0 || habitRequestDTO == null) { // Validación de ID negativo o objeto nulo
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo o el objeto es nulo
         }
@@ -167,8 +229,16 @@ public class HabitController {
      * @param id ID del hábito a eliminar
      * @return Código de respuesta HTTP
      */
+    @Operation(summary = "Eliminar hábito", description = "Elimina un hábito del sistema por su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Hábito eliminado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Hábito no encontrado", content = @Content)
+    })
     @DeleteMapping("/habit/{id}")
-    public ResponseEntity<Void> deleteHabit(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteHabit(
+            @Parameter(description = "ID del hábito a eliminar", required = true) @PathVariable Long id
+    ) {
         if (id < 0) { // Validación de ID negativo
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo
         }

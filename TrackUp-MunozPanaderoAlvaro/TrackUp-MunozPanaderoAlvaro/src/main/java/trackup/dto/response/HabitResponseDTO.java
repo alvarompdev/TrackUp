@@ -1,6 +1,7 @@
 package trackup.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import trackup.entity.Habit;
 import java.time.LocalDate;
 
@@ -9,16 +10,31 @@ import java.time.LocalDate;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
+@Schema(name = "HabitResponse", description = "DTO de respuesta con información detallada de un hábito")
 public class HabitResponseDTO {
 
+    @Schema(description = "ID único del hábito", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id; // ID del hábito
+
+    @Schema(description = "Nombre del hábito", example = "Ejercicio diario", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name; // Nombre del hábito
+
+    @Schema(description = "Descripción detallada del hábito", example = "30 minutos de cardio")
     private String description; // Descripción del hábito
+
+    @Schema(description = "Frecuencia de ejecución", example = "Diario", allowableValues = {"Diario", "Semanal", "Mensual"})
     private String frequency; // Frecuencia del hábito
+
+    @Schema(description = "Fecha de inicio (formato ISO: yyyy-MM-dd)", example = "2024-01-01", format = "date")
     private LocalDate startDate; // Fecha de inicio del hábito
+
+    @Schema(description = "Fecha de finalización (formato ISO: yyyy-MM-dd)", example = "2024-12-31", format = "date")
     private LocalDate endDate; // Fecha de fin del hábito
+
+    @Schema(description = "Nombre del tipo de hábito asociado", example = "Salud")
     private String habitTypeName; // Nombre del tipo de hábito
 
+    @Schema(description = "ID del usuario propietario (excluido si es nulo)", example = "1", nullable = true)
     @JsonInclude(JsonInclude.Include.NON_NULL) // Excluir el campo si es null
     private Long userId; // ID del usuario al que pertenece el hábito
 

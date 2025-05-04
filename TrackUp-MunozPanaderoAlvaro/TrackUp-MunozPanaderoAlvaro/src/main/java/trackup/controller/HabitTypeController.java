@@ -6,6 +6,14 @@ import trackup.dto.request.HabitTypeRequestDTO;
 import trackup.dto.response.HabitTypeResponseDTO;
 import trackup.services.HabitTypeService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +26,7 @@ import java.util.Optional;
  */
 @RestController // Indica que esta clase es un controlador REST
 @RequestMapping("/api/habit-types") // Prefijo para todas las rutas de este controlador
+@Tag(name = "Habit Types", description = "API para gestión de tipos de hábito") // Anotación Swagger
 public class HabitTypeController {
 
     private final HabitTypeService habitTypeService; // Servicio de tipos de hábito
@@ -40,6 +49,11 @@ public class HabitTypeController {
      *
      * @return Lista de tipos de hábito
      */
+    @Operation(summary = "Obtener todos los tipos de hábito", description = "Retorna una lista completa de tipos de hábito")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de tipos encontrada", content = @Content(schema = @Schema(implementation = HabitTypeResponseDTO.class))),
+            @ApiResponse(responseCode = "204", description = "No hay tipos registrados", content = @Content)
+    })
     @GetMapping("/habit-types")
     public ResponseEntity<List<HabitTypeResponseDTO>> getAllHabitTypes() {
         List<HabitTypeResponseDTO> habitTypesList = habitTypeService.getAllHabitTypes(); // Obtiene todos los tipos de hábito
@@ -60,8 +74,17 @@ public class HabitTypeController {
      * @param id ID del tipo de hábito
      * @return Tipo de hábito encontrado
      */
+    @Operation(summary = "Obtener tipo por ID", description = "Busca un tipo de hábito por su ID único")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tipo encontrado", content = @Content(schema = @Schema(implementation = HabitTypeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Tipo no encontrado", content = @Content)
+    })
     @GetMapping("/habit-type/{id}")
-    public ResponseEntity<HabitTypeResponseDTO> getHabitTypeById(@PathVariable Long id) {
+    public ResponseEntity<HabitTypeResponseDTO> getHabitTypeById(
+            @Parameter(description = "ID del tipo (debe ser positivo)", required = true, schema = @Schema(minimum = "0"))
+            @PathVariable Long id
+    ) {
         if (id < 0) { // Verifica que el ID sea válido
             return ResponseEntity.badRequest().build();
         }
@@ -81,8 +104,17 @@ public class HabitTypeController {
      * @param name Nombre del tipo de hábito
      * @return Tipo de hábito encontrado
      */
+    @Operation(summary = "Buscar tipo por nombre", description = "Busca un tipo de hábito por su nombre (sensible a mayúsculas)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tipo encontrado", content = @Content(schema = @Schema(implementation = HabitTypeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Nombre inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Tipo no encontrado", content = @Content)
+    })
     @GetMapping("/habit-type/name/{name}")
-    public ResponseEntity<HabitTypeResponseDTO> getHabitTypeByName(@PathVariable String name) {
+    public ResponseEntity<HabitTypeResponseDTO> getHabitTypeByName(
+            @Parameter(description = "Nombre del tipo de hábito", required = true)
+            @PathVariable String name
+    ) {
         if (name == null || name.trim().isEmpty()) { // Verifica que el nombre no sea nulo o vacío
             return ResponseEntity.badRequest().build(); // Devuelve error si el nombre es nulo o vacío
         }
@@ -102,8 +134,20 @@ public class HabitTypeController {
      * @param habitTypeRequest Datos del nuevo tipo de hábito
      * @return Tipo de hábito creado
      */
+    @Operation(summary = "Crear nuevo tipo", description = "Registra un nuevo tipo de hábito en el sistema")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Tipo creado exitosamente", content = @Content(schema = @Schema(implementation = HabitTypeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
     @PostMapping("/habit-type")
-    public ResponseEntity<HabitTypeResponseDTO> createHabitType(@RequestBody HabitTypeRequestDTO habitTypeRequest) {
+    public ResponseEntity<HabitTypeResponseDTO> createHabitType(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos del nuevo tipo de hábito",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HabitTypeRequestDTO.class))
+            )
+            @RequestBody HabitTypeRequestDTO habitTypeRequest
+    ) {
         if (habitTypeRequest == null) { // Verifica que la solicitud no sea nula
             return ResponseEntity.badRequest().build(); // Devuelve error si la solicitud es nula
         }
@@ -123,8 +167,22 @@ public class HabitTypeController {
      * @param habitTypeRequest Datos del tipo de hábito que se va a actualizar
      * @return Tipo de hábito actualizado
      */
+    @Operation(summary = "Actualizar tipo existente", description = "Modifica los datos de un tipo de hábito")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tipo actualizado exitosamente", content = @Content(schema = @Schema(implementation = HabitTypeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Tipo no encontrado", content = @Content)
+    })
     @PutMapping("/habit-type/{id}")
-    public ResponseEntity<HabitTypeResponseDTO> updateHabitType(@PathVariable Long id, @RequestBody HabitTypeRequestDTO habitTypeRequest) {
+    public ResponseEntity<HabitTypeResponseDTO> updateHabitType(
+            @Parameter(description = "ID del tipo a actualizar", required = true) @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos actualizados del tipo",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HabitTypeRequestDTO.class))
+            )
+            @RequestBody HabitTypeRequestDTO habitTypeRequest
+    ) {
         if (id < 0 || habitTypeRequest == null) { // Verifica que el ID sea válido y la solicitud no sea nula
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo o la solicitud es nula
         }
@@ -147,8 +205,16 @@ public class HabitTypeController {
      * @param id ID del tipo de hábito que se va a eliminar
      * @return Código de respuesta HTTP
      */
+    @Operation(summary = "Eliminar tipo", description = "Elimina un tipo de hábito del sistema por su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Tipo eliminado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "400", description = "ID inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Tipo no encontrado", content = @Content)
+    })
     @DeleteMapping("/habit-type/{id}")
-    public ResponseEntity<Void> deleteHabitType(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteHabitType(
+            @Parameter(description = "ID del tipo a eliminar", required = true) @PathVariable Long id
+    ) {
         if (id < 0) { // Verifica que el ID sea válido
             return ResponseEntity.badRequest().build(); // Devuelve error si el ID es negativo
         }

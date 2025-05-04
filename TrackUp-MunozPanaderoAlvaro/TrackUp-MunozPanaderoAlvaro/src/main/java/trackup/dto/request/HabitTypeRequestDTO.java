@@ -1,12 +1,16 @@
 package trackup.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * DTO para los cuerpos de las solicitudes (Tipos de Hábitos)
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
+@Schema(name = "HabitTypeRequest", description = "DTO para crear/actualizar tipos de hábitos")
 public class HabitTypeRequestDTO {
 
+    @Schema(description = "Nombre único del tipo de hábito", example = "Productividad", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name; // Nombre del tipo de hábito
 
     /**

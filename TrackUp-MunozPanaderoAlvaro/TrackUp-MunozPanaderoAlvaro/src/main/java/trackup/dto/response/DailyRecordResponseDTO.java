@@ -1,5 +1,7 @@
 package trackup.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
 
 /**
@@ -7,11 +9,19 @@ import java.time.LocalDate;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
+@Schema(name = "DailyRecordResponse", description = "DTO con información de un registro diario de hábito")
 public class DailyRecordResponseDTO {
 
+    @Schema(description = "ID único del registro diario", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id; // ID del registro diario
+
+    @Schema(description = "Fecha del registro en formato ISO (yyyy-MM-dd)", example = "2024-01-15", format = "date")
     private LocalDate date; // Fecha del registro diario
+
+    @Schema(description = "Estado de completado del hábito", example = "true")
     private Boolean completed; // Indica si el hábito se ha completado o no
+
+    @Schema(description = "ID del hábito asociado", example = "5")
     private Long habitId; // ID del hábito al que pertenece el registro diario
 
     /**

@@ -6,6 +6,14 @@ import trackup.dto.request.GoalRequestDTO;
 import trackup.dto.response.GoalResponseDTO;
 import trackup.services.GoalService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,19 +24,15 @@ import java.util.Optional;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
-@RestController // Indica que esta clase es un controlador REST
-@RequestMapping("/api/goals") // Prefijo para todas las rutas de este controlador
+@RestController
+@RequestMapping("/api/goals")
+@Tag(name = "Goals", description = "API para gestión de objetivos")
 public class GoalController {
 
-    private final GoalService goalService; // Servicio de objetivos
+    private final GoalService goalService;
 
-    /**
-     * Constructor con inyección de dependencias
-     *
-     * @param goalService Servicio de objetivos
-     */
     public GoalController(GoalService goalService) {
-        this.goalService = goalService; // Inyección de dependencias del servicio
+        this.goalService = goalService;
     }
 
     /**
@@ -40,14 +44,20 @@ public class GoalController {
      *
      * @return Lista de objetivos
      */
+    @Operation(summary = "Obtener todos los objetivos", description = "Retorna una lista completa de objetivos registrados")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de objetivos encontrada",
+                    content = @Content(schema = @Schema(implementation = GoalResponseDTO.class))),
+            @ApiResponse(responseCode = "204", description = "No hay objetivos registrados",
+                    content = @Content)
+    })
     @GetMapping("/goals")
     public ResponseEntity<List<GoalResponseDTO>> getAllGoals() {
-        List<GoalResponseDTO> goalsList = goalService.getAllGoals(); // Obtiene todos los objetivos
-        if (goalsList.isEmpty()) { // Si la lista está vacía, devuelve un código 204 No Content
+        List<GoalResponseDTO> goalsList = goalService.getAllGoals();
+        if (goalsList.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
-        return ResponseEntity.ok(goalsList); // Devuelve la lista de objetivos con un código 200 OK
+        return ResponseEntity.ok(goalsList);
     }
 
     /**
@@ -60,14 +70,26 @@ public class GoalController {
      * @param id ID del objetivo
      * @return Objetivo encontrado
      */
+    @Operation(summary = "Obtener objetivo por ID", description = "Busca un objetivo específico por su ID único")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Objetivo encontrado",
+                    content = @Content(schema = @Schema(implementation = GoalResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Objetivo no encontrado",
+                    content = @Content)
+    })
     @GetMapping("/goal/{id}")
-    public ResponseEntity<GoalResponseDTO> getGoalById(@PathVariable Long id) {
-        if (id < 0) { // Verifica si el ID es negativo
-            return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
+    public ResponseEntity<GoalResponseDTO> getGoalById(
+            @Parameter(description = "ID del objetivo (debe ser positivo)", required = true,
+                    schema = @Schema(minimum = "0"))
+            @PathVariable Long id
+    ) {
+        if (id < 0) {
+            return ResponseEntity.badRequest().build();
         }
-
-        Optional<GoalResponseDTO> goalOpt = goalService.findGoalById(id); // Obtiene el objetivo de acuerdo al ID proporcionado
-        return goalOpt.map(ResponseEntity::ok) // Si el objetivo existe, devuelve el objeto GoalResponseDTO
+        Optional<GoalResponseDTO> goalOpt = goalService.findGoalById(id);
+        return goalOpt.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -83,21 +105,33 @@ public class GoalController {
      * @param userId ID del usuario (opcional)
      * @return Objetivo encontrado
      */
+    @Operation(summary = "Buscar objetivo por nombre",
+            description = "Busca objetivos por nombre, opcionalmente filtrado por usuario")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Objetivo encontrado",
+                    content = @Content(schema = @Schema(implementation = GoalResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Nombre vacío o inválido",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Objetivo no encontrado",
+                    content = @Content)
+    })
     @GetMapping("/goal/by-name")
-    public ResponseEntity<GoalResponseDTO> getGoalByName(@RequestParam String name, @RequestParam(required = false) Long userId) {
-        if (name.trim().isEmpty()) { // Verifica si el nombre está vacío
-            return ResponseEntity.badRequest().build(); // Devuelve error si el nombre está vacío
+    public ResponseEntity<GoalResponseDTO> getGoalByName(
+            @Parameter(description = "Nombre del objetivo (no vacío)", required = true)
+            @RequestParam String name,
+            @Parameter(description = "ID del usuario (opcional)", required = false)
+            @RequestParam(required = false) Long userId
+    ) {
+        if (name.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
 
-        Optional<GoalResponseDTO> goalOpt; // Variable para almacenar el objetivo encontrado
-        if (userId != null) { // Si se proporciona un ID de usuario, busca el objetivo por nombre y ID de usuario
-            goalOpt = goalService.findGoalByNameAndUserId(name, userId); // Busca el objetivo por nombre y ID de usuario
-        } else {
-            goalOpt = goalService.findGoalByName(name); // Busca el objetivo solo por nombre
-        }
+        Optional<GoalResponseDTO> goalOpt = userId != null ?
+                goalService.findGoalByNameAndUserId(name, userId) :
+                goalService.findGoalByName(name);
 
-        return goalOpt.map(ResponseEntity::ok) // Si el objetivo existe, devuelve el objeto GoalResponseDTO
-                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, devuelve un código 404 Not Found
+        return goalOpt.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
@@ -110,14 +144,29 @@ public class GoalController {
      * @param goalRequestDTO Datos del objetivo que se va a crear
      * @return Objetivo creado
      */
+    @Operation(summary = "Crear nuevo objetivo",
+            description = "Registra un nuevo objetivo en el sistema")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Objetivo creado exitosamente",
+                    content = @Content(schema = @Schema(implementation = GoalResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos",
+                    content = @Content)
+    })
     @PostMapping("/goal")
-    public ResponseEntity<GoalResponseDTO> createGoal(@RequestBody GoalRequestDTO goalRequestDTO) {
-        if (goalRequestDTO.getName().isEmpty()) { // Verifica si el nombre está vacío
-            return ResponseEntity.badRequest().build();  // Devuelve error si el nombre está vacío
+    public ResponseEntity<GoalResponseDTO> createGoal(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos del nuevo objetivo",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = GoalRequestDTO.class))
+            )
+            @RequestBody GoalRequestDTO goalRequestDTO
+    ) {
+        if (goalRequestDTO.getName().isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
 
-        GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO); // Crea un nuevo objetivo
-        return ResponseEntity.ok(createdGoal); // Devuelve el objetivo creado con un código 200 OK
+        GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO);
+        return ResponseEntity.ok(createdGoal);
     }
 
     /**
@@ -131,14 +180,33 @@ public class GoalController {
      * @param goalRequestDTO Datos del objetivo que se va a actualizar
      * @return Objetivo actualizado
      */
+    @Operation(summary = "Actualizar objetivo",
+            description = "Modifica los datos de un objetivo existente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Objetivo actualizado exitosamente",
+                    content = @Content(schema = @Schema(implementation = GoalResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido o datos incorrectos",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Objetivo no encontrado",
+                    content = @Content)
+    })
     @PutMapping("/goal/{id}")
-    public ResponseEntity<GoalResponseDTO> updateGoal(@PathVariable Long id, @RequestBody GoalRequestDTO goalRequestDTO) {
-        if (id < 0) { // Verifica si el ID es negativo
-            return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
+    public ResponseEntity<GoalResponseDTO> updateGoal(
+            @Parameter(description = "ID del objetivo a actualizar", required = true)
+            @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos actualizados del objetivo",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = GoalRequestDTO.class))
+            )
+            @RequestBody GoalRequestDTO goalRequestDTO
+    ) {
+        if (id < 0) {
+            return ResponseEntity.badRequest().build();
         }
 
-        GoalResponseDTO updatedGoal = goalService.updateGoal(id, goalRequestDTO); // Actualiza el objetivo existente
-        return ResponseEntity.ok(updatedGoal); // Devuelve el objetivo actualizado con un código 200 OK
+        GoalResponseDTO updatedGoal = goalService.updateGoal(id, goalRequestDTO);
+        return ResponseEntity.ok(updatedGoal);
     }
 
     /**
@@ -150,14 +218,27 @@ public class GoalController {
      *
      * @param id ID del objetivo que se va a eliminar
      */
+    @Operation(summary = "Eliminar objetivo",
+            description = "Elimina permanentemente un objetivo del sistema")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Objetivo eliminado exitosamente",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "ID inválido",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Objetivo no encontrado",
+                    content = @Content)
+    })
     @DeleteMapping("/goal/{id}")
-    public ResponseEntity<Void> deleteGoal(@PathVariable Long id) {
-        if (id < 0) { // Verifica si el ID es negativo
-            return ResponseEntity.badRequest().build();  // Devuelve error si el ID es negativo
+    public ResponseEntity<Void> deleteGoal(
+            @Parameter(description = "ID del objetivo a eliminar", required = true)
+            @PathVariable Long id
+    ) {
+        if (id < 0) {
+            return ResponseEntity.badRequest().build();
         }
 
-        goalService.deleteGoal(id); // Elimina el objetivo existente
-        return ResponseEntity.noContent().build(); // Devuelve un código 204 No Content
+        goalService.deleteGoal(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

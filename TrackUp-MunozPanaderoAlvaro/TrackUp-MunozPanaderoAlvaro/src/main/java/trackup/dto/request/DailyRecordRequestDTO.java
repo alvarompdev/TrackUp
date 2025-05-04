@@ -1,5 +1,7 @@
 package trackup.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
 
 /**
@@ -7,10 +9,16 @@ import java.time.LocalDate;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
+@Schema(name = "DailyRecordRequest", description = "DTO para crear/actualizar registros diarios de hábitos")
 public class DailyRecordRequestDTO {
 
+    @Schema(description = "Fecha del registro en formato ISO (yyyy-MM-dd)", example = "2024-01-15", requiredMode = Schema.RequiredMode.REQUIRED, format = "date")
     private LocalDate date; // Fecha del registro diario
+
+    @Schema(description = "Estado de completado del hábito", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean completed; // Indica si el hábito se ha completado o no
+
+    @Schema(description = "ID del hábito asociado (debe existir)", example = "5", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long habitId; // ID del hábito al que pertenece el registro diario
 
     /**

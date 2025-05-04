@@ -1,5 +1,7 @@
 package trackup.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
 
 /**
@@ -7,14 +9,28 @@ import java.time.LocalDate;
  *
  * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
  */
+@Schema(name = "HabitRequest", description = "DTO para creación/actualización de hábitos")
 public class HabitRequestDTO {
 
+    @Schema(description = "Nombre del hábito", example = "Meditación matutina", requiredMode = Schema.RequiredMode.REQUIRED) // añadir minLength = 3 cuando determine eso en la BBDD
     private String name; // Nombre del hábito
+
+    @Schema(description = "Descripción detallada", example = "15 minutos de meditación guiada")
     private String description; // Descripción del hábito
+
+    @Schema(description = "Frecuencia de ejecución", example = "Diario", requiredMode = Schema.RequiredMode.REQUIRED)
     private String frequency; // Frecuencia del hábito
+
+    @Schema(description = "Fecha de inicio (formato ISO: yyyy-MM-dd)", example = "2024-01-01", requiredMode = Schema.RequiredMode.REQUIRED, format = "date")
     private LocalDate startDate; // Fecha de inicio del hábito
+
+    @Schema(description = "Fecha de finalización (formato ISO: yyyy-MM-dd)", example = "2024-12-31", format = "date")
     private LocalDate endDate; // Fecha de fin del hábito
+
+    @Schema(description = "ID del usuario propietario", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long userId; // ID del usuario al que pertenece el hábito
+
+    @Schema(description = "ID del tipo de hábito asociado", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long habitTypeId; // ID del tipo de hábito
 
     /**
