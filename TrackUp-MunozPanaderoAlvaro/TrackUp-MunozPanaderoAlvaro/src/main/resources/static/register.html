@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Registro</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Regístrate</h2>
+        <form id="register-form">
+            <label>Usuario:
+                <input name="username" required />
+            </label>
+            <label>Email:
+                <input type="email" name="email" required />
+            </label>
+            <label>Contraseña:
+                <input type="password" name="password" required />
+            </label>
+            <button type="submit">Crear cuenta</button>
+        </form>
+        <div id="register-error" class="error"></div>
+        <p><a href="login.html">¿Ya tienes cuenta? Entra</a></p>
+    </div>
+</div>
+<script src="/js/auth.js"></script>
+</body>
+</html>
