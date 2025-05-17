@@ -1,71 +1,79 @@
-.auth-page {
+/* Estilo general */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f2f5;
 }
 
-.auth-card {
-    background: #fff;
-    padding: 2rem 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    width: 100%;
-    max-width: 400px;
-}
-
-.auth-card h2 {
+/* Contenedor de formularios */
+.auth-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 300px;
     text-align: center;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
 }
 
-.auth-card label {
-    display: block;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    color: #333;
+h2 {
+    margin-bottom: 20px;
 }
 
-.auth-card input {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     width: 100%;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
+    padding: 10px;
+    margin: 10px 0;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
-.auth-card button {
+button {
     width: 100%;
-    padding: 0.75rem;
-    background-color: #1abc9c;
+    padding: 10px;
+    background: #007bff;
+    color: white;
     border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
+    border-radius: 4px;
     cursor: pointer;
-    margin-top: 1rem;
-    transition: background 0.2s ease-in-out;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
-.auth-card button:hover {
-    background-color: #16a085;
+button:hover {
+    background: #0056b3;
 }
 
-.auth-card .error {
-    color: red;
-    margin-top: 1rem;
-    text-align: center;
+a {
+    color: #007bff;
+    text-decoration: none;
 }
 
-.auth-card p {
-    margin-top: 1.5rem;
-    text-align: center;
+a:hover {
+    text-decoration: underline;
 }
 
-.auth-card a {
-    color: #1abc9c;
+.error {
+    color: #dc3545;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+.success {
+    color: #28a745;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
 }

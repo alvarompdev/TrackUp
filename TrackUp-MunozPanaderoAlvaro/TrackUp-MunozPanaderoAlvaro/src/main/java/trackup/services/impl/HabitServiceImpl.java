@@ -88,7 +88,7 @@ public class HabitServiceImpl implements HabitService {
         List<Habit> habits = habitRepository.findAllHabitsByUserId(userId); // Obtener todos los hábitos de un usuario por su ID
 
         if (habits.isEmpty()) { // Si no hay hábitos, lanza una excepción
-            throw new RuntimeException("No hay usuarios registrados");
+            throw new RuntimeException("No hay hábitos registrados");
         }
 
         return habits.stream() // Convertir la lista de entidades Habit a una lista de DTOs

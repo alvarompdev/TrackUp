@@ -3,7 +3,9 @@ package trackup.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import trackup.entity.Goal;
+import trackup.entity.Habit;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,5 +32,13 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
      * @return Objetivo encontrado
      */
     Optional<Goal> findGoalByNameAndUserId(String name, Long userId);
+
+    /**
+     * Encuentra todos los objetivos de un usuario por su ID
+     *
+     * @param userId ID del usuario
+     * @return Lista de objetivos encontrados
+     */
+    List<Goal> findAllGoalsByUserId(Long userId);
 
 }

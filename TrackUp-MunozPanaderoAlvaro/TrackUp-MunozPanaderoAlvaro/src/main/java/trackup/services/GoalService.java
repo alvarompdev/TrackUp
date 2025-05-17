@@ -47,6 +47,14 @@ public interface GoalService {
     List<GoalResponseDTO> getAllGoals();
 
     /**
+     * Obtiene todos los objetivos del usuario por su ID
+     *
+     * @param userId ID del usuario
+     * @return Lista de objetivos
+     */
+    List<GoalResponseDTO> getAllGoalsByUserId(Long userId);
+
+    /**
      * Crea un nuevo objetivo
      *
      * @param goalRequestDTO Datos del objetivo que se va a crear

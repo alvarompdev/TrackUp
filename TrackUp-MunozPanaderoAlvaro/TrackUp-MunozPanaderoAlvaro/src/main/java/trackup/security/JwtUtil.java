@@ -26,13 +26,21 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .setAllowedClockSkewSeconds(60) // 60 segundos de margen
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public boolean isTokenValid(String token) {
         try {
-            Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .setAllowedClockSkewSeconds(60) // 60 segundos de margen
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
             return !claims.getExpiration().before(new Date());

@@ -19,6 +19,9 @@ public class UserDetailsImpl implements UserDetails {
         return user;
     }
 
+    public Long getId() {
+        return user.getId();
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList(); // Aquí podrías devolver roles si los tuvieses

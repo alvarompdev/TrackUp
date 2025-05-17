@@ -12,6 +12,7 @@ import trackup.services.GoalService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Implementación del servicio de objetivos
@@ -66,6 +67,19 @@ public class GoalServiceImpl implements GoalService {
                 .stream() // Convierte la lista a un stream
                 .map(this::mapToDTO)
                 .toList(); // Convierte el stream de vuelta a una lista
+    }
+
+    @Override
+    public List<GoalResponseDTO> getAllGoalsByUserId(Long userId) {
+        List<Goal> goals = goalRepository.findAllGoalsByUserId(userId); // Obtener metas por usuario
+
+        if (goals.isEmpty()) { // Si no hay metas, lanzar excepción
+            throw new RuntimeException("No hay metas registradas para este usuario");
+        }
+
+        return goals.stream() // Convertir a DTOs
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -47,6 +47,14 @@ public interface DailyRecordService {
     List<DailyRecordResponseDTO> getAllDailyRecords();
 
     /**
+     * Encuentra un registro diario por su ID y el ID del usuario
+     *
+     * @param userId ID del usuario
+     * @return Registro diario encontrado
+     */
+    List<DailyRecordResponseDTO> getAllDailyRecordsByUserId(Long userId);
+
+    /**
      * Crea un nuevo registro diario
      *
      * @param dailyRecordRequestDTO Datos del registro diario que se va a crear

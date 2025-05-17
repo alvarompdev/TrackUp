@@ -1,9 +1,11 @@
 package trackup.controller.auth;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import trackup.dto.request.auth.AuthRequest;
@@ -14,6 +16,7 @@ import trackup.repository.UserRepository;
 import trackup.security.UserDetailsImpl;
 import trackup.security.JwtUtil;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,11 +41,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("El nombre de usuario ya existe.");
+            return ResponseEntity.badRequest().body(Map.of("error", "El nombre de usuario ya existe."));
         }
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("El correo electrónico ya está en uso.");
+            return ResponseEntity.badRequest().body(Map.of("error", "El correo electrónico ya está en uso."));
         }
 
         User newUser = new User();
@@ -52,19 +55,24 @@ public class AuthController {
 
         userRepository.save(newUser);
 
-        return ResponseEntity.ok("Usuario registrado correctamente.");
+        return ResponseEntity.ok(Map.of("message", "Usuario registrado correctamente."));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+            return ResponseEntity.ok(new AuthResponse(jwt));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Credenciales incorrectas"));
+        }
     }
 
 }

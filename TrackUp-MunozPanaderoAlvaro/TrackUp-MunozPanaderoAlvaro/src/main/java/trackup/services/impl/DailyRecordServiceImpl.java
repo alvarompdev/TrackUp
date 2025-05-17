@@ -12,6 +12,7 @@ import trackup.services.DailyRecordService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Implementación del servicio de metas
@@ -64,6 +65,14 @@ public class DailyRecordServiceImpl implements DailyRecordService {
                 .stream() // Convierte la lista a un stream
                 .map(this::mapToDTO) // Transforma cada registro diario a un DTO
                 .toList(); // Convierte el stream de vuelta a una lista
+    }
+
+    @Override
+    public List<DailyRecordResponseDTO> getAllDailyRecordsByUserId(Long userId) {
+        return dailyRecordRepository.findByHabit_User_Id(userId) // ✅ Usamos el método corregido
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
