@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>TrackUp - Metas</title>
+  <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
+  <link rel="stylesheet" th:href="@{/css/goal-styles.css}" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo-container">
+      <a th:href="@{/}" aria-label="Volver al inicio">
+        <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
+      </a>
+    </div>
+    <nav class="menu">
+      <div class="menu-top">
+        <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
+          <span class="material-icons">check_circle</span>
+          <span>Hábitos</span>
+        </a>
+        <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="menu-item active">
+          <span class="material-icons">flag</span>
+          <span>Metas</span>
+        </a>
+        <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+          <span class="material-icons">calendar_today</span>
+          <span>Registros Diarios</span>
+        </a>
+        <a th:href="@{/about}" class="menu-item">
+          <span class="material-icons">info</span>
+          <span>Sobre el creador</span>
+        </a>
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-bottom">
+        <a th:href="@{/profile}" class="menu-item profile">
+          <span class="material-icons">person</span>
+          <span>Perfil</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+
+    <!-- Sección de Metas -->
+    <section class="goal-section">
+      <div class="section-header">
+        <h1 class="section-title">Mis Metas</h1>
+        <a th:href="@{/goals/new}" class="btn-create">
+          <span class="material-icons">add_circle</span> Nueva Meta
+        </a>
+      </div>
+
+      <!-- Mensajes de Feedback -->
+      <div th:if="${param.success}" class="success-message">
+        ¡Operación realizada con éxito!
+      </div>
+      <div th:if="${param.error}" class="error-message">
+        Algo salió mal: <span th:text="${param.error}">error</span>
+      </div>
+
+      <!-- GRID DE TARJETAS DE METAS -->
+      <div class="goals-section">
+        <div class="goal-card" th:each="goal : ${goals}">
+          <div class="goal-header">
+            <h3 th:text="${goal.name}">Nombre de la Meta</h3>
+          </div>
+          <p class="goal-description" th:text="${goal.description}">
+            Descripción de la meta
+          </p>
+          <div class="goal-actions">
+            <a th:href="@{/goals/edit/{id}(id=${goal.id})}" class="btn-sm btn-edit">
+              <span class="material-icons">edit</span>Editar
+            </a>
+            <a th:href="@{/goals/delete/{id}(id=${goal.id})}"
+               class="btn-sm btn-delete"
+               onclick="return confirm('¿Eliminar esta meta?')">
+              <span class="material-icons">delete</span>Eliminar
+            </a>
+          </div>
+        </div>
+
+        <p th:if="${#lists.isEmpty(goals)}" class="empty-msg">
+          Aún no tienes metas creadas. ¡Empieza una hoy!
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

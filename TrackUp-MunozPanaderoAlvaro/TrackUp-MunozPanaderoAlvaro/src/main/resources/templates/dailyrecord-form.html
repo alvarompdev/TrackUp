@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${isEdit} ? 'Editar Registro' : 'Nuevo Registro'">Formulario de Registro</title>
+    <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="form-container">
+    <h2 th:text="${isEdit} ? 'Editar Registro' : 'Nuevo Registro'">Nuevo Registro</h2>
+    <form th:action="@{/daily-records/save}" th:object="${record}" method="post">
+        <!-- ID oculto solo en edición -->
+        <input type="hidden" th:if="${isEdit}" name="recordId" th:value="${recordId}" />
+        <!-- userId oculto -->
+        <input type="hidden" th:field="*{userId}" />
+
+        <!-- Fecha -->
+        <label for="date">Fecha:</label>
+        <input id="date" type="date" th:field="*{date}" required />
+
+        <!-- Seleccionar Hábito -->
+        <label for="habitId">Hábito:</label>
+        <select id="habitId" th:field="*{habitId}" required>
+            <option value="" disabled th:if="${!isEdit}" selected>-- Selecciona un hábito --</option>
+            <option th:each="h : ${habits}"
+                    th:value="${h.id}"
+                    th:text="${h.name}">
+            </option>
+        </select>
+
+        <!-- Completado -->
+        <label for="completed">Completado:</label>
+        <select id="completed" th:field="*{completed}" required>
+            <option th:value="true">Sí</option>
+            <option th:value="false">No</option>
+        </select>
+
+        <div class="button-group" style="margin-top: 1.5rem;">
+            <!-- Cancelar vuelve al listado bajo /daily-records/user/{userId} -->
+            <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="btn btn-cancel">
+                <span class="material-icons">arrow_back</span> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary"
+                    th:text="${isEdit} ? 'Actualizar' : 'Crear'">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

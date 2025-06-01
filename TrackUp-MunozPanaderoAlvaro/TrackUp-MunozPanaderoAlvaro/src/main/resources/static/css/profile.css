@@ -1,0 +1,93 @@
+/* === ESTILOS PARA LA PÁGINA DE PERFIL === */
+
+/* Contenedor de la sección de perfil */
+.profile-section {
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+/* Título secundario */
+.profile-section h2 {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Información del usuario */
+.profile-info p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.profile-info p strong {
+    color: var(--secondary-color);
+}
+
+/* Botón “Editar perfil” */
+.btn-edit-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.6rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    text-decoration: none;
+}
+
+/* Efecto ripple sencillo con pseudo-elemento */
+.btn-edit-profile::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transition: width 0.4s ease, height 0.4s ease;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-edit-profile:active::after {
+    width: 200%;
+    height: 200%;
+    transition: 0s;
+}
+
+/* Hover y focus */
+.btn-edit-profile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(41, 128, 185, 0.4);
+}
+
+.btn-edit-profile:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.4);
+}
+
+/* Responsivo: centrar el perfil en móvil */
+@media (max-width: 768px) {
+    .profile-section {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    .btn-edit-profile {
+        width: 100%;
+        justify-content: center;
+    }
+}

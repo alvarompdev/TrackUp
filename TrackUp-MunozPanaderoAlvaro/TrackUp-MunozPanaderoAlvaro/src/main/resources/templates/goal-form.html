@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${isEdit ? 'Editar Meta' : 'Nueva Meta'}">Formulario de Meta</title>
+  <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
+  <link rel="stylesheet" th:href="@{/css/forms.css}" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="form-container">
+  <h2 th:text="${isEdit ? 'Editar Meta' : 'Nueva Meta'}">Nueva Meta</h2>
+  <form th:action="@{/goals/save}" th:object="${goal}" method="post">
+    <!-- Hidden fields -->
+    <input type="hidden" th:if="${isEdit}" name="goalId" th:value="${goalId}" />
+    <input type="hidden" th:field="*{userId}" />
+
+    <!-- Nombre -->
+    <label for="name">Nombre:</label>
+    <input id="name" type="text" th:field="*{name}" required maxlength="100" />
+
+    <!-- Descripción -->
+    <label for="description">Descripción:</label>
+    <textarea id="description" th:field="*{description}" rows="4"></textarea>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <a th:href="@{/goals/user/{userId}(userId=${userId})}"
+         class="btn btn-cancel">
+        <span class="material-icons">arrow_back</span> Cancelar
+      </a>
+      <button type="submit" class="btn btn-primary"
+              th:text="${isEdit ? 'Actualizar' : 'Crear'}">
+        Guardar
+      </button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

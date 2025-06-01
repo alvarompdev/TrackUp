@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>TrackUp - Hábitos</title>
+    <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
+    <link rel="stylesheet" th:href="@{/css/habit-styles.css}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <a th:href="@{/}" aria-label="Volver al inicio">
+                <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
+            </a>
+        </div>
+
+        <nav class="menu">
+            <div class="menu-top">
+                <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item active">
+                    <span class="material-icons">check_circle</span>
+                    <span>Hábitos</span>
+                </a>
+                <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="menu-item">
+                    <span class="material-icons">flag</span>
+                    <span>Metas</span>
+                </a>
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+                    <span class="material-icons">calendar_today</span>
+                    <span>Registros Diarios</span>
+                </a>
+                <a th:href="@{/about}" class="menu-item">
+                    <span class="material-icons">info</span>
+                    <span>Sobre el creador</span>
+                </a>
+            </div>
+
+            <div class="menu-divider"></div>
+
+            <div class="menu-bottom">
+                <a th:href="@{/profile}" class="menu-item profile">
+                    <span class="material-icons">person</span>
+                    <span>Perfil</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- Sección de Hábitos -->
+        <section class="habit-section">
+            <!-- CABECERA: título + botón -->
+            <div class="section-header">
+                <h1 class="section-title">Tus Hábitos</h1>
+                <a th:href="@{/habits/new}" class="btn btn-create">
+                    <span class="material-icons">add_circle</span>
+                    Nuevo Hábito
+                </a>
+            </div>
+
+            <div th:if="${successMsg}" class="success-message" th:text="${successMsg}"></div>
+
+            <!-- GRID DE TARJETAS DE HÁBITOS -->
+            <div class="habits-section">
+                <div class="habit-card" th:each="habit : ${habits}">
+                    <div class="habit-header">
+                        <h3 th:text="${habit.name}">Nombre del Hábito</h3>
+                        <span class="badge badge-info" th:text="${habit.frequency}">Frecuencia</span>
+                    </div>
+                    <p class="habit-description" th:text="${habit.description}">Descripción</p>
+                    <div class="habit-meta">
+                        <span>Tipo: <strong th:text="${habit.habitTypeName}">Salud</strong></span>
+                        <span>Desde: <strong th:text="${#temporals.format(habit.startDate, 'dd/MM/yyyy')}">01/01/2025</strong></span>
+                        <span>Hasta: <strong th:text="${#temporals.format(habit.endDate, 'dd/MM/yyyy')}">01/01/2025</strong></span>
+                    </div>
+                    <div class="habit-actions">
+                        <a th:href="@{/habits/edit/{id}(id=${habit.id})}" class="btn btn-sm btn-edit">Editar</a>
+                        <a th:href="@{/habits/delete/{id}(id=${habit.id})}" class="btn btn-sm btn-delete">Eliminar</a>
+                    </div>
+                </div>
+                <p th:if="${#lists.isEmpty(habits)}" class="empty-msg">
+                    No tienes hábitos registrados.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sección de Tipos de Hábito -->
+        <section class="habit-type-section">
+            <h1 class="section-title">Tus Tipos de Hábito</h1>
+
+            <!-- Lista de Tipos -->
+            <section class="habit-type-list">
+                <ul>
+                    <li th:each="type : ${habitTypes}">
+                        <strong th:text="${type.name}">Nombre</strong>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Formulario Tipo de Hábito -->
+            <section class="habit-type-form-section full-width">
+                <form th:action="@{/habits/types/save}" th:object="${habitType}" method="post">
+                    <label>Nombre:</label>
+                    <input type="text" th:field="*{name}" required />
+
+                    <div class="button-group">
+                        <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="btn btn-cancel">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Crear Tipo</button>
+                    </div>
+                </form>
+            </section>
+        </section>
+
+    </main>
+</div>
+</body>
+</html>

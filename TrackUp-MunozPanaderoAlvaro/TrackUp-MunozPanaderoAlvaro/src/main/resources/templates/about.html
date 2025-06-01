@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sobre el desarrollador</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/habit-styles.css}" />
+    <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <a th:href="@{/}" aria-label="Volver al inicio">
+                <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
+            </a>
+        </div>
+
+        <nav class="menu">
+            <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
+                <span class="material-icons">check_circle</span>
+                <span>Hábitos</span>
+            </a>
+            <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="menu-item">
+                <span class="material-icons">flag</span>
+                <span>Metas</span>
+            </a>
+            <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+                <span class="material-icons">calendar_today</span>
+                <span>Registros Diarios</span>
+            </a>
+            <a th:href="@{/about}" class="menu-item active">
+                <span class="material-icons">info</span>
+                <span>Sobre el desarrollador</span>
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <a th:href="@{/profile}" class="menu-item profile">
+                <span class="material-icons">person</span>
+                <span>Perfil</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <div class="header">
+            <h1>Sobre el desarrollador</h1>
+        </div>
+
+        <section class="habit-type-form-section">
+            <!-- Introducción -->
+            <h2>👋 ¡Hola! Soy Álvaro Muñoz 🚀</h2>
+            <p>🎓 Estudiante y Desarrollador en formación</p>
+            <p>
+                Actualmente estoy cursando mi segundo año en un Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones
+                Multiplataforma. Mi objetivo es seguir creciendo como desarrollador, especializándome en la creación de soluciones
+                innovadoras y eficientes.
+            </p>
+
+            <!-- Sobre mí -->
+            <h2>🌟 Sobre mí</h2>
+            <p>
+                Soy un apasionado de la tecnología, siempre motivado por las infinitas posibilidades que esta nos brinda. Creo
+                firmemente que todo comienza con una idea, y con las herramientas adecuadas, esas ideas pueden convertirse en algo
+                increíble.
+            </p>
+            <p>
+                Aunque disfruto explorando todos los aspectos del desarrollo, mi interés principal está en el desarrollo back-end,
+                donde puedo construir la lógica y la arquitectura que dan vida a las aplicaciones.
+            </p>
+
+            <!-- Tecnologías y habilidades -->
+            <h2>🛠️ Tecnologías y habilidades</h2>
+            <ul style="margin-bottom:1.5rem;">
+                <li><strong>Lenguajes de programación:</strong> Java, Kotlin, Python, C#</li>
+                <li><strong>Herramientas y frameworks:</strong> Hibernate, Spring, Git, Docker</li>
+                <li><strong>Bases de datos:</strong> MySQL, Oracle, SQLite, MongoDB, PostgreSQL</li>
+            </ul>
+
+            <!-- Proyectos -->
+            <h2>🚀 Proyectos</h2>
+            <p>
+                Algunos de los proyectos en los que he trabajado (principalmente en clase) incluyen:
+            </p>
+            <ul style="margin-bottom:1.5rem;">
+                <li>Aplicaciones y juegos sencillos desarrollados con JavaFX.</li>
+                <li>Apps Android en Kotlin (reloj para partidas de ajedrez, juego de adivinar palabras).</li>
+                <li>Sistemas de gestión de bases de datos en Java con conexiones a Oracle, SQLite y MongoDB, junto a CRUDs.</li>
+            </ul>
+
+            <!-- Intereses -->
+            <h2>💡 Intereses adicionales</h2>
+            <ul style="margin-bottom:1.5rem;">
+                <li>Videojuegos</li>
+                <li>Baloncesto, fútbol y deporte en general</li>
+                <li>Cursos sobre nuevos lenguajes o frameworks</li>
+                <li>Disfrutar del tiempo en familia y con amigos</li>
+            </ul>
+
+            <!-- Contacto -->
+            <h2>📬 Conéctate conmigo</h2>
+            <p><strong>Correo electrónico:</strong> <a href="mailto:alvaromp.dev@gmail.com">alvaromp.dev@gmail.com</a></p>
+            <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/alvarompdev" target="_blank">linkedin.com/in/alvarompdev</a></p>
+
+            <!-- Objetivo -->
+            <h2>🌟 Mi objetivo</h2>
+            <p>
+                Seguir aprendiendo y creciendo como desarrollador, y colaborar en proyectos que marquen la diferencia. ¡No dudes en
+                escribirme si tienes alguna idea emocionante en la que podamos trabajar juntos! 🚀
+            </p>
+        </section>
+    </main>
+</div>
+</body>
+</html>

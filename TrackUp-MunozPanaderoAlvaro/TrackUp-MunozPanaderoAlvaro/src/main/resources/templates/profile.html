@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Perfil</title>
+    <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/habit-styles.css}" />
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <a th:href="@{/}" aria-label="Volver al inicio">
+                <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
+            </a>
+        </div>
+        <nav class="menu">
+            <a th:href="@{/habits/user/{userId}(userId=${user.id})}" class="menu-item">
+                <span class="material-icons">check_circle</span><span>Hábitos</span>
+            </a>
+            <a th:href="@{/goals/user/{userId}(userId=${user.id})}" class="menu-item">
+                <span class="material-icons">flag</span><span>Metas</span>
+            </a>
+            <a th:href="@{/daily-records/user/{userId}(userId=${user.id})}" class="menu-item">
+                <span class="material-icons">calendar_today</span><span>Registros Diarios</span>
+            </a>
+            <a th:href="@{/about}" class="menu-item">
+                <span class="material-icons">info</span><span>Sobre el creador</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a th:href="@{/profile}" class="menu-item profile active">
+                <span class="material-icons">person</span><span>Perfil</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="header">
+            <h1>Perfil del usuario</h1>
+        </div>
+
+        <section class="profile-section">
+            <h2>Información básica</h2>
+            <div class="profile-info">
+                <p><strong>Usuario:</strong> <span th:text="${user.username}">usuario</span></p>
+                <p><strong>Email:</strong> <span th:text="${user.email}">email@ejemplo.com</span></p>
+            </div>
+            <!-- Botón “Editar perfil” simulado -->
+            <a href="#" class="btn-edit-profile btn-disabled" role="button" aria-disabled="true">
+                <span class="material-icons">edit</span>
+                Editar perfil
+            </a>
+        </section>
+    </main>
+</div>
+</body>
+</html>
