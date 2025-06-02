@@ -9,7 +9,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trackup.dto.request.HabitRequestDTO;
 import trackup.dto.request.HabitTypeRequestDTO;
 import trackup.dto.response.HabitResponseDTO;
-import trackup.dto.response.HabitTypeResponseDTO;
 import trackup.services.HabitService;
 import trackup.services.HabitTypeService;
 import trackup.services.UserService;
@@ -33,7 +32,6 @@ public class HabitWebController {
         this.habitTypeService = habitTypeService;
     }
 
-    // Obtiene el ID del usuario actualmente autenticado
     private Long getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -45,7 +43,6 @@ public class HabitWebController {
                 .getId();
     }
 
-    // Muestra la lista de hábitos
     @GetMapping({"", "/user/{userId}"})
     public String listHabits(@PathVariable(required = false) Long userId, Model model) {
         Long current = getCurrentUserId();
@@ -53,29 +50,51 @@ public class HabitWebController {
             return "redirect:/habits?error=unauthorized";
         }
         Long uid = (userId == null ? current : userId);
-        model.addAttribute("habits", habitService.getAllHabitsByUserId(uid));
-        model.addAttribute("habitTypes", habitTypeService.getAllHabitTypes());
+
+        List<HabitResponseDTO> habits = habitService.getAllHabitsByUserId(uid);
+        if (habits.isEmpty()) {
+            model.addAttribute("emptyHabitsMsg", "No hay hábitos registrados. ¡Empieza hoy!");
+        }
+        model.addAttribute("habits", habits);
+
+        List<?> tipos = habitTypeService.getAllHabitTypes();
+        if (tipos.isEmpty()) {
+            model.addAttribute("emptyTypesMsg", "No hay tipos de hábito registrados");
+        }
+        model.addAttribute("habitTypes", tipos);
+
         model.addAttribute("userId", uid);
         model.addAttribute("habitType", new HabitTypeRequestDTO());
         model.addAttribute("newHabit", new HabitRequestDTO());
         return "habit-list";
     }
 
-    // Crea un nuevo tipo de hábito
     @PostMapping("/types/save")
     public String saveHabitType(@RequestParam String name, RedirectAttributes redirectAttributes) {
         try {
             HabitTypeRequestDTO dto = new HabitTypeRequestDTO();
             dto.setName(name);
             habitTypeService.createHabitType(dto);
-            redirectAttributes.addFlashAttribute("success", true);
+            redirectAttributes.addFlashAttribute("successTypeMsg", "Tipo de hábito creado correctamente");
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("errorTypeMsg", "No se pudo crear el tipo de hábito");
         }
         return "redirect:/habits";
     }
 
-    // Muestra formulario para crear hábito
+    @GetMapping("/types/delete/{id}")
+    public String deleteHabitType(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Long currentUserId = getCurrentUserId();
+        try {
+            habitService.deleteAllByTypeId(id);
+            habitTypeService.deleteHabitType(id);
+            redirectAttributes.addFlashAttribute("successTypeMsg", "Tipo de hábito y hábitos asociados eliminados correctamente");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorTypeMsg", "No se pudo eliminar el tipo de hábito");
+        }
+        return "redirect:/habits/user/" + currentUserId;
+    }
+
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         Long uid = getCurrentUserId();
@@ -88,7 +107,6 @@ public class HabitWebController {
         return "habit-form";
     }
 
-    // Muestra formulario para editar hábito
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<HabitResponseDTO> habitOpt = habitService.findHabitById(id);
@@ -114,25 +132,28 @@ public class HabitWebController {
         return "habit-form";
     }
 
-    // Guarda o actualiza un hábito
     @PostMapping("/save")
-    public String saveHabit(@ModelAttribute("habit") HabitRequestDTO dto,
-                            RedirectAttributes ra) {
+    public String saveHabit(@ModelAttribute("habit") HabitRequestDTO dto, RedirectAttributes ra) {
         if (dto.getId() == null) {
             habitService.createHabit(dto);
-            ra.addFlashAttribute("successMsg", "Hábito creado");
+            ra.addFlashAttribute("successMsg", "Hábito creado correctamente");
         } else {
             habitService.updateHabit(dto.getId(), dto);
-            ra.addFlashAttribute("successMsg", "Hábito actualizado");
+            ra.addFlashAttribute("successMsg", "Hábito actualizado correctamente");
         }
         return "redirect:/habits/user/" + dto.getUserId();
     }
 
-    // Elimina un hábito
     @GetMapping("/delete/{id}")
-    public String deleteHabit(@PathVariable Long id) {
-        habitService.deleteHabit(id);
-        return "redirect:/habits";
+    public String deleteHabit(@PathVariable Long id, RedirectAttributes ra) {
+        Long currentUserId = getCurrentUserId();
+        try {
+            habitService.deleteHabit(id);
+            ra.addFlashAttribute("successMsg", "Hábito eliminado correctamente");
+        } catch (RuntimeException e) {
+            ra.addFlashAttribute("errorMsg", "No se pudo eliminar el hábito");
+        }
+        return "redirect:/habits/user/" + currentUserId;
     }
 
 }

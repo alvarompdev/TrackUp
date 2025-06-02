@@ -127,7 +127,7 @@ class HabitTypeControllerTest {
     @Test
     @DisplayName("POST /api/habit-types/habit-type -> 201 creado")
     void create_ok() throws Exception {
-        HabitTypeRequestDTO req = new HabitTypeRequestDTO("Salud");
+        HabitTypeRequestDTO req = new HabitTypeRequestDTO("Salud", null);
         HabitTypeResponseDTO res = new HabitTypeResponseDTO(10L, "Salud");
         when(service.createHabitType(any())).thenReturn(res);
 
@@ -142,7 +142,7 @@ class HabitTypeControllerTest {
     @Test
     @DisplayName("PUT /api/habit-types/habit-type/{id} -> 400 inválido")
     void update_bad() throws Exception {
-        HabitTypeRequestDTO req = new HabitTypeRequestDTO("X");
+        HabitTypeRequestDTO req = new HabitTypeRequestDTO("X", null);
         mockMvc.perform(put("/api/habit-types/habit-type/{id}", -1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(req)))
@@ -152,7 +152,7 @@ class HabitTypeControllerTest {
     @Test
     @DisplayName("PUT /api/habit-types/habit-type/{id} -> 404 no existe")
     void update_notFound() throws Exception {
-        HabitTypeRequestDTO req = new HabitTypeRequestDTO("X");
+        HabitTypeRequestDTO req = new HabitTypeRequestDTO("X", null);
         when(service.updateHabitType(eq(5L), any()))
                 .thenThrow(new RuntimeException("no existe"));
 
@@ -165,7 +165,7 @@ class HabitTypeControllerTest {
     @Test
     @DisplayName("PUT /api/habit-types/habit-type/{id} -> 200 actualizado")
     void update_ok() throws Exception {
-        HabitTypeRequestDTO req = new HabitTypeRequestDTO("Bienestar");
+        HabitTypeRequestDTO req = new HabitTypeRequestDTO("Bienestar", null);
         HabitTypeResponseDTO res = new HabitTypeResponseDTO(5L, "Bienestar");
         when(service.updateHabitType(eq(5L), any())).thenReturn(res);
 

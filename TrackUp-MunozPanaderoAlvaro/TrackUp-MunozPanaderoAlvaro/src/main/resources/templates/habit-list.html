@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>TrackUp - Hábitos</title>
     <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
-    <link rel="stylesheet" th:href="@{/css/habit-styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/habit-goal-list-styles.css}" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -52,9 +52,11 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
 
-        <!-- Sección de Hábitos -->
+        <!-- =======================
+             1) Sección de Hábitos
+             ======================= -->
         <section class="habit-section">
-            <!-- CABECERA: título + botón -->
+            <!-- Cabecera: título + botón crear -->
             <div class="section-header">
                 <h1 class="section-title">Tus Hábitos</h1>
                 <a th:href="@{/habits/new}" class="btn btn-create">
@@ -63,10 +65,13 @@
                 </a>
             </div>
 
+            <!-- Mensaje de éxito al crear/editar hábito -->
             <div th:if="${successMsg}" class="success-message" th:text="${successMsg}"></div>
+            <!-- Mensaje si no hay hábitos registrados -->
+            <div th:if="${emptyHabitsMsg}" class="empty-msg" th:text="${emptyHabitsMsg}"></div>
 
-            <!-- GRID DE TARJETAS DE HÁBITOS -->
-            <div class="habits-section">
+            <!-- Grid de tarjetas de hábitos, solo si hay elementos en la lista -->
+            <div class="habits-section" th:if="${not #lists.isEmpty(habits)}">
                 <div class="habit-card" th:each="habit : ${habits}">
                     <div class="habit-header">
                         <h3 th:text="${habit.name}">Nombre del Hábito</h3>
@@ -83,26 +88,39 @@
                         <a th:href="@{/habits/delete/{id}(id=${habit.id})}" class="btn btn-sm btn-delete">Eliminar</a>
                     </div>
                 </div>
-                <p th:if="${#lists.isEmpty(habits)}" class="empty-msg">
-                    No tienes hábitos registrados.
-                </p>
             </div>
         </section>
 
-        <!-- Sección de Tipos de Hábito -->
+        <!-- ================================
+             2) Sección de Tipos de Hábito
+             ================================ -->
         <section class="habit-type-section">
             <h1 class="section-title">Tus Tipos de Hábito</h1>
 
-            <!-- Lista de Tipos -->
+            <!-- Mensajes flash al crear/eliminar tipo -->
+            <div th:if="${successTypeMsg}" class="success-message" th:text="${successTypeMsg}"></div>
+            <div th:if="${errorTypeMsg}" class="error-message" th:text="${errorTypeMsg}"></div>
+
+            <!-- Lista de Tipos de Hábito -->
             <section class="habit-type-list">
                 <ul>
-                    <li th:each="type : ${habitTypes}">
-                        <strong th:text="${type.name}">Nombre</strong>
+                    <li th:each="type : ${habitTypes}" class="type-item">
+                        <span class="type-name" th:text="${type.name}">Nombre</span>
+                        <!-- Botón para eliminar el tipo de hábito; primero se eliminan sus hábitos asociados -->
+                        <a th:href="@{/habits/types/delete/{id}(id=${type.id})}"
+                           class="btn btn-sm btn-delete"
+                           th:attr="data-name=${type.name}"
+                           onclick="return confirm('¿Estás seguro de que deseas eliminar el tipo «' + this.dataset.name + '»?');">
+                            Eliminar
+                        </a>
                     </li>
                 </ul>
+                <p th:if="${#lists.isEmpty(habitTypes)}" class="empty-msg">
+                    No tienes tipos de hábito registrados.
+                </p>
             </section>
 
-            <!-- Formulario Tipo de Hábito -->
+            <!-- Formulario para crear un nuevo tipo de hábito -->
             <section class="habit-type-form-section full-width">
                 <form th:action="@{/habits/types/save}" th:object="${habitType}" method="post">
                     <label>Nombre:</label>
@@ -118,5 +136,19 @@
 
     </main>
 </div>
+
+<script>
+    // Espera 5 segundos y oculta los mensajes flash (éxito y error)
+    setTimeout(() => {
+        document.querySelectorAll('.success-message, .error-message').forEach(msg => {
+            msg.style.transition = 'opacity 0.5s ease-out';
+            msg.style.opacity = '0';
+            // Opcional: elimina del DOM para liberar espacio
+            setTimeout(() => msg.remove(), 500);
+        });
+    }, 5000);
+</script>
+
+
 </body>
 </html>

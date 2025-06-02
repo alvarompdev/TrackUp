@@ -39,7 +39,10 @@ public class GoalWebController {
 
     // LISTAR metas (vacío o con /user/{userId})
     @GetMapping({"", "/user/{userId}"})
-    public String listGoals(@PathVariable(required = false) Long userId, Model model) {
+    public String listGoals(@PathVariable(required = false) Long userId,
+                            Model model,
+                            @ModelAttribute("successMsg") String successMsg,
+                            @ModelAttribute("errorMsg") String errorMsg) {
         Long uid = getCurrentUserId();
         if (userId != null && !userId.equals(uid)) {
             return "redirect:/goals?error=unauthorized";
@@ -49,6 +52,11 @@ public class GoalWebController {
         List<GoalResponseDTO> goals = goalService.getAllGoalsByUserId(finalUid);
         model.addAttribute("goals", goals);
         model.addAttribute("userId", finalUid);
+
+        // Mensajes flash
+        if (!successMsg.isEmpty()) model.addAttribute("successMsg", successMsg);
+        if (!errorMsg.isEmpty()) model.addAttribute("errorMsg", errorMsg);
+
         return "goal-list";
     }
 
@@ -66,10 +74,11 @@ public class GoalWebController {
 
     // FORMULARIO EDITAR
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
         Optional<GoalResponseDTO> opt = goalService.findGoalById(id);
         if (opt.isEmpty()) {
-            return "redirect:/goals?error=goal_not_found";
+            ra.addFlashAttribute("errorMsg", "Meta no encontrada");
+            return "redirect:/goals";
         }
         GoalResponseDTO g = opt.get();
         GoalRequestDTO dto = new GoalRequestDTO();
@@ -91,21 +100,31 @@ public class GoalWebController {
             @ModelAttribute GoalRequestDTO dto,
             RedirectAttributes ra
     ) {
-        if (goalId == null) {
-            goalService.createGoal(dto);
-            ra.addFlashAttribute("successMsg", "Meta creada");
-        } else {
-            goalService.updateGoal(goalId, dto);
-            ra.addFlashAttribute("successMsg", "Meta actualizada");
+        try {
+            if (goalId == null) {
+                goalService.createGoal(dto);
+                ra.addFlashAttribute("successMsg", "Meta creada correctamente");
+            } else {
+                goalService.updateGoal(goalId, dto);
+                ra.addFlashAttribute("successMsg", "Meta actualizada correctamente");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Error al guardar la meta: " + e.getMessage());
         }
         return "redirect:/goals/user/" + dto.getUserId();
     }
 
     // ELIMINAR
     @GetMapping("/delete/{id}")
-    public String deleteGoal(@PathVariable Long id) {
-        goalService.deleteGoal(id);
-        return "redirect:/goals";
+    public String deleteGoal(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            goalService.deleteGoal(id);
+            ra.addFlashAttribute("successMsg", "Meta eliminada correctamente");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Error al eliminar la meta: " + e.getMessage());
+        }
+        Long uid = getCurrentUserId();
+        return "redirect:/goals/user/" + uid;
     }
 
 }

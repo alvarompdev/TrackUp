@@ -73,10 +73,6 @@ public class GoalServiceImpl implements GoalService {
     public List<GoalResponseDTO> getAllGoalsByUserId(Long userId) {
         List<Goal> goals = goalRepository.findAllGoalsByUserId(userId); // Obtener metas por usuario
 
-        if (goals.isEmpty()) { // Si no hay metas, lanzar excepción
-            throw new RuntimeException("No hay metas registradas para este usuario");
-        }
-
         return goals.stream() // Convertir a DTOs
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());

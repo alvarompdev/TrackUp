@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>TrackUp - Metas</title>
   <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
-  <link rel="stylesheet" th:href="@{/css/goal-styles.css}" />
+  <link rel="stylesheet" th:href="@{/css/habit-goal-list-styles.css}" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -59,15 +59,15 @@
       </div>
 
       <!-- Mensajes de Feedback -->
-      <div th:if="${param.success}" class="success-message">
-        ¡Operación realizada con éxito!
-      </div>
-      <div th:if="${param.error}" class="error-message">
-        Algo salió mal: <span th:text="${param.error}">error</span>
-      </div>
+      <div th:if="${successMsg != null and !successMsg.isEmpty()}" class="success-message" th:text="${successMsg}"></div>
+      <div th:if="${errorMsg != null and !errorMsg.isEmpty()}" class="error-message" th:text="${errorMsg}"></div>
+
 
       <!-- GRID DE TARJETAS DE METAS -->
       <div class="goals-section">
+        <div th:if="${#lists.isEmpty(goals)}" class="empty-msg">
+          Aún no tienes metas creadas. ¡Empieza una hoy!
+        </div>
         <div class="goal-card" th:each="goal : ${goals}">
           <div class="goal-header">
             <h3 th:text="${goal.name}">Nombre de la Meta</h3>
@@ -86,10 +86,6 @@
             </a>
           </div>
         </div>
-
-        <p th:if="${#lists.isEmpty(goals)}" class="empty-msg">
-          Aún no tienes metas creadas. ¡Empieza una hoy!
-        </p>
       </div>
     </section>
 

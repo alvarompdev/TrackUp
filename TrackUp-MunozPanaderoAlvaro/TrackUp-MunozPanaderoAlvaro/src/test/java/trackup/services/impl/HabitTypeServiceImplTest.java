@@ -178,7 +178,7 @@ public class HabitTypeServiceImplTest {
     @Test
     void testCreateHabitType_Success() {
         // Given: Un DTO válido y repositorio vacío (sin duplicados)
-        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health");
+        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health", null);
         when(habitTypeRepository.findByName("Health")).thenReturn(Optional.empty());
 
         // When: Se crea un nuevo tipo de hábito
@@ -198,7 +198,7 @@ public class HabitTypeServiceImplTest {
     @Test
     void testCreateHabitType_DuplicateName() {
         // Given: Un nombre de tipo de hábito duplicado
-        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health");
+        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health", null);
         when(habitTypeRepository.findByName("Health")).thenReturn(Optional.of(new HabitType()));
 
         // When: Se intenta crear un tipo de hábito con nombre duplicado
@@ -220,7 +220,7 @@ public class HabitTypeServiceImplTest {
     @Test
     void testUpdateHabitType_Success() {
         // Given: Un DTO válido y un tipo de hábito existente
-        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health Updated");
+        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health Updated", null);
 
         HabitType existingHabitType = new HabitType();
         existingHabitType.setId(1L);
@@ -241,7 +241,7 @@ public class HabitTypeServiceImplTest {
     @Test
     void testUpdateHabitType_HabitTypeNotFound() {
         // Given: El tipo de hábito no existe
-        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health Updated");
+        HabitTypeRequestDTO requestDTO = new HabitTypeRequestDTO("Health Updated", null);
         when(habitTypeRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When: Se intenta actualizar un tipo de hábito inexistente

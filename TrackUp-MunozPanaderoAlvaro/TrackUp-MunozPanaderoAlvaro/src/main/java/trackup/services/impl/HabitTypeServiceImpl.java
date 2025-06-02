@@ -8,6 +8,7 @@ import trackup.entity.HabitType;
 import trackup.repository.HabitTypeRepository;
 import trackup.services.HabitTypeService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,15 +57,14 @@ public class HabitTypeServiceImpl implements HabitTypeService {
 
     @Override
     public List<HabitTypeResponseDTO> getAllHabitTypes() {
-        List<HabitType> habitTypes = habitTypeRepository.findAll(); // Obtiene todos los tipos de hábito existentes en la base de datos
-
-        if (habitTypes.isEmpty()) { // Si no hay tipos de hábito, lanza una excepción
-            throw new RuntimeException("No hay tipos de hábito registrados");
+        List<HabitType> tipos = habitTypeRepository.findAll();
+        if (tipos == null || tipos.isEmpty()) {
+            // Devolver lista vacía en lugar de lanzar excepción
+            return Collections.emptyList();
         }
-
-        return habitTypes.stream() // Transforma cada entidad HabitType a un HabitTypeResponseDTO y lo devuelve
-                .map(this::mapToDTO) // Transforma cada entidad HabitType a un HabitTypeResponseDTO
-                .collect(Collectors.toList()); // Recoge todos los DTOs en una listas
+        return tipos.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

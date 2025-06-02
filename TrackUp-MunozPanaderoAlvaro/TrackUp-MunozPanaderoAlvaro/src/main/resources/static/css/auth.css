@@ -1,79 +1,143 @@
-/* Estilo general */
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
+/* auth.css – Login y Registro con estilo del dashboard principal */
+
+:root {
+    --color-primary: #1b5e20;
+    --color-secondary: #2e7d32;
+    --color-accent: #43a047;
+    --color-bg: #e8f5e9;
+    --color-surface: #ffffff;
+    --color-text: #263238;
+    --color-muted: #546e7a;
+    --color-error: #c62828;
+    --color-success: #2e7d32;
+    --radius: 8px;
+    --transition-speed: 0.3s;
+    --font-family: 'Roboto', sans-serif;
+}
+
+/* Reset */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-/* Contenedor de formularios */
-.auth-container {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    width: 300px;
-    text-align: center;
-}
-
-h2 {
-    margin-bottom: 20px;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
     box-sizing: border-box;
 }
 
-button {
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+/* Contenedor principal */
+.auth-container {
+    background-color: var(--color-surface);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: white;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Logo */
+.logo-container {
+    margin-bottom: 0.3rem; /* Espacio reducido entre logo y título */
+}
+
+.logo {
+    width: 100px; /* Ajusta según sea necesario */
+    height: auto;
+    transition: transform var(--transition-speed) ease;
+}
+
+.logo:hover {
+    transform: scale(1.05); /* Efecto sutil al pasar el ratón */
+}
+
+/* Título */
+.auth-container h2 {
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+}
+
+/* Campos de entrada */
+.auth-container input[type="text"],
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-muted);
+    border-radius: var(--radius);
+    transition: border-color var(--transition-speed);
+    font-size: 1rem;
+}
+
+.auth-container input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Botón */
+.auth-container button {
+    width: 100%;
+    background-color: var(--color-primary);
+    color: #fff;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius);
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
-button:hover {
-    background: #0056b3;
+.auth-container button:hover {
+    background-color: var(--color-secondary);
+    transform: translateY(-2px);
 }
 
-a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
+/* Mensajes */
+.success,
 .error {
-    color: #dc3545;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
 .success {
-    color: #28a745;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
+    background-color: var(--color-success);
+    color: #fff;
+}
+
+.error {
+    background-color: var(--color-error);
+    color: #fff;
+}
+
+/* Enlaces */
+.auth-container p {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--color-muted);
+}
+
+.auth-container a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-speed);
+}
+
+.auth-container a:hover {
+    color: var(--color-secondary);
 }

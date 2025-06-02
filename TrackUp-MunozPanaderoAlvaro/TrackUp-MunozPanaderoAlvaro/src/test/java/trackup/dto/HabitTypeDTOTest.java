@@ -11,7 +11,7 @@ class HabitTypeDtoTest {
     @Test
     void requestDto_GettersSettersAndConstructor() {
         // Constructor con parámetro
-        HabitTypeRequestDTO req = new HabitTypeRequestDTO("Productividad");
+        HabitTypeRequestDTO req = new HabitTypeRequestDTO("Productividad", null);
         assertEquals("Productividad", req.getName());
 
         // Setter

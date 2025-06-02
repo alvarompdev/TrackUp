@@ -91,4 +91,6 @@ public interface HabitService {
      */
     void deleteHabit(Long id);
 
+    void deleteAllByTypeId(Long habitTypeId);
+
 }

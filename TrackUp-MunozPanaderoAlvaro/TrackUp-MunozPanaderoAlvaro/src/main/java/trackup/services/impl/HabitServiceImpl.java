@@ -2,6 +2,7 @@ package trackup.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import trackup.dto.request.HabitRequestDTO;
 import trackup.dto.response.HabitResponseDTO;
 import trackup.entity.Habit;
@@ -12,6 +13,7 @@ import trackup.services.HabitService;
 import trackup.services.HabitTypeService;
 import trackup.services.UserService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,28 +74,26 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     public List<HabitResponseDTO> getAllHabits() {
-        List<Habit> habits = habitRepository.findAll(); // Obtener todos los hábitos
-
-        if (habits.isEmpty()) { // Si no hay hábitos, lanza una excepción
-            throw new RuntimeException("No hay usuarios registrados");
+        List<Habit> habits = habitRepository.findAll();
+        if (habits == null || habits.isEmpty()) {
+            // En lugar de lanzar excepción, devolvemos lista vacía
+            return Collections.emptyList();
         }
-
-        return habits.stream() // Convertir la lista de entidades Habit a una lista de DTOs
-                .map(this::mapToDTO) // Mapeo de Habit a HabitResponseDTO
-                .collect(Collectors.toList()); // Recoger todos los DTOs en una lista
+        return habits.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<HabitResponseDTO> getAllHabitsByUserId(Long userId) {
-        List<Habit> habits = habitRepository.findAllHabitsByUserId(userId); // Obtener todos los hábitos de un usuario por su ID
-
-        if (habits.isEmpty()) { // Si no hay hábitos, lanza una excepción
-            throw new RuntimeException("No hay hábitos registrados");
+        List<Habit> habits = habitRepository.findAllHabitsByUserId(userId);
+        if (habits == null || habits.isEmpty()) {
+            // Devuelve lista vacía si no hay ninguno para ese userId
+            return Collections.emptyList();
         }
-
-        return habits.stream() // Convertir la lista de entidades Habit a una lista de DTOs
-                .map(this::mapToDTO) // Mapeo de Habit a HabitResponseDTO
-                .collect(Collectors.toList()); // Recoger todos los DTOs en una lista
+        return habits.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -147,6 +147,12 @@ public class HabitServiceImpl implements HabitService {
         }
 
         habitRepository.deleteById(id); // Eliminar el hábito por ID
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllByTypeId(Long habitTypeId) {
+        habitRepository.deleteAllByHabitTypeId(habitTypeId);
     }
 
     /**

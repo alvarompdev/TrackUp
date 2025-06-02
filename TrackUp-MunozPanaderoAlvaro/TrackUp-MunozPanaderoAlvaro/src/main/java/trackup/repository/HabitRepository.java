@@ -40,4 +40,6 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
      */
     List<Habit> findAllHabitsByUserId(Long userId);
 
+    void deleteAllByHabitTypeId(Long habitTypeId);
+
 }
