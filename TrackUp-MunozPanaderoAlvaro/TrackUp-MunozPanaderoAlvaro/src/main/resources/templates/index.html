@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>TrackUp - Inicio</title>
     <link rel="icon" type="image/png" th:href="@{/img/logo1.png}">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/remain.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -19,6 +19,10 @@
         </div>
         <nav class="menu">
             <div class="menu-top">
+                <a th:href="@{/}" class="menu-item">
+                    <span class="material-icons">home</span>
+                    <span>Inicio</span>
+                </a>
                 <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
                     <span class="material-icons">check_circle</span>
                     <span>Hábitos</span>
@@ -27,8 +31,7 @@
                     <span class="material-icons">flag</span>
                     <span>Metas</span>
                 </a>
-                <!-- Aquí corregimos a /daily-records/user/{userId} -->
-                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item active">
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
                     <span class="material-icons">calendar_today</span>
                     <span>Registros Diarios</span>
                 </a>
@@ -54,49 +57,66 @@
         </header>
 
         <section class="summary-section">
-            <!-- Hábitos actuales -->
-            <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="summary-card habits">
-                <h3>Hábitos Actuales</h3>
-                <ul class="items-list" th:if="${!#lists.isEmpty(habits)}" th:each="habit : ${habits}">
-                    <li class="item">
-                        <span class="item-name" th:text="${habit.name}">Nombre hábito</span>
-                        <p class="item-desc" th:text="${habit.description}">Descripción del hábito</p>
-                        <div class="item-meta">
-                            <span th:text="'Tipo: ' + ${habit.habitTypeName}">Diario</span>
-                            <span th:text="'Desde: ' + ${#temporals.format(habit.startDate, 'dd/MM/yyyy')}">01/01/2025</span>
-                        </div>
-                    </li>
-                </ul>
-                <p th:if="${#lists.isEmpty(habits)}" class="empty-msg">No tienes hábitos activos.</p>
-            </a>
+            <!-- ——————————————————————
+                 1) Habitos Actuales
+               —————————————————————— -->
+            <div class="summary-card-container">
+                <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="summary-card habits">
+                    <h3>Hábitos Actuales</h3>
+                    <!-- contenedor extra para grid -->
+                    <div class="items-container">
+                        <ul class="items-list" th:if="${!#lists.isEmpty(habits)}" th:each="habit : ${habits}">
+                            <li class="item">
+                                <span class="item-name" th:text="${habit.name}">Nombre hábito</span>
+                                <p class="item-desc" th:text="${habit.description}">Descripción del hábito</p>
+                                <div class="item-meta">
+                                    <span th:text="'Tipo: ' + ${habit.habitTypeName}">Diario</span>
+                                    <span th:text="'Desde: ' + ${#temporals.format(habit.startDate, 'dd/MM/yyyy')}">01/01/2025</span>
+                                    <span th:text="'Hasta: ' + ${#temporals.format(habit.endDate, 'dd/MM/yyyy')}">01/01/2025</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <p th:if="${#lists.isEmpty(habits)}" class="empty-msg">No tienes hábitos activos.</p>
+                    </div>
+                </a>
+            </div>
 
-            <!-- Metas actuales -->
-            <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="summary-card goals">
-                <h3>Metas Actuales</h3>
-                <ul class="items-list" th:if="${!#lists.isEmpty(goals)}" th:each="goal : ${goals}">
-                    <li class="item">
-                        <span class="item-name" th:text="${goal.name}">Nombre meta</span>
-                        <p class="item-desc" th:text="${goal.description}">Descripción de la meta</p>
-                        <div class="item-meta">
-                            <span th:text="'ID Usuario: ' + ${goal.userId}">ID Usuario</span>
-                        </div>
-                    </li>
-                </ul>
-                <p th:if="${#lists.isEmpty(goals)}" class="empty-msg">No tienes metas activas.</p>
-            </a>
+            <!-- ——————————————————————
+                 2) Metas Actuales
+               —————————————————————— -->
+            <div class="summary-card-container">
+                <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="summary-card goals">
+                    <h3>Metas Actuales</h3>
+                    <!-- contenedor extra para grid -->
+                    <div class="items-container">
+                        <ul class="items-list" th:if="${!#lists.isEmpty(goals)}" th:each="goal : ${goals}">
+                            <li class="item">
+                                <span class="item-name" th:text="${goal.name}">Nombre meta</span>
+                                <p class="item-desc" th:text="${goal.description}">Descripción de la meta</p>
+                            </li>
+                        </ul>
+                        <p th:if="${#lists.isEmpty(goals)}" class="empty-msg">No tienes metas activas.</p>
+                    </div>
+                </a>
+            </div>
 
-            <!-- Registros recientes -->
-            <!-- Enlace corregido a /daily-records/user/{userId} -->
-            <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="summary-card records">
-                <h3>Registros Recientes</h3>
-                <ul class="records-list" th:if="${!#lists.isEmpty(records)}" th:each="record : ${records}">
-                    <li class="record-item">
-                        <span class="record-date" th:text="${#temporals.format(record.date,'dd/MM/yyyy')}">01/01/2025</span>
-                        <span class="record-value" th:text="${record.completed ? '✔️ Completado' : '❌ No completado'}">Estado</span>
-                    </li>
-                </ul>
-                <p th:if="${#lists.isEmpty(records)}" class="empty-msg">No tienes registros recientes.</p>
-            </a>
+            <!-- ——————————————————————
+                 3) Registros Recientes
+               —————————————————————— -->
+            <div class="summary-card-container">
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="summary-card records">
+                    <h3>Registros Recientes</h3>
+                    <div class="items-container">
+                        <ul class="records-list" th:if="${!#lists.isEmpty(records)}" th:each="record : ${records}">
+                            <li class="record-item">
+                                <span class="record-date" th:text="${#temporals.format(record.date,'dd/MM/yyyy')}">01/01/2025</span>
+                                <span class="record-value" th:text="${record.completed ? '✔️ Completado' : '❌ No completado'}">Estado</span>
+                            </li>
+                        </ul>
+                        <p th:if="${#lists.isEmpty(records)}" class="empty-msg">No tienes registros recientes.</p>
+                    </div>
+                </a>
+            </div>
         </section>
     </main>
 </div>

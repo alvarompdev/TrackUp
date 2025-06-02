@@ -17,10 +17,13 @@
                 <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
             </a>
         </div>
-
         <nav class="menu">
             <div class="menu-top">
-                <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item active">
+                <a th:href="@{/}" class="menu-item">
+                    <span class="material-icons">home</span>
+                    <span>Inicio</span>
+                </a>
+                <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
                     <span class="material-icons">check_circle</span>
                     <span>Hábitos</span>
                 </a>
@@ -37,9 +40,7 @@
                     <span>Sobre el creador</span>
                 </a>
             </div>
-
             <div class="menu-divider"></div>
-
             <div class="menu-bottom">
                 <a th:href="@{/profile}" class="menu-item profile">
                     <span class="material-icons">person</span>
@@ -127,7 +128,7 @@
                     <input type="text" th:field="*{name}" required />
 
                     <div class="button-group">
-                        <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="btn btn-cancel">Cancelar</a>
+                        <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="btn btn-cancel">Limpiar</a>
                         <button type="submit" class="btn btn-primary">Crear Tipo</button>
                     </div>
                 </form>

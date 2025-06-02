@@ -6,7 +6,7 @@
     <title>Perfil</title>
     <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/css/habit-styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/remain.css}" />
 </head>
 <body>
 <div class="dashboard-container">
@@ -18,22 +18,35 @@
             </a>
         </div>
         <nav class="menu">
-            <a th:href="@{/habits/user/{userId}(userId=${user.id})}" class="menu-item">
-                <span class="material-icons">check_circle</span><span>Hábitos</span>
-            </a>
-            <a th:href="@{/goals/user/{userId}(userId=${user.id})}" class="menu-item">
-                <span class="material-icons">flag</span><span>Metas</span>
-            </a>
-            <a th:href="@{/daily-records/user/{userId}(userId=${user.id})}" class="menu-item">
-                <span class="material-icons">calendar_today</span><span>Registros Diarios</span>
-            </a>
-            <a th:href="@{/about}" class="menu-item">
-                <span class="material-icons">info</span><span>Sobre el creador</span>
-            </a>
+            <div class="menu-top">
+                <a th:href="@{/}" class="menu-item">
+                    <span class="material-icons">home</span>
+                    <span>Inicio</span>
+                </a>
+                <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
+                    <span class="material-icons">check_circle</span>
+                    <span>Hábitos</span>
+                </a>
+                <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="menu-item">
+                    <span class="material-icons">flag</span>
+                    <span>Metas</span>
+                </a>
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+                    <span class="material-icons">calendar_today</span>
+                    <span>Registros Diarios</span>
+                </a>
+                <a th:href="@{/about}" class="menu-item">
+                    <span class="material-icons">info</span>
+                    <span>Sobre el creador</span>
+                </a>
+            </div>
             <div class="menu-divider"></div>
-            <a th:href="@{/profile}" class="menu-item profile active">
-                <span class="material-icons">person</span><span>Perfil</span>
-            </a>
+            <div class="menu-bottom">
+                <a th:href="@{/profile}" class="menu-item profile">
+                    <span class="material-icons">person</span>
+                    <span>Perfil</span>
+                </a>
+            </div>
         </nav>
     </aside>
 

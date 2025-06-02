@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>TrackUp - Registros Diarios</title>
   <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
-  <link rel="stylesheet" th:href="@{/css/goal-styles.css}" />
+  <link rel="stylesheet" th:href="@{/css/remain.css}" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -15,11 +15,15 @@
   <aside class="sidebar">
     <div class="logo-container">
       <a th:href="@{/}" aria-label="Volver al inicio">
-        <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo" />
+        <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
       </a>
     </div>
     <nav class="menu">
       <div class="menu-top">
+        <a th:href="@{/}" class="menu-item">
+          <span class="material-icons">home</span>
+          <span>Inicio</span>
+        </a>
         <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
           <span class="material-icons">check_circle</span>
           <span>Hábitos</span>
@@ -28,7 +32,7 @@
           <span class="material-icons">flag</span>
           <span>Metas</span>
         </a>
-        <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item active">
+        <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
           <span class="material-icons">calendar_today</span>
           <span>Registros Diarios</span>
         </a>

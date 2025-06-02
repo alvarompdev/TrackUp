@@ -1,10 +1,12 @@
-/* styles.css v3 – ajustado para mover la frecuencia más a la derecha y agrandar la badge */
+/* styles.css v3 – ajustado para mantener sidebar fija, controlar scroll y mejorar los espacios entre secciones */
 
-/* Variables de color (tonos verdes más profundos y vibrantes) */
+/* ----------------------------------------------------------
+   Variables de color (tonos verdes más profundos y vibrantes)
+---------------------------------------------------------- */
 :root {
     --color-primary: #1b5e20;    /* Verde bosque oscuro */
     --color-secondary: #2e7d32;  /* Verde medio */
-    --color-accent: #43a047;     /* Verde vivo para acentos */
+    --color-accent: #43a047;     /* Verde vivo */
     --color-bg: #e8f5e9;         /* Fondo muy suave verdoso */
     --color-surface: #ffffff;    /* Tarjetas blancas */
     --color-text: #263238;       /* Gris oscuro azulado */
@@ -16,11 +18,19 @@
     --font-family: 'Roboto', sans-serif;
 }
 
-/* Reset básico */
+/* ----------------------------------------------------------
+   Reset básico y ajustes de scroll
+---------------------------------------------------------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;    /* evitar scroll horizontal */
+    overflow-y: auto;      /* dejar que el body haga scroll vertical */
 }
 
 body {
@@ -30,20 +40,30 @@ body {
     line-height: 1.6;
 }
 
-/* Dashboard Container */
+/* ----------------------------------------------------------
+   Dashboard Container
+---------------------------------------------------------- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
 }
 
-/* Sidebar */
+/* ----------------------------------------------------------
+   Sidebar (fija)
+---------------------------------------------------------- */
 .sidebar {
-    width: 240px;
+    position: fixed;       /* fijamos la sidebar para que no se mueva */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 240px;          /* mismo ancho que se usa en el main-content */
     background-color: var(--color-primary);
     color: #fff;
     display: flex;
     flex-direction: column;
     padding: 1rem 0;
+    overflow-y: auto;      /* scroll interno si hay muchos items */
+    z-index: 1000;
 }
 
 .logo-container {
@@ -104,13 +124,36 @@ body {
     padding-top: 1rem;
 }
 
-/* Main Content */
+/* ----------------------------------------------------------
+   Main Content (con margen para la sidebar fija)
+---------------------------------------------------------- */
 .main-content {
     flex-grow: 1;
     padding: 2rem;
+    margin-left: 240px;   /* espacio para la sidebar fija */
 }
 
-/* Section Headers */
+/* ----------------------------------------------------------
+   Separaciones entre secciones
+---------------------------------------------------------- */
+/* 1) Margin inferior del bloque de hábitos para separar de 'Tus Tipos de Hábito' */
+.habit-section {
+    margin-bottom: 2rem;
+}
+
+/* 2) Margin inferior del grid de tarjetas de hábitos */
+.habits-section {
+    margin-bottom: 1.5rem;
+}
+
+/* 3) Margin superior extra del título “Tus Tipos de Hábito” */
+.habit-type-section .section-title {
+    margin-top: 1.5rem;
+}
+
+/* ----------------------------------------------------------
+   Section Headers
+---------------------------------------------------------- */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -123,7 +166,9 @@ body {
     color: var(--color-primary);
 }
 
-/* Botones */
+/* ----------------------------------------------------------
+   Botones genéricos
+---------------------------------------------------------- */
 .btn,
 .btn-create,
 .btn-cancel,
@@ -160,7 +205,9 @@ body {
     transform: translateY(-2px);
 }
 
-/* Feedback Messages */
+/* ----------------------------------------------------------
+   Feedback Messages
+---------------------------------------------------------- */
 .success-message,
 .error-message {
     margin-bottom: 1rem;
@@ -186,7 +233,9 @@ body {
     margin: 1rem 0;
 }
 
-/* Habit & Goal Cards: 2 por fila */
+/* ----------------------------------------------------------
+   Habit & Goal Cards: 2 por fila
+---------------------------------------------------------- */
 .habits-section,
 .goals-section {
     display: grid;
@@ -194,7 +243,6 @@ body {
     gap: 1.5rem;
 }
 
-/* Card Estilos Generales */
 .habit-card,
 .goal-card {
     background-color: var(--color-surface);
@@ -213,7 +261,6 @@ body {
 }
 
 /* Header de la tarjeta */
-/* Frecuencia más grande y desplazada a la derecha (con margen extra); nombre centrado */
 .habit-header,
 .goal-header {
     background-color: var(--color-secondary);
@@ -225,22 +272,21 @@ body {
 
 .habit-header .badge,
 .goal-header .badge {
-    background-color: var(--color-accent);
-    color: var(--color-text);
+    background-color: #d0f0d0; /* Verde pastel muy suave */
+    color: var(--color-primary); /* Verde oscuro del título */
     border-radius: var(--radius);
-    padding: 0.3rem 0.8rem;    /* Ligeramente más grueso */
-    font-size: 1rem;          /* Más grande */
-    margin-left: 2.5rem;      /* Separación extra del borde izquierdo */
-    margin-right: 1rem;       /* Separación del título */
-    /* Sin hover */
-    transition: none;
+    padding: 0.3rem 0.8rem;
+    font-size: 1rem;
+    margin-left: 2.5rem;
+    margin-right: 1rem;
+    font-weight: 600;
 }
 
 .habit-header h3,
 .goal-header h3 {
     color: #fff;
     font-size: 1.25rem;
-    margin: 0 auto; /* Centrar el nombre */
+    margin: 0 auto;
 }
 
 /* Descripción */
@@ -251,7 +297,7 @@ body {
     color: var(--color-text);
 }
 
-/* Meta de hábito: 'Tipo' a la izquierda; 'Desde' y 'Hasta' a la derecha en la misma línea */
+/* Meta de hábito */
 .habit-meta {
     padding: 0 1rem 1rem;
     display: flex;
@@ -262,13 +308,12 @@ body {
 }
 
 .habit-meta .meta-left {
-    /* Tipo en el extremo izquierdo */
+    /* Tipo en el extremo izquierdo (si se utiliza) */
 }
 
 .habit-meta .meta-right {
     display: flex;
     gap: 1rem;
-    /* Desde y Hasta se alinean juntos a la derecha */
 }
 
 /* Acciones de la tarjeta */
@@ -310,13 +355,13 @@ body {
     transform: translateY(-1px);
 }
 
-/* Sección de Tipos de Hábito */
-.habit-type-section {
-    margin-top: 2rem;
-}
-
+/* ----------------------------------------------------------
+   Sección de Tipos de Hábito: Scroll vertical si hay muchos elementos
+---------------------------------------------------------- */
 .habit-type-list ul {
-    list-style: none;
+    max-height: 60vh; /* Altura máxima antes de scrollear */
+    overflow-y: auto; /* Scroll vertical */
+    padding-right: 0.5rem;
 }
 
 .type-item {
@@ -340,13 +385,17 @@ body {
     color: var(--color-text);
 }
 
-/* Formulario de Tipo de Hábito */
+/* ----------------------------------------------------------
+   Formulario de Tipo de Hábito: Scroll vertical si el contenido es largo
+---------------------------------------------------------- */
 .habit-type-form-section {
     margin-top: 1.5rem;
     background-color: var(--color-surface);
     padding: 1rem;
     border-radius: var(--radius);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    max-height: 80vh; /* Altura máxima antes de scrollear */
+    overflow-y: auto;
 }
 
 .habit-type-form-section label {
@@ -376,16 +425,23 @@ body {
     gap: 0.75rem;
 }
 
-/* Ajustes responsivos */
+.habit-type-section .habit-type-list {
+    margin-top: 1.5rem;
+}
+
+/* ----------------------------------------------------------
+   Ajustes responsivos (similar a remain.css)
+---------------------------------------------------------- */
 @media (max-width: 768px) {
     .sidebar {
-        display: none;
+        display: none;            /* ocultar la sidebar en móviles */
     }
     .dashboard-container {
         flex-direction: column;
     }
     .main-content {
         padding: 1rem;
+        margin-left: 0;           /* ya no hace falta margen cuando la sidebar está oculta */
     }
     .section-header {
         flex-direction: column;

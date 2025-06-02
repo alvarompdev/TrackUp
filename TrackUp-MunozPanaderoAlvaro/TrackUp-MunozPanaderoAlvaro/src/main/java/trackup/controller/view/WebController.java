@@ -61,16 +61,4 @@ public class WebController {
         return "about";
     }
 
-    @GetMapping("/profile")
-    public String profile(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        
-        userService.findUserByUsername(username).ifPresent(user -> {
-            model.addAttribute("user", user);
-        });
-        
-        return "profile";
-    }
-
 }

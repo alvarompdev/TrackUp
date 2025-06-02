@@ -19,11 +19,15 @@
     </div>
     <nav class="menu">
       <div class="menu-top">
+        <a th:href="@{/}" class="menu-item">
+          <span class="material-icons">home</span>
+          <span>Inicio</span>
+        </a>
         <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="menu-item">
           <span class="material-icons">check_circle</span>
           <span>Hábitos</span>
         </a>
-        <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="menu-item active">
+        <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="menu-item">
           <span class="material-icons">flag</span>
           <span>Metas</span>
         </a>
@@ -91,5 +95,18 @@
 
   </main>
 </div>
+
+<script>
+  // Espera 5 segundos y oculta los mensajes flash (éxito y error)
+  setTimeout(() => {
+    document.querySelectorAll('.success-message, .error-message').forEach(msg => {
+      msg.style.transition = 'opacity 0.5s ease-out';
+      msg.style.opacity = '0';
+      // Opcional: elimina del DOM para liberar espacio
+      setTimeout(() => msg.remove(), 500);
+    });
+  }, 5000);
+</script>
+
 </body>
 </html>

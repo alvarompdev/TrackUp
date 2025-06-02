@@ -1,0 +1,210 @@
+/* forms.css – Estilo para todos los formularios (registro diario, metas, hábitos) */
+
+/* ---------------------------------------------
+   1) Variables (mismas que en styles.css v3)
+   --------------------------------------------- */
+:root {
+    --color-primary:    #1b5e20;   /* Verde bosque oscuro */
+    --color-secondary:  #2e7d32;   /* Verde medio */
+    --color-accent:     #43a047;   /* Verde vivo para acentos */
+    --color-bg-light:   #e8f5e9;   /* Verde muy suave */
+    --color-bg-dark:    #c8e6c9;   /* Verde claro medio */
+    --color-surface:    #ffffff;   /* Fondo de tarjeta/formulario */
+    --color-text:       #263238;   /* Gris oscuro azulado */
+    --color-muted:      #546e7a;   /* Gris azulado medio */
+    --color-error:      #c62828;   /* Rojo oscuro */
+    --color-error-dark: #a91e1e;   /* Rojo más oscuro para hover */
+    --color-success:    #2e7d32;   /* Verde oscuro para éxitos */
+    --radius:           8px;       /* Radio de bordes */
+    --transition-speed: 0.3s;      /* Velocidad transiciones */
+    --font-family:      'Roboto', sans-serif;
+}
+
+/* ---------------------------------------------
+   2) Reset y tipografía general
+   --------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    /* Gradiente diagonal sutil de verde claro a verde muy suave */
+    background: linear-gradient(
+            135deg,
+            var(--color-bg-dark) 0%,
+            var(--color-bg-light) 100%
+    );
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+/* ---------------------------------------------
+   3) Contenedor principal de formulario
+   --------------------------------------------- */
+.form-container {
+    background-color: var(--color-surface);
+    width: 100%;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Título del formulario */
+.form-container h2 {
+    color: var(--color-primary);
+    font-size: 1.75rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* ---------------------------------------------
+   4) Etiquetas y campos de formulario
+   --------------------------------------------- */
+/* Label */
+.form-container label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+/* Input de texto, date, número, etc. */
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="date"],
+.form-container input[type="number"],
+.form-container select,
+.form-container textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-family: var(--font-family);
+    font-size: 1rem;
+    border: 1px solid var(--color-muted);
+    border-radius: var(--radius);
+    margin-bottom: 1.25rem;
+    transition: border-color var(--transition-speed);
+    background-color: #fff;
+    color: var(--color-text);
+}
+
+/* Cuando el campo está enfocado */
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Textarea específico */
+.form-container textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Placeholder */
+.form-container ::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+}
+
+/* ---------------------------------------------
+   5) Grupo de botones (alineación)
+   --------------------------------------------- */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* ---------------------------------------------
+   6) Botones (btn, btn-primary, btn-cancel)
+   --------------------------------------------- */
+.btn,
+.btn-primary,
+.btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+/* Botón principal (crear/guardar/actualizar) */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+.btn-primary:hover {
+    background-color: var(--color-secondary);
+    transform: translateY(-2px);
+}
+
+/* Botón cancelar en rojo */
+.btn-cancel {
+    background-color: var(--color-error);
+    color: #fff;
+}
+.btn-cancel:hover {
+    background-color: var(--color-error-dark);
+    transform: translateY(-2px);
+}
+
+/* Iconos de Material (en caso de usarlos dentro de botones) */
+.btn .material-icons,
+.btn-primary .material-icons,
+.btn-cancel .material-icons {
+    font-size: 1.2rem;
+}
+
+/* ---------------------------------------------
+   7) Mensajes de validación / errores (inline)
+   --------------------------------------------- */
+.error-msg {
+    color: var(--color-error);
+    font-size: 0.9rem;
+    margin-top: -0.75rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* ---------------------------------------------
+   8) Ajustes responsivos (pantallas pequeñas)
+   --------------------------------------------- */
+@media (max-width: 600px) {
+    .form-container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+    }
+    .form-container h2 {
+        font-size: 1.5rem;
+    }
+    .button-group {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+    .btn,
+    .btn-primary,
+    .btn-cancel {
+        width: 100%;
+        justify-content: center;
+    }
+}
