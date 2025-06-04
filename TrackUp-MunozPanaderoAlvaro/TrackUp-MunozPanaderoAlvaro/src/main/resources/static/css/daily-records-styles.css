@@ -103,6 +103,14 @@ a {
     transition: transform var(--transition-speed), width var(--transition-speed);
 }
 
+.header h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.2;
+}
+
 .logo-container {
     text-align: center;
     margin-bottom: 2rem;
@@ -136,12 +144,16 @@ a {
     margin: 1rem 0;
 }
 
+/* ----------------------------------------------------------
+   .menu-item: ahora con font-size para asegurar consistencia de tamaño
+---------------------------------------------------------- */
 .menu-item {
     display: flex;
     align-items: center;
     padding: 0.75rem 1.5rem;
     color: #e0e0e0;
     font-weight: 500;
+    font-size: var(--font-size-base);
     transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
@@ -158,6 +170,23 @@ a {
 .menu-item.profile {
     margin-top: auto;
     padding-top: 1rem;
+}
+
+/* ----------------------------------------------------------
+   Estilos para botón "Cerrar sesión" dentro del sidebar
+---------------------------------------------------------- */
+.menu-item.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    /* Hereda font-size de .menu-item para mantener consistencia */
+}
+
+.menu-item.logout-btn:hover {
+    background-color: var(--color-secondary);
+    color: #fff;
 }
 
 /* ----------------------------------------------------------
@@ -192,9 +221,6 @@ a {
     align-items: center;
     margin-bottom: 1.5rem;
 }
-
-/* Eliminada la regla 'margin: 0 auto;' que centraba el título */
-
 
 /* ----------------------------------------------------------
    Mensajes de éxito y error

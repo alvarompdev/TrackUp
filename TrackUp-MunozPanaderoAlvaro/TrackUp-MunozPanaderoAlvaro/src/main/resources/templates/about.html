@@ -31,11 +31,11 @@
                     <span class="material-icons">flag</span>
                     <span>Metas</span>
                 </a>
-                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item active">
                     <span class="material-icons">calendar_today</span>
                     <span>Registros Diarios</span>
                 </a>
-                <a th:href="@{/about}" class="menu-item active">
+                <a th:href="@{/about}" class="menu-item">
                     <span class="material-icons">info</span>
                     <span>Sobre el creador</span>
                 </a>
@@ -46,6 +46,13 @@
                     <span class="material-icons">person</span>
                     <span>Perfil</span>
                 </a>
+                <!-- Botón de Cerrar Sesión -->
+                <form th:action="@{/logout}" method="post" style="width: 100%;">
+                    <button type="submit" class="menu-item logout-btn">
+                        <span class="material-icons">logout</span>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
             </div>
         </nav>
     </aside>

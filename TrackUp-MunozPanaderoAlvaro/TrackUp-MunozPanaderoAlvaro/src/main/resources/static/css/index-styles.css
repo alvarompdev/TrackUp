@@ -109,7 +109,7 @@ body {
         width: var(--sidebar-width-collapsed);
     }
 
-    /* Mantener texto visible, solo ocultar en móviles */
+    /* Mantener texto visible, solo ocultar iconos en pantallas medianas */
     .sidebar .menu-item {
         justify-content: center;
         padding: var(--spacing-sm);
@@ -151,18 +151,24 @@ body {
     justify-content: space-between;
 }
 
-.menu-top,
+/* Aseguramos que .menu-bottom se comporte igual que .menu-top,
+   de modo que “Perfil” y “Cerrar sesión” usen el mismo estilo que arriba */
 .menu-bottom {
     display: flex;
     flex-direction: column;
+    /* No agregamos padding o gap aquí para que los .menu-item dentro hereden idéntico estilo */
 }
 
+/* Separador dentro del sidebar */
 .menu-divider {
     height: 1px;
     background-color: rgba(255, 255, 255, 0.2);
     margin: var(--spacing-md) 0;
 }
 
+/* ----------------------------------------------------------
+   3) Elementos de menú (idéntico para enlaces y botón logout)
+---------------------------------------------------------- */
 .menu-item {
     display: flex;
     align-items: center;
@@ -172,23 +178,49 @@ body {
     font-weight: 500;
     font-size: var(--font-size-base);
     transition: background-color var(--transition-speed), color var(--transition-speed);
-    min-height: 44px; /* Tamaño mínimo para touch devices */
+    min-height: 44px;             /* Tamaño mínimo para touch devices */
+    background-color: transparent; /* Para botones, sin fondo distinto */
+    border: none;                  /* Para botones, sin borde nativo */
+    width: 100%;                   /* Ocupa todo el ancho del contenedor */
+    text-align: left;              /* Alinear texto/iconos a la izquierda */
+    cursor: pointer;               /* Puntero de mano */
 }
+
 .menu-item .material-icons {
     margin-right: var(--spacing-sm);
     flex-shrink: 0;
 }
+
+/* Hover y activo —> mismo estilo para todos los .menu-item */
 .menu-item:hover,
+.menu-item.logout-btn:hover,
 .menu-item.active {
     background-color: var(--color-secondary);
     color: #fff;
 }
+
+/* Estilo específico para Perfil (mantiene margen arriba automático) */
 .menu-item.profile {
     margin-top: auto;
-    padding-top: var(--spacing-md);
 }
 
-/* Main Content responsivo */
+/* ----------------------------------------------------------
+   4) Ajustes para el botón de “Cerrar sesión” (logout-btn)
+      Hereda toda la apariencia de .menu-item sin modificar padding o hover
+---------------------------------------------------------- */
+/* No se añade ningún margen, padding o color extra:
+   simplemente se asegura que sea un botón nativo transparente */
+.menu-item.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* ----------------------------------------------------------
+   5) Main Content responsivo
+---------------------------------------------------------- */
 .main-content {
     flex-grow: 1;
     margin-left: var(--sidebar-width);
@@ -209,7 +241,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   3) Encabezados y Jerarquía Tipográfica
+   6) Encabezados y Jerarquía Tipográfica
 ---------------------------------------------------------- */
 .header h1 {
     font-size: var(--font-size-xxl);
@@ -220,7 +252,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   4) Summary Section: Grid Responsivo
+   7) Summary Section: Grid Responsivo
 ---------------------------------------------------------- */
 .summary-section {
     display: grid;
@@ -228,10 +260,9 @@ body {
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
     width: 100%;
-    padding: var(--spacing-xs); /* Añadido padding para evitar corte del hover */
+    padding: var(--spacing-xs); /* Añadido padding para evitar corte de hover */
 }
 
-/* Ajustes para diferentes tamaños de pantalla */
 @media (min-width: 1400px) {
     .summary-section {
         grid-template-columns: repeat(3, 1fr);
@@ -250,7 +281,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   5) Tarjetas Principales ("summary-card")
+   8) Tarjetas Principales ("summary-card")
 ---------------------------------------------------------- */
 .summary-card {
     display: flex;
@@ -271,7 +302,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Título interno de cada tarjeta */
 .summary-card h3 {
     font-size: var(--font-size-lg);
     font-weight: 600;
@@ -281,7 +311,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   6) Items Container (Grid Responsivo)
+   9) Items Container (Grid Responsivo)
 ---------------------------------------------------------- */
 .items-container {
     flex-grow: 1;
@@ -292,12 +322,9 @@ body {
     max-height: clamp(250px, 40vh, 400px);
     padding-right: var(--spacing-xs);
     margin-top: var(--spacing-xs);
-    /* INICIO DE CAMBIO: Solución para el problema del hover */
     padding-top: var(--spacing-xs); /* Añadido padding superior para evitar que el hover se corte */
-    /* FIN DE CAMBIO */
 }
 
-/* Ajustes para móviles */
 @media (max-width: 480px) {
     .items-container {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -307,7 +334,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   7) Estilo de Cada "item" (Tarjeta Pequeña)
+   10) Estilo de Cada "item" (Tarjeta Pequeña)
 ---------------------------------------------------------- */
 .items-container .item {
     display: flex;
@@ -327,7 +354,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   8) Línea divisora debajo del título de cada mini-tarjeta
+   11) Línea divisora debajo del título de cada mini-tarjeta
 ---------------------------------------------------------- */
 .items-container .item-name {
     font-size: var(--font-size-base);
@@ -341,7 +368,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   9) Descripción y metadata en "item"
+   12) Descripción y metadata en "item"
 ---------------------------------------------------------- */
 .items-container .item-desc {
     font-size: var(--font-size-sm);
@@ -362,7 +389,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   10) Registros Recientes (mismo estilo que item)
+   13) Registros Recientes (mismo estilo que item)
 ---------------------------------------------------------- */
 .items-container .record-item {
     display: flex;
@@ -398,7 +425,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   11) "Empty Message" (sin datos)
+   14) "Empty Message" (sin datos)
 ---------------------------------------------------------- */
 .empty-msg {
     text-align: center;
@@ -410,7 +437,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   12) "Registros Diarios" (gráficas)
+   15) "Registros Diarios" (gráficas)
 ---------------------------------------------------------- */
 .habit-section .section-header {
     display: flex;
@@ -428,7 +455,6 @@ body {
     line-height: 1.2;
 }
 
-/* Layout de gráficos: grid responsive */
 .chart-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
@@ -436,10 +462,9 @@ body {
     justify-items: center;
     align-items: start;
     margin-top: var(--spacing-md);
-    padding: var(--spacing-xs); /* Padding para evitar corte del hover */
+    padding: var(--spacing-xs); /* Padding para evitar corte de hover */
 }
 
-/* Ajustes para diferentes tamaños */
 @media (min-width: 1200px) {
     .chart-container {
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -453,7 +478,6 @@ body {
     }
 }
 
-/* Cada "caja" de gráfico */
 .chart-box {
     background-color: var(--color-surface);
     border-radius: var(--radius);
@@ -482,7 +506,6 @@ body {
     max-height: 300px;
 }
 
-/* Mensaje "no hay datos" dentro de cada gráfico */
 .chart-empty-msg {
     margin-top: var(--spacing-md);
     color: var(--color-muted);
@@ -492,7 +515,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   13) Mensajes de éxito/error
+   16) Mensajes de éxito/error
 ---------------------------------------------------------- */
 .success-message,
 .error-message {
@@ -515,7 +538,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   14) Media Queries para diferentes dispositivos
+   17) Media Queries para diferentes dispositivos
 ---------------------------------------------------------- */
 
 /* Pantallas muy grandes (monitores de escritorio) - AJUSTADA LA ANCHURA MÁXIMA */
@@ -651,7 +674,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   15) Preferencias de accesibilidad
+   18) Preferencias de accesibilidad
 ---------------------------------------------------------- */
 
 /* Reducir animaciones si el usuario lo prefiere */
@@ -677,7 +700,7 @@ body {
 } */
 
 /* ----------------------------------------------------------
-   16) Utilidades responsivas adicionales
+   19) Utilidades responsivas adicionales
 ---------------------------------------------------------- */
 
 /* Contenedor para botones móviles (hamburger menu, etc.) */

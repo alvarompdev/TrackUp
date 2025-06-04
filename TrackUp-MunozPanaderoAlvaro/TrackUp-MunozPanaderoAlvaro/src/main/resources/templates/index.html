@@ -4,9 +4,11 @@
     <meta charset="UTF-8" />
     <title>TrackUp - Inicio</title>
     <link rel="icon" type="image/png" th:href="@{/img/logo1.png}">
-    <!-- Carga de CSS personalizado para index -->
+
+    <!-- Carga de CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/index-styles.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <!-- Chart.js para las gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -19,9 +21,10 @@
     <aside class="sidebar">
         <div class="logo-container">
             <a th:href="@{/}" aria-label="Volver al inicio">
-                <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo">
+                <img th:src="@{/img/logo1.png}" alt="TrackUp Logo" class="logo" />
             </a>
         </div>
+
         <nav class="menu">
             <div class="menu-top">
                 <a th:href="@{/}" class="menu-item active">
@@ -45,15 +48,25 @@
                     <span>Sobre el creador</span>
                 </a>
             </div>
+
             <div class="menu-divider"></div>
+
             <div class="menu-bottom">
                 <a th:href="@{/profile}" class="menu-item profile">
                     <span class="material-icons">person</span>
                     <span>Perfil</span>
                 </a>
+
+                <form th:action="@{/logout}" method="post" style="width: 100%;">
+                    <button type="submit" class="menu-item logout-btn">
+                        <span class="material-icons">logout</span>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
             </div>
         </nav>
     </aside>
+
 
     <!-- ───────────────────────────────────────────────────────────────
          MAIN CONTENT
@@ -109,7 +122,7 @@
                 </a>
             </div>
 
-            <!-- ── Registros Recientes (MITAD SUPERIOR) ── -->
+            <!-- 3) Registros Recientes -->
             <div class="summary-card-container">
                 <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="summary-card records">
                     <h3>Registros Recientes</h3>
@@ -138,7 +151,6 @@
                     </div>
                 </a>
             </div>
-
         </section>
 
         <!-- ───────────────────────────────────────────────────────────────
@@ -206,6 +218,7 @@
                 const monthlyNotCompleted = [[${monthlyTotal}        ?: 0]] - [[${monthlyCompleted} ?: 0]];
                 /*]]>*/
             </script>
+
             <script>
                 // 1. Desde Siempre
                 if (overallCompleted + overallNotCompleted > 0) {
@@ -304,7 +317,6 @@
                 }
             </script>
         </section>
-
     </main>
 </div>
 </body>

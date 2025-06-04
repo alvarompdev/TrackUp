@@ -46,6 +46,14 @@
                     <span class="material-icons">person</span>
                     <span>Perfil</span>
                 </a>
+
+                <!-- Botón de Cerrar Sesión -->
+                <form th:action="@{/logout}" method="post" style="width: 100%;">
+                    <button type="submit" class="menu-item logout-btn">
+                        <span class="material-icons">logout</span>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
             </div>
         </nav>
     </aside>
@@ -149,7 +157,6 @@
         });
     }, 5000);
 </script>
-
 
 </body>
 </html>

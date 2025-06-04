@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Perfil</title>
+    <title>Perfil - TrackUp</title>
     <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/remain.css}" />
@@ -31,7 +31,7 @@
                     <span class="material-icons">flag</span>
                     <span>Metas</span>
                 </a>
-                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item active">
                     <span class="material-icons">calendar_today</span>
                     <span>Registros Diarios</span>
                 </a>
@@ -42,10 +42,17 @@
             </div>
             <div class="menu-divider"></div>
             <div class="menu-bottom">
-                <a th:href="@{/profile}" class="menu-item profile active">
+                <a th:href="@{/profile}" class="menu-item profile">
                     <span class="material-icons">person</span>
                     <span>Perfil</span>
                 </a>
+                <!-- Botón de Cerrar Sesión -->
+                <form th:action="@{/logout}" method="post" style="width: 100%;">
+                    <button type="submit" class="menu-item logout-btn">
+                        <span class="material-icons">logout</span>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
             </div>
         </nav>
     </aside>

@@ -46,6 +46,13 @@
           <span class="material-icons">person</span>
           <span>Perfil</span>
         </a>
+        <!-- Botón de Cerrar Sesión -->
+        <form th:action="@{/logout}" method="post" style="width: 100%;">
+          <button type="submit" class="menu-item logout-btn">
+            <span class="material-icons">logout</span>
+            <span>Cerrar sesión</span>
+          </button>
+        </form>
       </div>
     </nav>
   </aside>
@@ -70,7 +77,6 @@
           <h4>Desde Siempre</h4>
           <p>No hay registros globales para mostrar.</p>
         </div>
-
 
         <div th:if="${weeklyTotal > 0}" style="width: 300px;">
           <h4 style="text-align: center;">Esta Semana</h4>

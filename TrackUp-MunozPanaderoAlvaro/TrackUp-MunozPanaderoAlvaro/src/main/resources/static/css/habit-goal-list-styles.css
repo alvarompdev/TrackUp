@@ -105,6 +105,14 @@ body {
     transition: transform var(--transition-speed), width var(--transition-speed); /* Añadido para transiciones suaves */
 }
 
+.header h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.2;
+}
+
 /* Sidebar collapsed en pantallas medianas (coherente con index-styles.css) */
 @media (max-width: 1200px) and (min-width: 769px) {
     .sidebar {
@@ -175,6 +183,11 @@ body {
     font-size: var(--font-size-base); /* Usamos variable responsive */
     transition: background-color var(--transition-speed), color var(--transition-speed);
     min-height: 44px; /* Tamaño mínimo para touch devices */
+    background-color: transparent; /* Asegurar consistencia para botones */
+    border: none; /* Elimina borde nativo para logout-btn */
+    width: 100%; /* Ocupar ancho completo */
+    text-align: left; /* Alinear icono y texto a la izquierda */
+    cursor: pointer; /* Puntero de mano */
 }
 
 .menu-item .material-icons {
@@ -182,7 +195,9 @@ body {
     flex-shrink: 0; /* Añadido para consistencia */
 }
 
+/* Hover y activo —> mismo estilo para todos los .menu-item, incluido logout-btn */
 .menu-item:hover,
+.menu-item.logout-btn:hover,
 .menu-item.active {
     background-color: var(--color-secondary);
     color: #fff;
@@ -191,6 +206,18 @@ body {
 .menu-item.profile {
     margin-top: auto;
     padding-top: var(--spacing-md); /* Usamos variable responsive */
+}
+
+/* ----------------------------------------------------------
+   4.1) Ajustes específicos para el botón Cerrar Sesión
+---------------------------------------------------------- */
+/* Hereda las mismas propiedades de .menu-item, no requiere margen extra */
+.menu-item.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
 }
 
 /* ----------------------------------------------------------

@@ -23,11 +23,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Deshabilitamos CSRF porque usamos sesiones y no necesitamos token en APIs públicas
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/error").permitAll()
                         .requestMatchers("/", "/login", "/register", "/perform_login").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll() // 👈 PERMITE el acceso libre a la API
+                        .requestMatchers("/api/auth/**").permitAll() // 👈 PERMITE acceso libre a la API de autenticación
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -51,7 +52,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
 
-        // ⛔ Esto es clave: el filtro JWT se usa solo para APIs
+        // ⛔ Esto es clave: el filtro JWT se usa solo para endpoints /api/**
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -58,8 +58,11 @@
 
 html, body {
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow-x: hidden;    /* Evitar scroll horizontal */
+    background-color: var(--color-bg);
+    font-family: var(--font-family);
+    color: var(--color-text);
+    line-height: 1.6;
 }
 
 body {
@@ -71,12 +74,13 @@ body {
 }
 
 /* ----------------------------------------------------------
-   2) Dashboard Container / Sidebar / Main Content
+   2) Dashboard Container / Sidebar / Main Content - COPIADO LITERALMENTE DE daily-records-styles.css
    ---------------------------------------------------------- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
     background-color: var(--color-bg);
+    overflow-x: hidden; /* Evita scroll horizontal */
 }
 
 /* Sidebar fija a la izquierda */
@@ -99,16 +103,34 @@ body {
     transition: transform var(--transition-speed), width var(--transition-speed);
 }
 
+/* ----------------------------------------------------------
+   Estilos para botón "Cerrar sesión" dentro del sidebar
+---------------------------------------------------------- */
+.menu-item.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    /* Hereda font-size de .menu-item para mantener consistencia */
+}
+
+.menu-item.logout-btn:hover {
+    background-color: var(--color-secondary);
+    color: #fff;
+}
+
 .logo-container {
     text-align: center;
-    margin-bottom: var(--spacing-xxl); /* Usa variable de espaciado */
+    margin-bottom: var(--spacing-xxl);
 }
 
 .logo {
-    max-width: clamp(6.25rem, 10vw, 7.5rem); /* 100px a 120px */
+    max-width: clamp(100px, 10vw, 120px);
     transition: transform var(--transition-speed);
     cursor: pointer;
 }
+
 .logo:hover {
     transform: scale(1.05);
 }
@@ -129,38 +151,41 @@ body {
 .menu-divider {
     height: 1px;
     background-color: rgba(255, 255, 255, 0.2);
-    margin: var(--spacing-md) 0; /* Usa variable de espaciado */
+    margin: var(--spacing-md) 0;
 }
 
 .menu-item {
     display: flex;
     align-items: center;
-    padding: var(--spacing-sm) var(--spacing-lg); /* Usa variables de espaciado */
+    padding: var(--spacing-sm) var(--spacing-lg); /* Padding ajustado */
     color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
-    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
+    font-size: var(--font-size-base);
     transition: background-color var(--transition-speed), color var(--transition-speed);
 }
+
 .menu-item .material-icons {
-    margin-right: var(--spacing-sm); /* Usa variable de espaciado */
-    font-size: var(--font-size-lg); /* Asegura que los íconos escalen */
+    margin-right: var(--spacing-sm);
+    font-size: var(--font-size-lg);
 }
+
 .menu-item:hover,
 .menu-item.active {
     background-color: var(--color-secondary);
     color: #fff;
 }
+
 .menu-item.profile {
     margin-top: auto;
-    padding-top: var(--spacing-md); /* Usa variable de espaciado */
+    padding-top: var(--spacing-md);
 }
 
-/* Main Content (se desplaza, sidebar queda fija) */
+/* Main Content */
 .main-content {
     flex-grow: 1;
-    margin-left: var(--sidebar-width);   /* reserva el ancho de la sidebar, ahora es responsivo */
-    padding: var(--spacing-xl); /* Usa variable de espaciado */
+    margin-left: var(--sidebar-width);
+    padding: var(--spacing-xl);
     display: flex;
     flex-direction: column;
     transition: margin-left var(--transition-speed);
@@ -465,37 +490,140 @@ body {
     text-decoration: underline;
 }
 
+/* ----------------------------------------------------------
+   16) Estilos para la barra lateral móvil (Hamburger Menu, Overlay) - COPIADO LITERALMENTE DE daily-records-styles.css
+   ---------------------------------------------------------- */
+.mobile-header {
+    display: none; /* Hidden by default */
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+@media (max-width: 768px) {
+    .mobile-header {
+        display: flex; /* Show on small screens */
+    }
+}
+
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed), visibility var(--transition-speed);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile menu content (sidebar when active on small screens) */
+.mobile-menu-content {
+    position: fixed;
+    top: 0;
+    left: 0; /* Start off-screen */
+    bottom: 0;
+    width: var(--sidebar-width); /* Same width as desktop sidebar */
+    background-color: var(--color-primary);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg) 0;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%); /* Hidden initially */
+    transition: transform var(--transition-speed);
+}
+
+.mobile-menu-content.active {
+    transform: translateX(0); /* Slide in */
+}
+
+.mobile-menu-content .logo-container {
+    padding: var(--spacing-lg) 0; /* Ajustar padding */
+}
+
+.mobile-menu-content .menu-item {
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.mobile-menu-content .menu-divider {
+    margin: var(--spacing-lg) var(--spacing-lg);
+}
+
+.mobile-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    align-self: flex-end; /* Align to the right */
+    padding: var(--spacing-sm) var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
 
 /* ----------------------------------------------------------
-   16) Ajustes Responsivos (Ajustados con variables)
+   17) Ajustes Responsivos (Ajustados con variables y sidebar móvil) - COPIADO LITERALMENTE DE daily-records-styles.css
    ---------------------------------------------------------- */
 @media (max-width: 1024px) {
     .summary-section {
-        grid-template-columns: repeat(auto-fill, minmax(clamp(16rem, 25vw, 20rem), 1fr)); /* 256px a 320px */
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* minmax(280px, 1fr) for 1024px */
     }
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        display: none; /* La sidebar se oculta completamente en móviles */
+        display: none;            /* Ocultar la sidebar fija */
     }
     .dashboard-container {
         flex-direction: column;
     }
     .main-content {
-        margin-left: 0; /* El contenido principal ocupa todo el ancho */
-        padding: var(--spacing-md); /* Ajusta el padding para pantallas más pequeñas */
+        margin-left: 0;           /* Eliminar el margen de la sidebar */
+        padding: 1rem;            /* Reducir padding en móvil */
+    }
+    /* Mostrar el mobile header en pantallas pequeñas */
+    .mobile-header {
+        display: flex;
+    }
+    /* REGLA AÑADIDA / CORREGIDA: COPIADA DE daily-records-styles.css */
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
     }
     .summary-section {
         grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-        gap: var(--spacing-md);
+        gap: 0.75rem; /* Usar gap: 0.75rem en lugar de var(--spacing-md) que es 12px */
     }
     .items-container {
         max-height: none; /* Elimina el scroll interno para ver todos los ítems en móvil */
     }
     .habit-type-form-section {
-        margin: var(--spacing-md) auto; /* Reduce el margen en móvil */
-        padding: var(--spacing-md); /* Reduce el padding en móvil */
+        margin: 1rem auto; /* Reduce el margen en móvil */
+        padding: 1rem; /* Reduce el padding en móvil */
     }
 }
 
@@ -504,21 +632,21 @@ body {
     .btn-create,
     .btn-cancel,
     .btn-primary {
-        font-size: var(--font-size-sm); /* Botones más pequeños */
-        padding: var(--spacing-xs) var(--spacing-sm); /* Padding más pequeño */
+        font-size: 0.875rem; /* Botones más pequeños */
+        padding: 0.25rem 0.5rem; /* Padding más pequeño */
     }
     .header h1 {
-        font-size: var(--font-size-xxl); /* Título principal un poco más pequeño en móviles muy pequeños */
+        font-size: 2rem; /* Título principal un poco más pequeño en móviles muy pequeños */
     }
     .section-title {
-        font-size: var(--font-size-xl); /* Título de sección un poco más pequeño */
+        font-size: 1.5rem; /* Título de sección un poco más pequeño */
     }
     .habit-type-form-section h2 {
-        font-size: var(--font-size-lg); /* Títulos h2 más pequeños en móvil */
+        font-size: 1.25rem; /* Títulos h2 más pequeños en móvil */
     }
     .habit-type-form-section p,
     .habit-type-form-section ul,
     .habit-type-form-section ul li {
-        font-size: var(--font-size-sm); /* Texto general un poco más pequeño en móvil */
+        font-size: 0.875rem; /* Texto general un poco más pequeño en móvil */
     }
 }
