@@ -6,27 +6,48 @@
    1) Variables globales y Reset básico
    ---------------------------------------------------------- */
 :root {
+    /* COLORES ORIGINALES - MANTENIDOS EXACTOS */
     --color-primary: #1b5e20;       /* Verde bosque oscuro */
     --color-secondary: #2e7d32;     /* Verde medio */
     --color-accent: #43a047;        /* Verde vivo */
     --color-bg: #e8f5e9;            /* Fondo muy suave verdoso */
-    --color-surface: #ffffff;       /* Blanco para “tarjetas” */
+    --color-surface: #ffffff;       /* Blanco para "tarjetas" */
     --color-text: #263238;          /* Gris oscuro azulado */
     --color-muted: #546e7a;         /* Gris oscuro medio */
     --color-muted-light: #757f88;   /* Gris más claro para descripciones */
     --color-border: #e0e0e0;        /* Borde tenue */
     --color-card-bg: #f1f9f1;       /* Verde muy suave para fondo de mini-tarjetas */
-
     --color-error: #c62828;         /* Rojo oscuro */
     --color-success: #2e7d32;       /* Verde oscuro para mensajes de éxito */
 
-    --radius: 12px;                 /* Radio de esquinas de las tarjetas */
+    /* NUEVAS VARIABLES RESPONSIVE */
+    --radius: clamp(8px, 1.5vw, 12px);                 /* Radio responsive */
     --transition-speed: 0.25s;
 
     --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10);
 
     --font-family: 'Roboto', sans-serif;
+
+    /* Variables responsivas para espaciado */
+    --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
+    --spacing-sm: clamp(0.5rem, 1.5vw, 0.75rem);
+    --spacing-md: clamp(0.75rem, 2vw, 1rem);
+    --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
+    --spacing-xl: clamp(1.5rem, 3vw, 2rem);
+    --spacing-xxl: clamp(2rem, 4vw, 3rem);
+
+    /* Variables para sidebar - AJUSTADA LA ANCHURA MÁXIMA PARA CONSISTENCIA */
+    --sidebar-width: clamp(200px, 20vw, 250px); /* Establecido a 250px como máximo */
+    --sidebar-width-collapsed: 60px;
+
+    /* Variables para tipografía responsive */
+    --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
+    --font-size-sm: clamp(0.8rem, 2.2vw, 0.9rem);
+    --font-size-base: clamp(0.9rem, 2.5vw, 1rem);
+    --font-size-lg: clamp(1rem, 3vw, 1.25rem);
+    --font-size-xl: clamp(1.25rem, 4vw, 1.75rem);
+    --font-size-xxl: clamp(1.5rem, 5vw, 2rem);
 }
 
 * {
@@ -46,6 +67,7 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
+    font-size: var(--font-size-base); /* Usa la variable responsive para el tamaño de fuente base */
 }
 
 /* ----------------------------------------------------------
@@ -63,24 +85,27 @@ body {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 240px;
+    width: var(--sidebar-width);
+    min-width: 200px;
+    max-width: 250px; /* Establecido a 250px como máximo */
     background-color: var(--color-primary);
     color: #fff;
     display: flex;
     flex-direction: column;
-    padding: 1rem 0;
+    padding: var(--spacing-md) 0;
     overflow-y: auto;
     z-index: 1000;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed), width var(--transition-speed);
 }
 
 .logo-container {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xxl); /* Usa variable de espaciado */
 }
 
 .logo {
-    max-width: 120px;
+    max-width: clamp(6.25rem, 10vw, 7.5rem); /* 100px a 120px */
     transition: transform var(--transition-speed);
     cursor: pointer;
 }
@@ -104,20 +129,22 @@ body {
 .menu-divider {
     height: 1px;
     background-color: rgba(255, 255, 255, 0.2);
-    margin: 1rem 0;
+    margin: var(--spacing-md) 0; /* Usa variable de espaciado */
 }
 
 .menu-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem 1.5rem;
+    padding: var(--spacing-sm) var(--spacing-lg); /* Usa variables de espaciado */
     color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
+    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
     transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 .menu-item .material-icons {
-    margin-right: 0.75rem;
+    margin-right: var(--spacing-sm); /* Usa variable de espaciado */
+    font-size: var(--font-size-lg); /* Asegura que los íconos escalen */
 }
 .menu-item:hover,
 .menu-item.active {
@@ -126,44 +153,44 @@ body {
 }
 .menu-item.profile {
     margin-top: auto;
-    padding-top: 1rem;
+    padding-top: var(--spacing-md); /* Usa variable de espaciado */
 }
 
 /* Main Content (se desplaza, sidebar queda fija) */
 .main-content {
     flex-grow: 1;
-    margin-left: 240px;   /* reserva el ancho de la sidebar */
-    padding: 2rem;
+    margin-left: var(--sidebar-width);   /* reserva el ancho de la sidebar, ahora es responsivo */
+    padding: var(--spacing-xl); /* Usa variable de espaciado */
     display: flex;
     flex-direction: column;
     transition: margin-left var(--transition-speed);
 }
 
 /* ----------------------------------------------------------
-   3) Encabezados y Jerarquía Tipográfica
+   3) Encabezados y Jerarquía Tipográfica (Ajustados con variables)
    ---------------------------------------------------------- */
 .header h1 {
-    font-size: 2rem;
+    font-size: var(--font-size-xxxl); /* Más grande para el título principal */
     font-weight: 700;
     color: var(--color-primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg); /* Usa variable de espaciado */
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg); /* Usa variable de espaciado */
 }
 
 .section-title {
-    font-size: 1.75rem;
+    font-size: var(--font-size-xl); /* Ajustado a variable */
     font-weight: 600;
     color: var(--color-primary);
 }
 
 /* ----------------------------------------------------------
-   4) Botones Genéricos
+   4) Botones Genéricos (Ajustados con variables)
    ---------------------------------------------------------- */
 .btn,
 .btn-create,
@@ -173,17 +200,19 @@ body {
     align-items: center;
     background-color: var(--color-primary);
     color: #fff;
-    padding: 0.5rem 1rem;
+    padding: var(--spacing-sm) var(--spacing-md); /* Usa variables de espaciado */
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 500;
+    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
     transition: background-color var(--transition-speed), transform var(--transition-speed);
     cursor: pointer;
 }
 
 .btn-create .material-icons,
 .btn-primary .material-icons {
-    margin-right: 0.5rem;
+    margin-right: var(--spacing-xs); /* Usa variable de espaciado */
+    font-size: var(--font-size-lg); /* Ajusta tamaño de ícono */
 }
 
 .btn:hover,
@@ -203,14 +232,15 @@ body {
 }
 
 /* ----------------------------------------------------------
-   5) Mensajes de Feedback
+   5) Mensajes de Feedback (Ajustados con variables)
    ---------------------------------------------------------- */
 .success-message,
 .error-message {
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
+    margin-bottom: var(--spacing-md); /* Usa variable de espaciado */
+    padding: var(--spacing-sm) var(--spacing-md); /* Usa variables de espaciado */
     border-radius: var(--radius);
     font-weight: 500;
+    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
 }
 .success-message {
     background-color: var(--color-success);
@@ -222,22 +252,23 @@ body {
 }
 
 /* ----------------------------------------------------------
-   6) “Empty Message” (sin datos)
+   6) “Empty Message” (sin datos) (Ajustados con variables)
    ---------------------------------------------------------- */
 .empty-msg {
     text-align: center;
     color: var(--color-muted);
     font-style: italic;
-    margin: 1rem 0;
+    margin: var(--spacing-md) 0; /* Usa variable de espaciado */
+    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
 }
 
 /* ----------------------------------------------------------
-   7) Summary Section: Grid de Tres Columnas
+   7) Summary Section: Grid de Tres Columnas (Ajustados con variables)
    ---------------------------------------------------------- */
 .summary-section {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem; /* espacio reduced para que los recuadros queden más juntos */
+    grid-template-columns: repeat(auto-fill, minmax(clamp(18.75rem, 25vw, 25rem), 1fr)); /* minmax(300px, 400px) */
+    gap: var(--spacing-md); /* Usa variable de espaciado */
     width: 100%;
 }
 
@@ -247,7 +278,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   8) Tarjetas Principales (“summary-card”)
+   8) Tarjetas Principales (“summary-card”) (Ajustados con variables)
    ---------------------------------------------------------- */
 .summary-card {
     display: flex;
@@ -255,7 +286,7 @@ body {
     background-color: var(--color-surface);
     border-radius: var(--radius);
     box-shadow: var(--shadow-light);
-    padding: 1.5rem;
+    padding: var(--spacing-lg); /* Usa variable de espaciado */
     text-decoration: none;
     color: inherit;
     height: 100%;
@@ -269,79 +300,76 @@ body {
 
 /* Título interno de cada tarjeta */
 .summary-card h3 {
-    font-size: 1.3rem;
+    font-size: var(--font-size-lg); /* Usa variable de tamaño de fuente */
     font-weight: 600;
     color: var(--color-secondary);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md); /* Usa variable de espaciado */
 }
 
 /* ----------------------------------------------------------
-   9) Items Container (Grid de Tarjetas Pequeñas)
+   9) Items Container (Grid de Tarjetas Pequeñas) (Ajustados con variables)
    ---------------------------------------------------------- */
 .items-container {
-    flex-grow: 1;                /* ocupa todo el espacio vertical disponible */
+    flex-grow: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;                /* gap reducido para menos distancia */
-    overflow-y: auto;            /* scroll interno si hay muchos items */
-    max-height: 350px;           /* alto máximo ajustado */
-    padding-right: 0.5rem;       /* espacio para scroll vertical */
-    margin-top: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(9.375rem, 15vw, 12.5rem), 1fr)); /* minmax(150px, 200px) */
+    gap: var(--spacing-sm); /* Usa variable de espaciado */
+    overflow-y: auto;
+    max-height: 50vh; /* Se mantiene vh para altura relativa al viewport */
+    padding-right: var(--spacing-xs); /* Usa variable de espaciado */
+    margin-top: var(--spacing-sm); /* Usa variable de espaciado */
 }
 
 /* ----------------------------------------------------------
-   10) Estilo de Cada “item” (Tarjeta Pequeña)
+   10) Estilo de Cada “item” (Tarjeta Pequeña) (Ajustados con variables)
    ---------------------------------------------------------- */
 .items-container .item {
     display: flex;
     flex-direction: column;
-    background-color: var(--color-card-bg);  /* verde muy suave */
-    border: 2px solid var(--color-accent);   /* borde verde vivo */
+    background-color: var(--color-card-bg);
+    border: 2px solid var(--color-accent);
     border-radius: var(--radius);
-    padding: 0.75rem 0.75rem;
+    padding: var(--spacing-sm); /* Usa variable de espaciado */
     box-shadow: var(--shadow-light);
-    /* Eliminamos la transición de hover para que no cambie al pasar ratón */
 }
 
 /* ----------------------------------------------------------
-   11) Línea divisora debajo del título de cada mini-tarjeta
+   11) Línea divisora debajo del título de cada mini-tarjeta (Ajustados con variables)
    ---------------------------------------------------------- */
 .items-container .item-name {
-    font-size: 1.05rem;
+    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
     font-weight: 600;
-    margin-bottom: 0.4rem;
+    margin-bottom: var(--spacing-xs); /* Usa variable de espaciado */
     color: var(--color-text);
     word-break: break-word;
-
-    /* Aquí añadimos la línea divisora */
     border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.3rem;
+    padding-bottom: var(--spacing-xs); /* Usa variable de espaciado */
 }
 
 /* ----------------------------------------------------------
-   12) Descripción y metadata
+   12) Descripción y metadata (Ajustados con variables)
    ---------------------------------------------------------- */
 /* Descripción (solo para hábitos/metas) */
 .items-container .item-desc {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm); /* Usa variable de tamaño de fuente */
     color: var(--color-muted-light);
-    margin-bottom: 0.5rem;
-    flex-grow: 1; /* empuja la metadata abajo si sobra espacio */
+    margin-bottom: var(--spacing-xs); /* Usa variable de espaciado */
+    flex-grow: 1;
     word-break: break-word;
 }
 
 /* Metadata (tipo, fecha o “ID Usuario”) */
 .items-container .item-meta {
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs); /* Usa variable de tamaño de fuente */
     color: var(--color-muted);
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--spacing-xs); /* Usa variable de espaciado */
     margin-top: auto;
 }
 
 /* ----------------------------------------------------------
-   13) Registros Recientes (mismo estilo que item, sin hover)
+   13) Registros Recientes (mismo estilo que item, sin hover) (Ajustados con variables)
    ---------------------------------------------------------- */
 .items-container .record-item {
     display: flex;
@@ -349,24 +377,22 @@ body {
     background-color: var(--color-card-bg);
     border: 2px solid var(--color-accent);
     border-radius: var(--radius);
-    padding: 0.75rem 0.75rem;
+    padding: var(--spacing-sm); /* Usa variable de espaciado */
     box-shadow: var(--shadow-light);
-    /* Sin transición de hover */
 }
 
 .items-container .record-item .record-date {
     font-weight: 600;
-    margin-bottom: 0.4rem;
+    margin-bottom: var(--spacing-xs); /* Usa variable de espaciado */
     color: var(--color-text);
-
-    /* Línea divisora bajo la fecha si lo deseas (opcional) */
     border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.3rem;
+    padding-bottom: var(--spacing-xs); /* Usa variable de espaciado */
+    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
 }
 .items-container .record-item .record-value {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm); /* Usa variable de tamaño de fuente */
     color: var(--color-muted-light);
-    margin-top: 0.4rem;
+    margin-top: var(--spacing-xs); /* Usa variable de espaciado */
 }
 
 /* ----------------------------------------------------------
@@ -384,31 +410,92 @@ body {
 }
 
 /* ----------------------------------------------------------
-   15) Ajustes Responsivos
+   15) Estilos específicos para la sección de contenido (como 'Sobre el desarrollador')
+   ---------------------------------------------------------- */
+.habit-type-form-section {
+    background-color: var(--color-surface);
+    padding: var(--spacing-xl); /* Espaciado interno generoso y responsivo */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-medium); /* Una sombra más pronunciada para destacarla */
+    max-width: 60rem; /* Limitar el ancho para legibilidad en pantallas grandes (~960px) */
+    margin: var(--spacing-xl) auto; /* Centrar y añadir margen responsivo superior/inferior */
+}
+
+.habit-type-form-section h2 {
+    font-size: var(--font-size-xl); /* Coherente con section-title, adaptable */
+    color: var(--color-primary);
+    margin-top: var(--spacing-lg); /* Margen superior responsivo */
+    margin-bottom: var(--spacing-md); /* Margen inferior responsivo */
+}
+
+.habit-type-form-section h2:first-of-type {
+    margin-top: 0; /* Asegura que el primer h2 no tenga margen superior excesivo */
+}
+
+.habit-type-form-section p {
+    font-size: var(--font-size-base); /* Tamaño base de texto, adaptable */
+    margin-bottom: var(--spacing-md); /* Margen inferior responsivo para párrafos */
+    line-height: 1.7; /* Mejora la legibilidad del texto */
+}
+
+.habit-type-form-section ul {
+    list-style-type: disc;
+    margin-left: var(--spacing-lg); /* Sangría para las viñetas, responsiva */
+    margin-bottom: var(--spacing-md); /* Reemplaza el estilo inline del HTML */
+    font-size: var(--font-size-base); /* Asegura que el texto de la lista escale */
+}
+
+.habit-type-form-section ul li {
+    margin-bottom: var(--spacing-xs); /* Espacio entre ítems de lista, responsivo */
+}
+
+.habit-type-form-section strong {
+    color: var(--color-text); /* Asegurar un buen contraste para texto resaltado */
+}
+
+.habit-type-form-section a {
+    color: var(--color-secondary); /* Color de enlaces, se puede ajustar */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-speed), text-decoration var(--transition-speed);
+}
+
+.habit-type-form-section a:hover {
+    color: var(--color-accent); /* Color de hover para enlaces */
+    text-decoration: underline;
+}
+
+
+/* ----------------------------------------------------------
+   16) Ajustes Responsivos (Ajustados con variables)
    ---------------------------------------------------------- */
 @media (max-width: 1024px) {
     .summary-section {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(clamp(16rem, 25vw, 20rem), 1fr)); /* 256px a 320px */
     }
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        display: none;
+        display: none; /* La sidebar se oculta completamente en móviles */
     }
     .dashboard-container {
         flex-direction: column;
     }
     .main-content {
-        margin-left: 0;
-        padding: 1rem;
+        margin-left: 0; /* El contenido principal ocupa todo el ancho */
+        padding: var(--spacing-md); /* Ajusta el padding para pantallas más pequeñas */
     }
     .summary-section {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+        gap: var(--spacing-md);
     }
     .items-container {
-        max-height: none; /* ver todos los ítems en móvil sin scroll interno */
+        max-height: none; /* Elimina el scroll interno para ver todos los ítems en móvil */
+    }
+    .habit-type-form-section {
+        margin: var(--spacing-md) auto; /* Reduce el margen en móvil */
+        padding: var(--spacing-md); /* Reduce el padding en móvil */
     }
 }
 
@@ -417,10 +504,21 @@ body {
     .btn-create,
     .btn-cancel,
     .btn-primary {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.8rem;
+        font-size: var(--font-size-sm); /* Botones más pequeños */
+        padding: var(--spacing-xs) var(--spacing-sm); /* Padding más pequeño */
+    }
+    .header h1 {
+        font-size: var(--font-size-xxl); /* Título principal un poco más pequeño en móviles muy pequeños */
     }
     .section-title {
-        font-size: 1.5rem;
+        font-size: var(--font-size-xl); /* Título de sección un poco más pequeño */
+    }
+    .habit-type-form-section h2 {
+        font-size: var(--font-size-lg); /* Títulos h2 más pequeños en móvil */
+    }
+    .habit-type-form-section p,
+    .habit-type-form-section ul,
+    .habit-type-form-section ul li {
+        font-size: var(--font-size-sm); /* Texto general un poco más pequeño en móvil */
     }
 }

@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <title>TrackUp - Registros Diarios</title>
   <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
-  <link rel="stylesheet" th:href="@{/css/remain.css}" />
+  <link rel="stylesheet" th:href="@{/css/daily-records-styles.css}" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="dashboard-container">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo-container">
       <a th:href="@{/}" aria-label="Volver al inicio">
@@ -32,7 +31,7 @@
           <span class="material-icons">flag</span>
           <span>Metas</span>
         </a>
-        <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
+        <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item active">
           <span class="material-icons">calendar_today</span>
           <span>Registros Diarios</span>
         </a>
@@ -51,28 +50,28 @@
     </nav>
   </aside>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content">
     <section class="habit-section">
       <div class="section-header">
         <h1 class="section-title">Registros Diarios</h1>
       </div>
 
-      <!-- Mensaje de éxito -->
       <div th:if="${successMsg}" class="success-message" th:text="${successMsg}"></div>
       <div th:if="${param.error}" class="error-message">
         Error: <span th:text="${param.error}">error</span>
       </div>
 
-      <!-- ─── 1. GRÁFICOS CIRCULARES ─────────────────────────────────────── -->
       <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-top: 2rem;">
-        <!-- Desde Siempre -->
-        <div th:if="${completedCount + notCompletedCount > 0}" style="width: 300px;">
+        <div th:if="${overallCompleted + overallNotCompleted > 0}" style="width: 300px;">
           <h4 style="text-align: center;">Desde Siempre</h4>
           <canvas id="overallPieChart"></canvas>
         </div>
+        <div th:if="${overallCompleted + overallNotCompleted == 0}" style="width: 300px; text-align: center; color: #666;">
+          <h4>Desde Siempre</h4>
+          <p>No hay registros globales para mostrar.</p>
+        </div>
 
-        <!-- Esta Semana -->
+
         <div th:if="${weeklyTotal > 0}" style="width: 300px;">
           <h4 style="text-align: center;">Esta Semana</h4>
           <canvas id="weeklyPieChart"></canvas>
@@ -82,7 +81,6 @@
           <p>No hay registros en los últimos 7 días.</p>
         </div>
 
-        <!-- Este Mes -->
         <div th:if="${monthlyTotal > 0}" style="width: 300px;">
           <h4 style="text-align: center;">Este Mes</h4>
           <canvas id="monthlyPieChart"></canvas>
@@ -93,7 +91,6 @@
         </div>
       </div>
 
-      <!-- ─── 2. HÁBITOS y BARRA DE PROGRESO──────────────────────────────── -->
       <div class="habit-table-container" style="margin-top: 3rem;">
         <h3>Hábitos Actuales</h3>
         <p th:if="${#lists.isEmpty(habits)}" class="empty-msg">
@@ -104,25 +101,28 @@
           <thead>
           <tr>
             <th>Hábito</th>
-            <th>Progreso (%)</th>
+            <th>Tasa de Cumplimiento (%)</th>
             <th style="text-align: center;">Acción</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="habit : ${habits}">
-            <!-- Nombre del hábito -->
             <td th:text="${habit.name}">Nombre del hábito</td>
-            <!-- Barra de progreso + porcentaje -->
             <td>
-              <div class="progress-bar">
-                <div class="progress-fill"
-                     th:style="'width:' + ${habitCompletionPercentage[habit.id]} + '%'">
+              <div style="display: flex; justify-content: space-between; font-size: 0.9em; margin-bottom: 4px;">
+                <span th:text="${#numbers.formatDecimal(habitCompletionPercentage[habit.id], 1, 1)} + '%'">0%</span>
+                <span th:text="${#numbers.formatDecimal(100 - habitCompletionPercentage[habit.id], 1, 1)} + '%'">0%</span>
+              </div>
+              <div class="progress-bar" style="display: flex; height: 20px; background-color: #eee; border-radius: 10px; overflow: hidden;">
+                <div class="progress-completed"
+                     th:style="'width:' + ${habitCompletionPercentage[habit.id]} + '%; background-color: #2ecc71;'">
+                </div>
+                <div class="progress-not-completed"
+                     th:style="'width:' + (100 - ${habitCompletionPercentage[habit.id]}) + '%; background-color: #e74c3c;'">
                 </div>
               </div>
-              <span class="progress-text"
-                    th:text="${habitCompletionPercentage[habit.id]} + '%'">0%</span>
             </td>
-            <!-- Botón para añadir registro -->
+
             <td style="text-align: center;">
               <a th:href="@{/daily-records/new(habitId=${habit.id})}"
                  class="btn-sm btn-primary">
@@ -134,7 +134,6 @@
         </table>
       </div>
 
-      <!-- ─── 3. HISTORIAL DE REGISTROS─────────────────────────────────── -->
       <div th:if="${!#lists.isEmpty(records)}" style="margin-top: 2rem;">
         <h3>Historial de Registros</h3>
         <table class="records-table">
@@ -171,11 +170,11 @@
   </main>
 </div>
 
-<!-- ─── SCRIPT PARA LOS PIE CHARTS ────────────────────────────────── -->
 <script th:inline="javascript">
   /*<![CDATA[*/
-  const overallCompleted = [[${completedCount}]];
-  const overallNotCompleted = [[${notCompletedCount}]];
+  // Cambiado: Accede a las variables 'overallCompleted' y 'overallNotCompleted' como se pasan desde el controlador
+  const overallCompleted = [[${overallCompleted}]];
+  const overallNotCompleted = [[${overallNotCompleted}]];
 
   const weeklyCompleted = [[${weeklyCompleted}]];
   const weeklyTotal = [[${weeklyTotal}]];
@@ -283,73 +282,5 @@
   /*]]>*/
 </script>
 
-<!-- ─── ESTILOS DE TABLAS y BARRA DE PROGRESO ────────────────────── -->
-<style>
-  .records-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-  .records-table th,
-  .records-table td {
-    border: 1px solid #ddd;
-    padding: 0.75rem;
-    text-align: left;
-  }
-  .records-table th {
-    background: var(--primary-color);
-    color: white;
-  }
-  .btn-sm {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    background: var(--secondary-color);
-    color: white;
-    text-decoration: none;
-  }
-  .btn-sm:hover {
-    background: var(--secondary-color-hover);
-  }
-  .progress-bar {
-    width: 100%;
-    background-color: #f0f0f0;
-    border-radius: 4px;
-    overflow: hidden;
-    height: 1rem;
-    margin-bottom: 0.25rem;
-  }
-  .progress-fill {
-    height: 100%;
-    background-color: var(--primary-color);
-  }
-  .progress-text {
-    font-size: 0.9rem;
-    color: #333;
-  }
-  .habit-table-container {
-    margin-top: 2rem;
-  }
-  .empty-msg {
-    color: #666;
-    font-style: italic;
-    margin-top: 1rem;
-  }
-  .link {
-    color: var(--accent-color);
-    text-decoration: none;
-  }
-  .link:hover {
-    text-decoration: underline;
-  }
-  .time-stats p {
-    margin: 0.2rem 0;
-  }
-  .time-stats strong {
-    color: var(--primary-color);
-  }
-</style>
 </body>
 </html>

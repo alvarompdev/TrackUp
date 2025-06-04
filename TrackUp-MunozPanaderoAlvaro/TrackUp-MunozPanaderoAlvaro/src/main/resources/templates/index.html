@@ -4,13 +4,18 @@
     <meta charset="UTF-8" />
     <title>TrackUp - Inicio</title>
     <link rel="icon" type="image/png" th:href="@{/img/logo1.png}">
-    <link rel="stylesheet" th:href="@{/css/remain.css}">
+    <!-- Carga de CSS personalizado para index -->
+    <link rel="stylesheet" th:href="@{/css/index-styles.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Chart.js para las gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="dashboard-container">
 
-    <!-- SIDEBAR -->
+    <!-- ───────────────────────────────────────────────────────────────
+         SIDEBAR
+    ─────────────────────────────────────────────────────────────── -->
     <aside class="sidebar">
         <div class="logo-container">
             <a th:href="@{/}" aria-label="Volver al inicio">
@@ -19,7 +24,7 @@
         </div>
         <nav class="menu">
             <div class="menu-top">
-                <a th:href="@{/}" class="menu-item">
+                <a th:href="@{/}" class="menu-item active">
                     <span class="material-icons">home</span>
                     <span>Inicio</span>
                 </a>
@@ -50,27 +55,32 @@
         </nav>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- ───────────────────────────────────────────────────────────────
+         MAIN CONTENT
+    ─────────────────────────────────────────────────────────────── -->
     <main class="main-content">
+        <!-- Saludo -->
         <header class="header">
             <h1>¡Bienvenido, <span th:text="${username}">Usuario</span>!</h1>
         </header>
 
+        <!-- ───────────────────────────────────────────────────────────────
+             MITAD SUPERIOR: Hábitos | Metas | Registros Recientes
+        ─────────────────────────────────────────────────────────────── -->
         <section class="summary-section">
-            <!-- ——————————————————————
-                 1) Habitos Actuales
-               —————————————————————— -->
+            <!-- 1) Hábitos Actuales -->
             <div class="summary-card-container">
                 <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="summary-card habits">
                     <h3>Hábitos Actuales</h3>
-                    <!-- contenedor extra para grid -->
                     <div class="items-container">
-                        <ul class="items-list" th:if="${!#lists.isEmpty(habits)}" th:each="habit : ${habits}">
+                        <ul class="items-list"
+                            th:if="${!#lists.isEmpty(habits)}"
+                            th:each="habit : ${habits}">
                             <li class="item">
                                 <span class="item-name" th:text="${habit.name}">Nombre hábito</span>
                                 <p class="item-desc" th:text="${habit.description}">Descripción del hábito</p>
                                 <div class="item-meta">
-                                    <span th:text="'Tipo: ' + ${habit.habitTypeName}">Diario</span>
+                                    <span th:text="'Tipo: ' + ${habit.habitTypeName}">Tipo</span>
                                     <span th:text="'Desde: ' + ${#temporals.format(habit.startDate, 'dd/MM/yyyy')}">01/01/2025</span>
                                     <span th:text="'Hasta: ' + ${#temporals.format(habit.endDate, 'dd/MM/yyyy')}">01/01/2025</span>
                                 </div>
@@ -81,15 +91,14 @@
                 </a>
             </div>
 
-            <!-- ——————————————————————
-                 2) Metas Actuales
-               —————————————————————— -->
+            <!-- 2) Metas Actuales -->
             <div class="summary-card-container">
                 <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="summary-card goals">
                     <h3>Metas Actuales</h3>
-                    <!-- contenedor extra para grid -->
                     <div class="items-container">
-                        <ul class="items-list" th:if="${!#lists.isEmpty(goals)}" th:each="goal : ${goals}">
+                        <ul class="items-list"
+                            th:if="${!#lists.isEmpty(goals)}"
+                            th:each="goal : ${goals}">
                             <li class="item">
                                 <span class="item-name" th:text="${goal.name}">Nombre meta</span>
                                 <p class="item-desc" th:text="${goal.description}">Descripción de la meta</p>
@@ -100,24 +109,202 @@
                 </a>
             </div>
 
-            <!-- ——————————————————————
-                 3) Registros Recientes
-               —————————————————————— -->
+            <!-- ── Registros Recientes (MITAD SUPERIOR) ── -->
             <div class="summary-card-container">
                 <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="summary-card records">
                     <h3>Registros Recientes</h3>
                     <div class="items-container">
-                        <ul class="records-list" th:if="${!#lists.isEmpty(records)}" th:each="record : ${records}">
+                        <ul class="records-list"
+                            th:if="${!#lists.isEmpty(records)}"
+                            th:each="record : ${records}">
                             <li class="record-item">
-                                <span class="record-date" th:text="${#temporals.format(record.date,'dd/MM/yyyy')}">01/01/2025</span>
-                                <span class="record-value" th:text="${record.completed ? '✔️ Completado' : '❌ No completado'}">Estado</span>
+                                <span class="record-date"
+                                      th:text="${#temporals.format(record.date,'dd/MM/yyyy')}">
+                                      01/01/2025
+                                </span>
+                                <span class="record-habit"
+                                      th:text="${record.habitName}">
+                                      Nombre hábito
+                                </span>
+                                <span class="record-value"
+                                      th:text="${record.completed} ? '✔️ Completado' : '❌ No completado'">
+                                      Estado
+                                </span>
                             </li>
                         </ul>
-                        <p th:if="${#lists.isEmpty(records)}" class="empty-msg">No tienes registros recientes.</p>
+                        <p th:if="${#lists.isEmpty(records)}" class="empty-msg">
+                            No tienes registros recientes.
+                        </p>
                     </div>
                 </a>
             </div>
+
         </section>
+
+        <!-- ───────────────────────────────────────────────────────────────
+             MITAD INFERIOR: SOLO LAS 3 GRÁFICAS DE REGISTROS
+        ─────────────────────────────────────────────────────────────── -->
+        <section class="habit-section">
+            <div class="section-header">
+                <h1 class="section-title">Registros Diarios</h1>
+            </div>
+
+            <!-- Mensajes de éxito / error (si viniesen por parámetro) -->
+            <div th:if="${successMsg}" class="success-message" th:text="${successMsg}"></div>
+            <div th:if="${param.error}" class="error-message">
+                Error: <span th:text="${param.error}">error</span>
+            </div>
+
+            <!-- ─── GRÁFICOS CIRCULARES ─────────────────────────────────────── -->
+            <div class="chart-container">
+                <!-- Desde Siempre -->
+                <div class="chart-box">
+                    <h4>Desde Siempre</h4>
+                    <canvas id="overallPieChart"
+                            th:if="${(completedCount + notCompletedCount) > 0}"></canvas>
+                    <p class="chart-empty-msg"
+                       th:if="${(completedCount + notCompletedCount) == 0}">
+                        No hay registros disponibles.
+                    </p>
+                </div>
+
+                <!-- Esta Semana -->
+                <div class="chart-box">
+                    <h4>Esta Semana</h4>
+                    <canvas id="weeklyPieChart"
+                            th:if="${weeklyTotal > 0}"></canvas>
+                    <p class="chart-empty-msg"
+                       th:if="${weeklyTotal == 0}">
+                        No hay registros en los últimos 7 días.
+                    </p>
+                </div>
+
+                <!-- Este Mes -->
+                <div class="chart-box">
+                    <h4>Este Mes</h4>
+                    <canvas id="monthlyPieChart"
+                            th:if="${monthlyTotal > 0}"></canvas>
+                    <p class="chart-empty-msg"
+                       th:if="${monthlyTotal == 0}">
+                        No hay registros en los últimos 30 días.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ─── SCRIPT PARA LOS PIE CHARTS ────────────────────────────────── -->
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                const overallCompleted    = [[${completedCount}    ?: 0]];
+                const overallNotCompleted = [[${notCompletedCount} ?: 0]];
+
+                const weeklyCompleted     = [[${weeklyCompleted}    ?: 0]];
+                const weeklyTotal         = [[${weeklyTotal}        ?: 0]];
+                const weeklyNotCompleted  = [[${weeklyTotal}        ?: 0]] - [[${weeklyCompleted} ?: 0]];
+
+                const monthlyCompleted    = [[${monthlyCompleted}    ?: 0]];
+                const monthlyTotal        = [[${monthlyTotal}        ?: 0]];
+                const monthlyNotCompleted = [[${monthlyTotal}        ?: 0]] - [[${monthlyCompleted} ?: 0]];
+                /*]]>*/
+            </script>
+            <script>
+                // 1. Desde Siempre
+                if (overallCompleted + overallNotCompleted > 0) {
+                    const ctxOverall = document.getElementById('overallPieChart').getContext('2d');
+                    new Chart(ctxOverall, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Completados', 'No completados'],
+                            datasets: [{
+                                data: [overallCompleted, overallNotCompleted],
+                                backgroundColor: ['rgba(46, 204, 113, 0.8)', 'rgba(231, 76, 60, 0.8)'],
+                                borderColor: ['rgba(46, 204, 113, 1)', 'rgba(231, 76, 60, 1)'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: { position: 'bottom', labels: { font: { size: 12 } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.raw;
+                                            const total = overallCompleted + overallNotCompleted;
+                                            const percent = ((value / total) * 100).toFixed(1);
+                                            return context.label + ': ' + value + ' (' + percent + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 2. Esta Semana
+                if (weeklyTotal > 0) {
+                    const ctxWeekly = document.getElementById('weeklyPieChart').getContext('2d');
+                    new Chart(ctxWeekly, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Completados', 'No completados'],
+                            datasets: [{
+                                data: [weeklyCompleted, weeklyNotCompleted],
+                                backgroundColor: ['rgba(52, 152, 219, 0.8)', 'rgba(155, 89, 182, 0.8)'],
+                                borderColor: ['rgba(41, 128, 185, 1)', 'rgba(142, 68, 173, 1)'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: { position: 'bottom', labels: { font: { size: 12 } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.raw;
+                                            const total = weeklyCompleted + weeklyNotCompleted;
+                                            const percent = ((value / total) * 100).toFixed(1);
+                                            return context.label + ': ' + value + ' (' + percent + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 3. Este Mes
+                if (monthlyTotal > 0) {
+                    const ctxMonthly = document.getElementById('monthlyPieChart').getContext('2d');
+                    new Chart(ctxMonthly, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Completados', 'No completados'],
+                            datasets: [{
+                                data: [monthlyCompleted, monthlyNotCompleted],
+                                backgroundColor: ['rgba(241, 196, 15, 0.8)', 'rgba(231, 76, 60, 0.8)'],
+                                borderColor: ['rgba(243, 156, 18, 1)', 'rgba(192, 57, 43, 1)'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: { position: 'bottom', labels: { font: { size: 12 } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.raw;
+                                            const total = monthlyCompleted + monthlyNotCompleted;
+                                            const percent = ((value / total) * 100).toFixed(1);
+                                            return context.label + ': ' + value + ' (' + percent + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            </script>
+        </section>
+
     </main>
 </div>
 </body>

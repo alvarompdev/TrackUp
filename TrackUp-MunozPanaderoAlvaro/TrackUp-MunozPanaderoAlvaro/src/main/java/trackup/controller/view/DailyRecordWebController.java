@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors; // Asegúrate de que esta importación exista
 
 @Controller
 @RequestMapping("/daily-records")
@@ -48,65 +49,114 @@ public class DailyRecordWebController {
     }
 
     @GetMapping({"", "/user/{userId}"})
-    public String listRecords(@PathVariable(required = false) Long userId, Model model) {
+    public String listRecords(@PathVariable(required = false) Long userId,
+                              @RequestParam(value = "filter", required = false, defaultValue = "all") String filter,
+                              Model model) {
         Long current = getCurrentUserId();
         if (userId != null && !userId.equals(current)) {
             return "redirect:/daily-records?error=unauthorized";
         }
         Long uid = (userId == null ? current : userId);
 
-        // 1. Recuperar todos los registros y hábitos del usuario
-        List<DailyRecordResponseDTO> records = dailyRecordService.getAllDailyRecordsByUserId(uid);
+        List<DailyRecordResponseDTO> allRecords = dailyRecordService.getAllDailyRecordsByUserId(uid);
         List<HabitResponseDTO> habits = habitService.getAllHabitsByUserId(uid);
 
-        // 2. Cálculo global completados vs no completados
-        long completedCount = records.stream().filter(DailyRecordResponseDTO::getCompleted).count();
-        long notCompletedCount = records.size() - completedCount;
-
-        // 3. Cálculo “Esta Semana” (desde el lunes de la semana actual)
         LocalDate today = LocalDate.now();
-        LocalDate mondayThisWeek = today.with(DayOfWeek.MONDAY);
-        long weeklyTotal = records.stream()
-                .filter(r -> !r.getDate().isBefore(mondayThisWeek))
-                .count();
-        long weeklyCompleted = records.stream()
-                .filter(r -> !r.getDate().isBefore(mondayThisWeek) && r.getCompleted())
-                .count();
 
-        // 4. Cálculo “Este Mes” (desde el primer día del mes actual)
-        LocalDate firstOfMonth = today.withDayOfMonth(1);
-        long monthlyTotal = records.stream()
-                .filter(r -> !r.getDate().isBefore(firstOfMonth))
-                .count();
-        long monthlyCompleted = records.stream()
-                .filter(r -> !r.getDate().isBefore(firstOfMonth) && r.getCompleted())
-                .count();
+        // 1. Cálculos para el gráfico "Desde Siempre" (Global)
+        long overallCompleted = allRecords.stream().filter(DailyRecordResponseDTO::getCompleted).count();
+        long overallNotCompleted = allRecords.size() - overallCompleted;
 
-        // 5. Porcentaje de cumplimiento por hábito
+        // 2. Cálculos para el gráfico "Esta Semana" (considerando la semana calendario completa)
+        // El rango es desde el lunes de esta semana hasta el domingo de esta semana
+        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY); // Asume Sunday es el último día de la semana
+        List<DailyRecordResponseDTO> recordsThisWeek = allRecords.stream()
+                .filter(r -> !r.getDate().isBefore(startOfWeek) && !r.getDate().isAfter(endOfWeek))
+                .toList();
+        long weeklyCompleted = recordsThisWeek.stream().filter(DailyRecordResponseDTO::getCompleted).count();
+        long weeklyTotal = recordsThisWeek.size();
+        long weeklyNotCompleted = weeklyTotal - weeklyCompleted;
+
+
+        // 3. Cálculos para el gráfico "Este Mes" (considerando el mes calendario completo)
+        // El rango es desde el día 1 de este mes hasta el último día de este mes
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+        LocalDate endOfMonth = today.withDayOfMonth(today.lengthOfMonth());
+        List<DailyRecordResponseDTO> recordsThisMonth = allRecords.stream()
+                .filter(r -> !r.getDate().isBefore(startOfMonth) && !r.getDate().isAfter(endOfMonth))
+                .toList();
+        long monthlyCompleted = recordsThisMonth.stream().filter(DailyRecordResponseDTO::getCompleted).count();
+        long monthlyTotal = recordsThisMonth.size();
+        long monthlyNotCompleted = monthlyTotal - monthlyCompleted;
+
+
+        // La lista 'recordsForTable' para la tabla de historial (filtrada por el parámetro 'filter')
+        // Aquí también ajustamos para que los filtros "thisweek" y "thismonth" muestren el período completo
+        List<DailyRecordResponseDTO> recordsForTable;
+
+        switch (filter.toLowerCase()) {
+            case "last7days":
+                // Para "last7days", mantenemos el rango de 7 días rodantes hasta hoy,
+                // ya que es un "historial" y no una semana calendario específica
+                final LocalDate startDate7Days = today.minusDays(6);
+                recordsForTable = allRecords.stream()
+                        .filter(r -> !r.getDate().isBefore(startDate7Days) && !r.getDate().isAfter(today))
+                        .toList();
+                break;
+            case "thisweek":
+                // Ahora la tabla también mostrará la semana calendario completa
+                final LocalDate startDateFilterThisWeek = today.with(DayOfWeek.MONDAY);
+                final LocalDate endDateFilterThisWeek = today.with(DayOfWeek.SUNDAY);
+                recordsForTable = allRecords.stream()
+                        .filter(r -> !r.getDate().isBefore(startDateFilterThisWeek) && !r.getDate().isAfter(endDateFilterThisWeek))
+                        .toList();
+                break;
+            case "thismonth":
+                // Ahora la tabla también mostrará el mes calendario completo
+                final LocalDate startDateFilterThisMonth = today.withDayOfMonth(1);
+                final LocalDate endDateFilterThisMonth = today.withDayOfMonth(today.lengthOfMonth());
+                recordsForTable = allRecords.stream()
+                        .filter(r -> !r.getDate().isBefore(startDateFilterThisMonth) && !r.getDate().isAfter(endDateFilterThisMonth))
+                        .toList();
+                break;
+            default: // "all" o cualquier otro valor
+                recordsForTable = allRecords;
+                break;
+        }
+
+        // Calcular porcentajes de cumplimiento de hábitos basado en la lista para la tabla
         Map<Long, Double> habitCompletionPercentage = new HashMap<>();
         for (HabitResponseDTO habit : habits) {
-            long totalPorHabit = records.stream()
+            long totalPorHabit = recordsForTable.stream()
                     .filter(r -> r.getHabitId().equals(habit.getId()))
                     .count();
-            long completedPorHabit = records.stream()
+            long completedPorHabit = recordsForTable.stream()
                     .filter(r -> r.getHabitId().equals(habit.getId()) && r.getCompleted())
                     .count();
             double pct = (totalPorHabit == 0) ? 0.0
                     : (completedPorHabit * 100.0 / totalPorHabit);
-            pct = Math.round(pct * 10.0) / 10.0; // redondeo a un decimal
-            habitCompletionPercentage.put(habit.getId(), pct);
+            habitCompletionPercentage.put(habit.getId(), Math.round(pct * 10.0) / 10.0);
         }
 
-        // 6. Inyectar atributos en el modelo
         model.addAttribute("userId", uid);
-        model.addAttribute("records", records);
+        model.addAttribute("filter", filter);
+        model.addAttribute("records", recordsForTable); // Esta es la lista para la tabla
+
         model.addAttribute("habits", habits);
-        model.addAttribute("completedCount", completedCount);
-        model.addAttribute("notCompletedCount", notCompletedCount);
+
+        // Atributos para los gráficos circulares
+        model.addAttribute("overallCompleted", overallCompleted);
+        model.addAttribute("overallNotCompleted", overallNotCompleted);
+
         model.addAttribute("weeklyTotal", weeklyTotal);
         model.addAttribute("weeklyCompleted", weeklyCompleted);
+        model.addAttribute("weeklyNotCompleted", weeklyNotCompleted);
+
         model.addAttribute("monthlyTotal", monthlyTotal);
         model.addAttribute("monthlyCompleted", monthlyCompleted);
+        model.addAttribute("monthlyNotCompleted", monthlyNotCompleted);
+
         model.addAttribute("habitCompletionPercentage", habitCompletionPercentage);
 
         return "dailyrecord-list";

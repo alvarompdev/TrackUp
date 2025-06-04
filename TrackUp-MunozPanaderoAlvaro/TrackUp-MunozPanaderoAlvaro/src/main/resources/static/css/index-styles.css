@@ -1,0 +1,733 @@
+/* ==========================================================================
+   index-styles.css – Estilos específicos para la página de "Inicio" - VERSIÓN RESPONSIVE FINAL
+   ========================================================================== */
+
+/* ----------------------------------------------------------
+   1) Variables globales y Reset básico
+---------------------------------------------------------- */
+:root {
+    /* COLORES ORIGINALES - MANTENIDOS EXACTOS */
+    --color-primary: #1b5e20;       /* Verde bosque oscuro */
+    --color-secondary: #2e7d32;     /* Verde medio */
+    --color-accent: #43a047;        /* Verde vivo */
+    --color-bg: #e8f5e9;            /* Fondo muy suave verdoso */
+    --color-surface: #ffffff;       /* Blanco para "tarjetas" */
+    --color-text: #263238;          /* Gris oscuro azulado */
+    --color-muted: #546e7a;         /* Gris oscuro medio */
+    --color-muted-light: #757f88;   /* Gris más claro para descripciones */
+    --color-border: #e0e0e0;        /* Borde tenue */
+    --color-card-bg: #f1f9f1;       /* Verde muy suave para fondo de mini-tarjetas */
+    --color-error: #c62828;         /* Rojo oscuro */
+    --color-success: #2e7d32;       /* Verde oscuro para mensajes de éxito */
+
+    /* NUEVAS VARIABLES RESPONSIVE */
+    --radius: clamp(8px, 1.5vw, 12px);                 /* Radio responsive */
+    --transition-speed: 0.25s;
+
+    --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10);
+
+    --font-family: 'Roboto', sans-serif;
+
+    /* Variables responsivas para espaciado */
+    --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
+    --spacing-sm: clamp(0.5rem, 1.5vw, 0.75rem);
+    --spacing-md: clamp(0.75rem, 2vw, 1rem);
+    --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
+    --spacing-xl: clamp(1.5rem, 3vw, 2rem);
+    --spacing-xxl: clamp(2rem, 4vw, 3rem);
+
+    /* Variables para sidebar - AJUSTADA LA ANCHURA MÁXIMA PARA CONSISTENCIA */
+    --sidebar-width: clamp(200px, 20vw, 250px); /* Establecido a 250px como máximo */
+    --sidebar-width-collapsed: 60px;
+
+    /* Variables para tipografía responsive */
+    --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
+    --font-size-sm: clamp(0.8rem, 2.2vw, 0.9rem);
+    --font-size-base: clamp(0.9rem, 2.5vw, 1rem);
+    --font-size-lg: clamp(1rem, 3vw, 1.25rem);
+    --font-size-xl: clamp(1.25rem, 4vw, 1.75rem);
+    --font-size-xxl: clamp(1.5rem, 5vw, 2rem);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: clamp(14px, 1.5vw, 16px); /* Base font-size responsive */
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* ----------------------------------------------------------
+   2) Dashboard Container / Sidebar / Main Content
+---------------------------------------------------------- */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    position: relative;
+}
+
+/* Sidebar responsiva - AJUSTADA LA ANCHURA MÁXIMA PARA CONSISTENCIA */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    min-width: 200px;
+    max-width: 250px; /* Establecido a 250px como máximo */
+    background-color: var(--color-primary);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-md) 0;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed), width var(--transition-speed);
+}
+
+/* Sidebar collapsed en pantallas medianas */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .sidebar {
+        width: var(--sidebar-width-collapsed);
+    }
+
+    /* Mantener texto visible, solo ocultar en móviles */
+    .sidebar .menu-item {
+        justify-content: center;
+        padding: var(--spacing-sm);
+    }
+
+    .sidebar .menu-item .material-icons {
+        margin-right: 0;
+    }
+
+    .sidebar .logo-container {
+        padding: 0 var(--spacing-xs);
+    }
+
+    .sidebar .logo {
+        max-width: 40px;
+    }
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding: 0 var(--spacing-md);
+}
+
+.logo {
+    max-width: min(120px, 60%);
+    height: auto;
+    transition: transform var(--transition-speed);
+    cursor: pointer;
+}
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.menu {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu-top,
+.menu-bottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: var(--spacing-md) 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--font-size-base);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    min-height: 44px; /* Tamaño mínimo para touch devices */
+}
+.menu-item .material-icons {
+    margin-right: var(--spacing-sm);
+    flex-shrink: 0;
+}
+.menu-item:hover,
+.menu-item.active {
+    background-color: var(--color-secondary);
+    color: #fff;
+}
+.menu-item.profile {
+    margin-top: auto;
+    padding-top: var(--spacing-md);
+}
+
+/* Main Content responsivo */
+.main-content {
+    flex-grow: 1;
+    margin-left: var(--sidebar-width);
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    transition: margin-left var(--transition-speed);
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
+}
+
+/* Ajuste para sidebar collapsed */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .main-content {
+        margin-left: var(--sidebar-width-collapsed);
+        width: calc(100% - var(--sidebar-width-collapsed));
+    }
+}
+
+/* ----------------------------------------------------------
+   3) Encabezados y Jerarquía Tipográfica
+---------------------------------------------------------- */
+.header h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.2;
+}
+
+/* ----------------------------------------------------------
+   4) Summary Section: Grid Responsivo
+---------------------------------------------------------- */
+.summary-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    width: 100%;
+    padding: var(--spacing-xs); /* Añadido padding para evitar corte del hover */
+}
+
+/* Ajustes para diferentes tamaños de pantalla */
+@media (min-width: 1400px) {
+    .summary-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-section {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+}
+
+.summary-card-container {
+    width: 100%;
+}
+
+/* ----------------------------------------------------------
+   5) Tarjetas Principales ("summary-card")
+---------------------------------------------------------- */
+.summary-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    min-height: 200px;
+    transition: box-shadow var(--transition-speed), transform var(--transition-speed);
+}
+
+.summary-card:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+/* Título interno de cada tarjeta */
+.summary-card h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.3;
+}
+
+/* ----------------------------------------------------------
+   6) Items Container (Grid Responsivo)
+---------------------------------------------------------- */
+.items-container {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(140px, 45%), 1fr));
+    gap: var(--spacing-sm);
+    overflow-y: auto;
+    max-height: clamp(250px, 40vh, 400px);
+    padding-right: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+    /* INICIO DE CAMBIO: Solución para el problema del hover */
+    padding-top: var(--spacing-xs); /* Añadido padding superior para evitar que el hover se corte */
+    /* FIN DE CAMBIO */
+}
+
+/* Ajustes para móviles */
+@media (max-width: 480px) {
+    .items-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        max-height: none;
+        gap: var(--spacing-xs);
+    }
+}
+
+/* ----------------------------------------------------------
+   7) Estilo de Cada "item" (Tarjeta Pequeña)
+---------------------------------------------------------- */
+.items-container .item {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-card-bg);
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius);
+    padding: var(--spacing-sm);
+    box-shadow: var(--shadow-light);
+    min-height: 100px;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.items-container .item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* ----------------------------------------------------------
+   8) Línea divisora debajo del título de cada mini-tarjeta
+---------------------------------------------------------- */
+.items-container .item-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text);
+    word-break: break-word;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-xs);
+    line-height: 1.3;
+}
+
+/* ----------------------------------------------------------
+   9) Descripción y metadata en "item"
+---------------------------------------------------------- */
+.items-container .item-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted-light);
+    margin-bottom: var(--spacing-xs);
+    flex-grow: 1;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.items-container .item-meta {
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: auto;
+}
+
+/* ----------------------------------------------------------
+   10) Registros Recientes (mismo estilo que item)
+---------------------------------------------------------- */
+.items-container .record-item {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-card-bg);
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius);
+    padding: var(--spacing-sm);
+    box-shadow: var(--shadow-light);
+    min-height: 100px;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.items-container .record-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.items-container .record-item .record-date {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-xs);
+    font-size: var(--font-size-base);
+    line-height: 1.3;
+}
+.items-container .record-item .record-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted-light);
+    margin-top: var(--spacing-xs);
+    line-height: 1.4;
+}
+
+/* ----------------------------------------------------------
+   11) "Empty Message" (sin datos)
+---------------------------------------------------------- */
+.empty-msg {
+    text-align: center;
+    color: var(--color-muted);
+    font-style: italic;
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-md);
+}
+
+/* ----------------------------------------------------------
+   12) "Registros Diarios" (gráficas)
+---------------------------------------------------------- */
+.habit-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.habit-section .section-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-primary);
+    line-height: 1.2;
+}
+
+/* Layout de gráficos: grid responsive */
+.chart-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: var(--spacing-lg);
+    justify-items: center;
+    align-items: start;
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-xs); /* Padding para evitar corte del hover */
+}
+
+/* Ajustes para diferentes tamaños */
+@media (min-width: 1200px) {
+    .chart-container {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+}
+
+/* Cada "caja" de gráfico */
+.chart-box {
+    background-color: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+    padding: var(--spacing-md);
+    width: 100%;
+    max-width: min(400px, 100%);
+    text-align: center;
+    transition: box-shadow var(--transition-speed);
+}
+
+.chart-box:hover {
+    box-shadow: var(--shadow-medium);
+}
+
+.chart-box h4 {
+    font-size: var(--font-size-lg);
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.3;
+}
+
+.chart-box canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px;
+}
+
+/* Mensaje "no hay datos" dentro de cada gráfico */
+.chart-empty-msg {
+    margin-top: var(--spacing-md);
+    color: var(--color-muted);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-md);
+}
+
+/* ----------------------------------------------------------
+   13) Mensajes de éxito/error
+---------------------------------------------------------- */
+.success-message,
+.error-message {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    font-weight: 500;
+    width: 100%;
+    font-size: var(--font-size-base);
+}
+
+.success-message {
+    background-color: var(--color-success);
+    color: #fff;
+}
+
+.error-message {
+    background-color: var(--color-error);
+    color: #fff;
+}
+
+/* ----------------------------------------------------------
+   14) Media Queries para diferentes dispositivos
+---------------------------------------------------------- */
+
+/* Pantallas muy grandes (monitores de escritorio) - AJUSTADA LA ANCHURA MÁXIMA */
+@media (min-width: 1400px) {
+    :root {
+        --sidebar-width: min(250px, 20vw); /* Establecido a 250px como máximo */
+    }
+
+    .main-content {
+        max-width: calc(100vw - var(--sidebar-width));
+        padding: var(--spacing-xxl);
+    }
+
+    .summary-section {
+        gap: var(--spacing-lg);
+    }
+
+    .chart-container {
+        gap: var(--spacing-xl);
+    }
+}
+
+/* Pantallas grandes (laptops) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .items-container {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+}
+
+/* Tablets */
+@media (max-width: 991px) and (min-width: 769px) {
+    .summary-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .items-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+/* Móviles y tablets pequeñas - MENÚ FUNCIONAL */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: min(280px, 80vw); /* Responsive width - esta es la anchura cuando se despliega el menú móvil */
+        transition: transform var(--transition-speed);
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    /* Asegurar que el texto sea visible en móviles */
+    .sidebar .menu-item {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        justify-content: flex-start;
+    }
+
+    .sidebar .menu-item .material-icons {
+        margin-right: var(--spacing-sm);
+    }
+
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: var(--spacing-md);
+    }
+
+    .summary-section {
+        grid-template-columns: 1fr;
+        padding: var(--spacing-sm); /* Más padding en móviles */
+    }
+
+    .items-container {
+        max-height: none;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        padding: var(--spacing-xs); /* Padding para evitar corte */
+        padding-top: var(--spacing-xs); /* Mantener el padding superior para el hover */
+    }
+
+    .habit-section .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+}
+
+/* Móviles pequeños - MEJORADO */
+@media (max-width: 480px) {
+    .main-content {
+        padding: var(--spacing-sm);
+    }
+
+    .summary-card {
+        padding: var(--spacing-sm);
+        min-height: 180px;
+    }
+
+    .summary-section {
+        padding: var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+
+    .items-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        padding: var(--spacing-xs);
+        padding-top: var(--spacing-xs); /* Mantener el padding superior para el hover */
+        gap: var(--spacing-xs);
+    }
+
+    .chart-box {
+        padding: var(--spacing-sm);
+    }
+
+    .chart-container {
+        padding: var(--spacing-xs);
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 320px) {
+    .items-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-card {
+        min-height: 160px;
+    }
+}
+
+/* ----------------------------------------------------------
+   15) Preferencias de accesibilidad
+---------------------------------------------------------- */
+
+/* Reducir animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Modo oscuro automático - DESHABILITADO para mantener colores originales */
+/* @media (prefers-color-scheme: dark) {
+    :root {
+        --color-bg: #121212;
+        --color-surface: #1e1e1e;
+        --color-text: #e0e0e0;
+        --color-card-bg: #2a2a2a;
+        --color-border: #404040;
+        --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.3);
+        --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+} */
+
+/* ----------------------------------------------------------
+   16) Utilidades responsivas adicionales
+---------------------------------------------------------- */
+
+/* Contenedor para botones móviles (hamburger menu, etc.) */
+.mobile-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+@media (max-width: 768px) {
+    .mobile-header {
+        display: flex;
+    }
+}
+
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius);
+    transition: background-color var(--transition-speed);
+}
+
+.mobile-menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Overlay para cerrar sidebar en móviles */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay.active {
+        display: block;
+    }
+}

@@ -40,7 +40,7 @@
         <div class="button-group" style="margin-top: 1.5rem;">
             <!-- Cancelar vuelve al listado bajo /daily-records/user/{userId} -->
             <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="btn btn-cancel">
-                <span class="material-icons">arrow_back</span> Cancelar
+                Cancelar
             </a>
             <button type="submit" class="btn btn-primary"
                     th:text="${isEdit} ? 'Actualizar' : 'Crear'">
