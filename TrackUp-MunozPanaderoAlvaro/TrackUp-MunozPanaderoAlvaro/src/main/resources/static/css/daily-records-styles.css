@@ -1,5 +1,5 @@
 /* =========================================================================
-   daily-records-styles.css – Estilos específicos para la página de "Registros Diarios"
+   daily-records-styles.css – Estilo unificado para la página de "Registros Diarios"
    ========================================================================== */
 
 /* ----------------------------------------------------------
@@ -111,6 +111,14 @@ a {
     line-height: 1.2;
 }
 
+h1 {
+    font-size: var(--font-size-xxl);   /* Tamaño XXL uniforme */
+    font-weight: 700;                  /* Negrita */
+    color: var(--color-primary);       /* Color principal */
+    margin: var(--spacing-lg) 0;       /* Margen vertical uniforme, sin margen horizontal */
+    line-height: 1.2;
+}
+
 .logo-container {
     text-align: center;
     margin-bottom: 2rem;
@@ -190,13 +198,26 @@ a {
 }
 
 /* ----------------------------------------------------------
-   Contenido principal (respetando el ancho de la sidebar) (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
+   Contenido principal (respetando el ancho de la sidebar y márgenes responsive)
 ---------------------------------------------------------- */
 .main-content {
     flex-grow: 1;
-    margin-left: 240px;    /* Espacio para la sidebar fija, DEBE COINCIDIR con el ancho de .sidebar */
-    padding: 2rem;
+    margin-left: var(--sidebar-width);            /* Espacio para la sidebar fija */
+    padding: var(--spacing-xl);                   /* Igual que en index-styles.css */
     background-color: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    transition: margin-left var(--transition-speed);
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
+}
+
+/* Ajuste para sidebar collapsed */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .main-content {
+        margin-left: var(--sidebar-width-collapsed);
+        width: calc(100% - var(--sidebar-width-collapsed));
+    }
 }
 
 /* ----------------------------------------------------------
@@ -206,20 +227,25 @@ a {
 .habit-table-container h3,
 .main-content > h1 {
     color: var(--color-primary);
-    margin-bottom: 1rem;
-    /* Aseguramos que los títulos directos del main-content siempre se alineen a la izquierda */
+    margin-bottom: var(--spacing-lg);
+    /* Alineado a la izquierda como en index-styles.css */
     text-align: left;
 }
 
 .main-content > h1 {
-    font-size: 2rem;
+    font-size: var(--font-size-xl);
 }
 
+/* ----------------------------------------------------------
+   Section Header (flex responsivo)
+---------------------------------------------------------- */
 .section-header {
     display: flex;
-    justify-content: space-between; /* Mantiene el espacio si hay botones, sino el título se pega a la izquierda */
+    justify-content: space-between; /* Mantiene el espacio si hay botones */
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
 }
 
 /* ----------------------------------------------------------
@@ -227,10 +253,11 @@ a {
 ---------------------------------------------------------- */
 .success-message,
 .error-message {
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius);
     font-weight: 500;
+    font-size: var(--font-size-base);
 }
 
 .success-message {
@@ -244,27 +271,63 @@ a {
 }
 
 /* ----------------------------------------------------------
-   Contenedor de gráficos pie (alineación y espaciado)
+   Contenedor de gráficos pie (alineación y espaciado responsivo)
 ---------------------------------------------------------- */
 .chart-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: var(--spacing-lg);
     justify-items: center;
-    margin-top: 2rem;
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-xs); /* Añadido padding para evitar corte de hover */
 }
 
-/* Título de cada gráfica */
-.chart-container h4 {
-    text-align: center;
-    margin-bottom: 0.5rem;
-    color: var(--color-primary);
+@media (min-width: 1200px) {
+    .chart-container {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
 }
 
-.chart-placeholder {
-    width: 300px;
+@media (max-width: 768px) {
+    .chart-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+}
+
+.chart-box {
+    background-color: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+    padding: var(--spacing-md);
+    width: 100%;
+    max-width: min(400px, 100%);
     text-align: center;
+    transition: box-shadow var(--transition-speed);
+}
+
+.chart-box:hover {
+    box-shadow: var(--shadow-medium);
+}
+
+.chart-box h4 {
+    font-size: var(--font-size-lg);
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.chart-box canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px;
+}
+
+.chart-empty-msg {
+    margin-top: var(--spacing-md);
     color: var(--color-muted);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-md);
 }
 
 /* ----------------------------------------------------------
@@ -273,7 +336,7 @@ a {
 .records-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
+    margin-top: var(--spacing-lg);
     background-color: var(--color-surface);
     border-radius: var(--radius);
     overflow: hidden;
@@ -282,8 +345,9 @@ a {
 .records-table th,
 .records-table td {
     border: 1px solid #ddd;
-    padding: 0.75rem;
+    padding: var(--spacing-sm);
     text-align: left;
+    font-size: var(--font-size-base);
 }
 
 .records-table th {
@@ -296,7 +360,7 @@ a {
     background-color: #f1f1f1;
 }
 
-/* Si quieres que las columnas de “Acción” estén centradas: */
+/* Centrar columnas de “Acción” si existen */
 .records-table th:nth-child(3),
 .records-table td:nth-child(3),
 .records-table th:nth-child(4),
@@ -310,17 +374,17 @@ a {
 .btn-sm {
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius);
     background-color: var(--color-secondary);
     color: #fff;
-    font-size: 0.85rem;
+    font-size: var(--font-size-sm);
     transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
 .btn-sm .material-icons {
-    font-size: 1rem;
+    font-size: var(--font-size-base);
 }
 
 .btn-sm:hover {
@@ -346,10 +410,10 @@ a {
 .progress-bar {
     width: 100%;
     background-color: #f0f0f0;
-    border-radius: 4px;
+    border-radius: var(--radius);
     overflow: hidden;
-    height: 1rem;
-    margin-bottom: 0.25rem;
+    height: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
 }
 
 .progress-fill {
@@ -359,7 +423,7 @@ a {
 }
 
 .progress-text {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
     color: #333;
 }
 
@@ -367,19 +431,21 @@ a {
    Contenedor de tabla de hábitos (sección inferior)
 ---------------------------------------------------------- */
 .habit-table-container {
-    margin-top: 3rem;
+    margin-top: var(--spacing-xxl);
 }
 
 .habit-table-container h3 {
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
 }
 
 .empty-msg {
     text-align: center;
     color: var(--color-muted);
     font-style: italic;
-    margin-top: 1rem;
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-base);
 }
 
 .empty-msg .link {
@@ -394,7 +460,7 @@ a {
    Historial de registros (tabla adicional)
 ---------------------------------------------------------- */
 .records-table + h3 {
-    margin-top: 2rem;
+    margin-top: var(--spacing-xxl);
     color: var(--color-primary);
 }
 
@@ -411,13 +477,14 @@ a {
 }
 
 /* ----------------------------------------------------------
-   Mobile Header (para pantallas pequeñas, cuando sidebar está oculta) (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
+   Mobile Header (para pantallas pequeñas, cuando sidebar está oculta)
+   (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
 ---------------------------------------------------------- */
 .mobile-header {
     display: none; /* Oculto por defecto */
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
+    padding: var(--spacing-md) var(--spacing-lg);
     background-color: var(--color-primary);
     color: white;
     position: sticky;
@@ -436,14 +503,15 @@ a {
     color: white;
     font-size: 2rem; /* Tamaño del icono de la hamburguesa */
     cursor: pointer;
-    padding: 0.5rem;
+    padding: var(--spacing-xs);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 /* ----------------------------------------------------------
-   Mobile Menu Overlay (el menú que aparece al hacer click en hamburguesa) (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
+   Mobile Menu Overlay (el menú que aparece al hacer click en hamburguesa)
+   (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
 ---------------------------------------------------------- */
 .mobile-menu-overlay {
     position: fixed;
@@ -474,7 +542,7 @@ a {
     transition: transform 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
-    padding: 2rem 0;
+    padding: var(--spacing-xxl) 0;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -489,13 +557,13 @@ a {
 }
 
 .mobile-menu-content .menu-item {
-    padding: 1rem 1.5rem; /* Ajustar padding para el menú móvil */
-    font-size: 1.1rem;
-    justify-content: flex-start; /* Asegurar que el icono y texto estén alineados a la izquierda */
+    padding: var(--spacing-md) var(--spacing-lg); /* Ajustar padding para el menú móvil */
+    font-size: var(--font-size-lg);
+    justify-content: flex-start; /* Asegurar icono y texto alineados a la izquierda */
 }
 
 .mobile-menu-content .menu-divider {
-    margin: 1.5rem 1.5rem; /* Ajustar margen para el menú móvil */
+    margin: var(--spacing-xxl) var(--spacing-lg); /* Ajustar margen para el menú móvil */
 }
 
 .mobile-close-btn {
@@ -505,8 +573,8 @@ a {
     font-size: 2rem;
     cursor: pointer;
     align-self: flex-end; /* Alinear a la derecha dentro del menú */
-    padding: 0.5rem 1.5rem;
-    margin-bottom: 1rem;
+    padding: var(--spacing-xs) var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 /* ----------------------------------------------------------
@@ -521,7 +589,7 @@ a {
     }
     .main-content {
         margin-left: 0;           /* Eliminar el margen de la sidebar */
-        padding: 1rem;            /* Reducir padding en móvil */
+        padding: var(--spacing-md); /* Reducir padding en móvil */
     }
     /* Mostrar el mobile header en pantallas pequeñas */
     .mobile-header {
@@ -530,15 +598,26 @@ a {
     .section-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.75rem;
+        gap: var(--spacing-sm);
     }
     .chart-container {
         grid-template-columns: 1fr; /* Una columna para los gráficos */
-        gap: 1.5rem;
+        gap: var(--spacing-md);
     }
     .records-table th,
     .records-table td {
-        padding: 0.5rem;          /* Reducir padding de tabla */
-        font-size: 0.85rem;       /* Reducir tamaño de fuente de tabla */
+        padding: var(--spacing-xs);          /* Reducir padding de tabla */
+        font-size: var(--font-size-sm);       /* Reducir tamaño de fuente de tabla */
+    }
+}
+
+/* ----------------------------------------------------------
+   Preferencias de accesibilidad (IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
+---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

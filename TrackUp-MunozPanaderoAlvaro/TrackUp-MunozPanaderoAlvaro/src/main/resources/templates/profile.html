@@ -10,7 +10,6 @@
 </head>
 <body>
 <div class="dashboard-container">
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo-container">
             <a th:href="@{/}" aria-label="Volver al inicio">
@@ -31,7 +30,7 @@
                     <span class="material-icons">flag</span>
                     <span>Metas</span>
                 </a>
-                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item active">
+                <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="menu-item">
                     <span class="material-icons">calendar_today</span>
                     <span>Registros Diarios</span>
                 </a>
@@ -42,11 +41,10 @@
             </div>
             <div class="menu-divider"></div>
             <div class="menu-bottom">
-                <a th:href="@{/profile}" class="menu-item profile">
+                <a th:href="@{/profile}" class="menu-item active">
                     <span class="material-icons">person</span>
                     <span>Perfil</span>
                 </a>
-                <!-- Botón de Cerrar Sesión -->
                 <form th:action="@{/logout}" method="post" style="width: 100%;">
                     <button type="submit" class="menu-item logout-btn">
                         <span class="material-icons">logout</span>
@@ -57,7 +55,6 @@
         </nav>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div class="header">
             <h1>Perfil del usuario</h1>
@@ -69,10 +66,9 @@
                 <p><strong>Usuario:</strong> <span th:text="${user.username}">usuario</span></p>
                 <p><strong>Email:</strong> <span th:text="${user.email}">email@ejemplo.com</span></p>
             </div>
-            <!-- Botón “Editar perfil” simulado -->
             <a href="#" class="btn-edit-profile btn-disabled" role="button" aria-disabled="true">
                 <span class="material-icons">edit</span>
-                Editar perfil
+                Editar perfil (próximamente...)
             </a>
         </section>
     </main>

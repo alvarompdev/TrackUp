@@ -1,12 +1,13 @@
 /* ==========================================================================
-   remain.css – Estilo unificado para TrackUp (sin hover y con línea divisora)
+   remain.css – Estilo unificado para TrackUp siguiendo la estructura de
+   index-styles.css (VERSIÓN RESPONSIVE FINAL adaptada a “remain”)
    ========================================================================== */
 
 /* ----------------------------------------------------------
    1) Variables globales y Reset básico
-   ---------------------------------------------------------- */
+---------------------------------------------------------- */
 :root {
-    /* COLORES ORIGINALES - MANTENIDOS EXACTOS */
+    /* COLORES ORIGINALES - COHERENTES CON index-styles.css */
     --color-primary: #1b5e20;       /* Verde bosque oscuro */
     --color-secondary: #2e7d32;     /* Verde medio */
     --color-accent: #43a047;        /* Verde vivo */
@@ -19,29 +20,22 @@
     --color-card-bg: #f1f9f1;       /* Verde muy suave para fondo de mini-tarjetas */
     --color-error: #c62828;         /* Rojo oscuro */
     --color-success: #2e7d32;       /* Verde oscuro para mensajes de éxito */
-
-    /* NUEVAS VARIABLES RESPONSIVE */
-    --radius: clamp(8px, 1.5vw, 12px);                 /* Radio responsive */
+    /* Variables responsive */
+    --radius: clamp(8px, 1.5vw, 12px);
     --transition-speed: 0.25s;
-
     --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10);
-
     --font-family: 'Roboto', sans-serif;
-
-    /* Variables responsivas para espaciado */
     --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
     --spacing-sm: clamp(0.5rem, 1.5vw, 0.75rem);
     --spacing-md: clamp(0.75rem, 2vw, 1rem);
     --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
     --spacing-xl: clamp(1.5rem, 3vw, 2rem);
     --spacing-xxl: clamp(2rem, 4vw, 3rem);
-
-    /* Variables para sidebar - AJUSTADA LA ANCHURA MÁXIMA PARA CONSISTENCIA */
-    --sidebar-width: clamp(200px, 20vw, 250px); /* Establecido a 250px como máximo */
+    /* Sidebar responsiva */
+    --sidebar-width: clamp(200px, 20vw, 250px);
     --sidebar-width-collapsed: 60px;
-
-    /* Variables para tipografía responsive */
+    /* Tipografía responsive */
     --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
     --font-size-sm: clamp(0.8rem, 2.2vw, 0.9rem);
     --font-size-base: clamp(0.9rem, 2.5vw, 1rem);
@@ -56,13 +50,14 @@
     box-sizing: border-box;
 }
 
+html {
+    font-size: clamp(14px, 1.5vw, 16px);
+}
+
 html, body {
     height: 100%;
-    overflow-x: hidden;    /* Evitar scroll horizontal */
-    background-color: var(--color-bg);
-    font-family: var(--font-family);
-    color: var(--color-text);
-    line-height: 1.6;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 body {
@@ -70,17 +65,16 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
-    font-size: var(--font-size-base); /* Usa la variable responsive para el tamaño de fuente base */
 }
 
 /* ----------------------------------------------------------
-   2) Dashboard Container / Sidebar / Main Content - COPIADO LITERALMENTE DE daily-records-styles.css
-   ---------------------------------------------------------- */
+   2) Dashboard Container / Sidebar / Main Content
+---------------------------------------------------------- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
     background-color: var(--color-bg);
-    overflow-x: hidden; /* Evita scroll horizontal */
+    position: relative;
 }
 
 /* Sidebar fija a la izquierda */
@@ -91,7 +85,7 @@ body {
     bottom: 0;
     width: var(--sidebar-width);
     min-width: 200px;
-    max-width: 250px; /* Establecido a 250px como máximo */
+    max-width: 250px;
     background-color: var(--color-primary);
     color: #fff;
     display: flex;
@@ -103,30 +97,37 @@ body {
     transition: transform var(--transition-speed), width var(--transition-speed);
 }
 
+@media (max-width: 1200px) and (min-width: 769px) {
+    .sidebar {
+        width: var(--sidebar-width-collapsed);
+    }
+    .sidebar .menu-item {
+        justify-content: center;
+        padding: var(--spacing-sm);
+    }
+    .sidebar .menu-item .material-icons {
+        margin-right: 0;
+    }
+    .sidebar .logo-container {
+        padding: 0 var(--spacing-xs);
+    }
+    .sidebar .logo {
+        max-width: 40px;
+    }
+}
+
 /* ----------------------------------------------------------
-   Estilos para botón "Cerrar sesión" dentro del sidebar
+   3) Logo Container y Logo
 ---------------------------------------------------------- */
-.menu-item.logout-btn {
-    background: none;
-    border: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    /* Hereda font-size de .menu-item para mantener consistencia */
-}
-
-.menu-item.logout-btn:hover {
-    background-color: var(--color-secondary);
-    color: #fff;
-}
-
 .logo-container {
     text-align: center;
-    margin-bottom: var(--spacing-xxl);
+    margin-bottom: var(--spacing-xl);
+    padding: 0 var(--spacing-md);
 }
 
 .logo {
-    max-width: clamp(100px, 10vw, 120px);
+    max-width: min(120px, 60%);
+    height: auto;
     transition: transform var(--transition-speed);
     cursor: pointer;
 }
@@ -135,6 +136,9 @@ body {
     transform: scale(1.05);
 }
 
+/* ----------------------------------------------------------
+   4) Menú lateral
+---------------------------------------------------------- */
 .menu {
     flex-grow: 1;
     display: flex;
@@ -157,20 +161,27 @@ body {
 .menu-item {
     display: flex;
     align-items: center;
-    padding: var(--spacing-sm) var(--spacing-lg); /* Padding ajustado */
+    padding: var(--spacing-sm) var(--spacing-lg);
     color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
     font-size: var(--font-size-base);
     transition: background-color var(--transition-speed), color var(--transition-speed);
+    min-height: 44px;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
 }
 
 .menu-item .material-icons {
     margin-right: var(--spacing-sm);
-    font-size: var(--font-size-lg);
+    flex-shrink: 0;
 }
 
 .menu-item:hover,
+.menu-item.logout-btn:hover,
 .menu-item.active {
     background-color: var(--color-secondary);
     color: #fff;
@@ -181,320 +192,122 @@ body {
     padding-top: var(--spacing-md);
 }
 
-/* Main Content */
-.main-content {
-    flex-grow: 1;
-    margin-left: var(--sidebar-width);
-    padding: var(--spacing-xl);
-    display: flex;
-    flex-direction: column;
-    transition: margin-left var(--transition-speed);
-}
-
-/* ----------------------------------------------------------
-   3) Encabezados y Jerarquía Tipográfica (Ajustados con variables)
-   ---------------------------------------------------------- */
-.header h1 {
-    font-size: var(--font-size-xxxl); /* Más grande para el título principal */
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-lg); /* Usa variable de espaciado */
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-lg); /* Usa variable de espaciado */
-}
-
-.section-title {
-    font-size: var(--font-size-xl); /* Ajustado a variable */
-    font-weight: 600;
-    color: var(--color-primary);
-}
-
-/* ----------------------------------------------------------
-   4) Botones Genéricos (Ajustados con variables)
-   ---------------------------------------------------------- */
-.btn,
-.btn-create,
-.btn-primary,
-.btn-cancel {
-    display: inline-flex;
-    align-items: center;
-    background-color: var(--color-primary);
-    color: #fff;
-    padding: var(--spacing-sm) var(--spacing-md); /* Usa variables de espaciado */
-    border-radius: var(--radius);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
+.menu-item.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
     cursor: pointer;
 }
 
-.btn-create .material-icons,
-.btn-primary .material-icons {
-    margin-right: var(--spacing-xs); /* Usa variable de espaciado */
-    font-size: var(--font-size-lg); /* Ajusta tamaño de ícono */
+/* ----------------------------------------------------------
+   5) Main Content responsivo
+---------------------------------------------------------- */
+.main-content {
+    flex-grow: 1;
+    margin-left: var(--sidebar-width);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    transition: margin-left var(--transition-speed);
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
 }
 
-.btn:hover,
-.btn-create:hover,
-.btn-primary:hover {
-    background-color: var(--color-secondary);
-    transform: translateY(-2px);
-}
-
-.btn-cancel {
-    background-color: var(--color-error);
-}
-
-.btn-cancel:hover {
-    background-color: #b71c1c;
-    transform: translateY(-2px);
+@media (max-width: 1200px) and (min-width: 769px) {
+    .main-content {
+        margin-left: var(--sidebar-width-collapsed);
+        width: calc(100% - var(--sidebar-width-collapsed));
+    }
 }
 
 /* ----------------------------------------------------------
-   5) Mensajes de Feedback (Ajustados con variables)
-   ---------------------------------------------------------- */
-.success-message,
-.error-message {
-    margin-bottom: var(--spacing-md); /* Usa variable de espaciado */
-    padding: var(--spacing-sm) var(--spacing-md); /* Usa variables de espaciado */
-    border-radius: var(--radius);
-    font-weight: 500;
-    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
-}
-.success-message {
-    background-color: var(--color-success);
-    color: #fff;
-}
-.error-message {
-    background-color: var(--color-error);
-    color: #fff;
+   6) Encabezados y Jerarquía Tipográfica
+---------------------------------------------------------- */
+h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: var(--spacing-lg) 0;
+    line-height: 1.2;
 }
 
 /* ----------------------------------------------------------
-   6) “Empty Message” (sin datos) (Ajustados con variables)
-   ---------------------------------------------------------- */
+   7) Sección de “Empty Message”
+---------------------------------------------------------- */
 .empty-msg {
     text-align: center;
     color: var(--color-muted);
     font-style: italic;
-    margin: var(--spacing-md) 0; /* Usa variable de espaciado */
-    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-base);
+    padding: var(--spacing-md);
 }
 
 /* ----------------------------------------------------------
-   7) Summary Section: Grid de Tres Columnas (Ajustados con variables)
-   ---------------------------------------------------------- */
-.summary-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(clamp(18.75rem, 25vw, 25rem), 1fr)); /* minmax(300px, 400px) */
-    gap: var(--spacing-md); /* Usa variable de espaciado */
-    width: 100%;
+   8) Media Queries para diferentes dispositivos
+---------------------------------------------------------- */
+@media (min-width: 1400px) {
+    :root {
+        --sidebar-width: min(250px, 20vw);
+    }
+    .main-content {
+        max-width: calc(100vw - var(--sidebar-width));
+        padding: var(--spacing-xxl);
+    }
 }
 
-/* Cada contenedor que rodea a .summary-card: */
-.summary-card-container {
-    width: 100%;
+@media (max-width: 991px) and (min-width: 769px) {
+    .summary-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* ----------------------------------------------------------
-   8) Tarjetas Principales (“summary-card”) (Ajustados con variables)
-   ---------------------------------------------------------- */
-.summary-card {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-light);
-    padding: var(--spacing-lg); /* Usa variable de espaciado */
-    text-decoration: none;
-    color: inherit;
-    height: 100%;
-    transition: box-shadow var(--transition-speed), transform var(--transition-speed);
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: min(280px, 80vw);
+        transition: transform var(--transition-speed);
+    }
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    .dashboard-container {
+        flex-direction: column;
+    }
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: var(--spacing-md);
+    }
+    .menu-item {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        justify-content: flex-start;
+    }
 }
 
-.summary-card:hover {
-    box-shadow: var(--shadow-medium);
-    transform: translateY(-4px);
-}
-
-/* Título interno de cada tarjeta */
-.summary-card h3 {
-    font-size: var(--font-size-lg); /* Usa variable de tamaño de fuente */
-    font-weight: 600;
-    color: var(--color-secondary);
-    margin-bottom: var(--spacing-md); /* Usa variable de espaciado */
-}
-
-/* ----------------------------------------------------------
-   9) Items Container (Grid de Tarjetas Pequeñas) (Ajustados con variables)
-   ---------------------------------------------------------- */
-.items-container {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(clamp(9.375rem, 15vw, 12.5rem), 1fr)); /* minmax(150px, 200px) */
-    gap: var(--spacing-sm); /* Usa variable de espaciado */
-    overflow-y: auto;
-    max-height: 50vh; /* Se mantiene vh para altura relativa al viewport */
-    padding-right: var(--spacing-xs); /* Usa variable de espaciado */
-    margin-top: var(--spacing-sm); /* Usa variable de espaciado */
+@media (max-width: 480px) {
+    .main-content {
+        padding: var(--spacing-sm);
+    }
 }
 
 /* ----------------------------------------------------------
-   10) Estilo de Cada “item” (Tarjeta Pequeña) (Ajustados con variables)
-   ---------------------------------------------------------- */
-.items-container .item {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-card-bg);
-    border: 2px solid var(--color-accent);
-    border-radius: var(--radius);
-    padding: var(--spacing-sm); /* Usa variable de espaciado */
-    box-shadow: var(--shadow-light);
+   9) Preferencias de accesibilidad
+---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* ----------------------------------------------------------
-   11) Línea divisora debajo del título de cada mini-tarjeta (Ajustados con variables)
-   ---------------------------------------------------------- */
-.items-container .item-name {
-    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs); /* Usa variable de espaciado */
-    color: var(--color-text);
-    word-break: break-word;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--spacing-xs); /* Usa variable de espaciado */
-}
-
-/* ----------------------------------------------------------
-   12) Descripción y metadata (Ajustados con variables)
-   ---------------------------------------------------------- */
-/* Descripción (solo para hábitos/metas) */
-.items-container .item-desc {
-    font-size: var(--font-size-sm); /* Usa variable de tamaño de fuente */
-    color: var(--color-muted-light);
-    margin-bottom: var(--spacing-xs); /* Usa variable de espaciado */
-    flex-grow: 1;
-    word-break: break-word;
-}
-
-/* Metadata (tipo, fecha o “ID Usuario”) */
-.items-container .item-meta {
-    font-size: var(--font-size-xs); /* Usa variable de tamaño de fuente */
-    color: var(--color-muted);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs); /* Usa variable de espaciado */
-    margin-top: auto;
-}
-
-/* ----------------------------------------------------------
-   13) Registros Recientes (mismo estilo que item, sin hover) (Ajustados con variables)
-   ---------------------------------------------------------- */
-.items-container .record-item {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-card-bg);
-    border: 2px solid var(--color-accent);
-    border-radius: var(--radius);
-    padding: var(--spacing-sm); /* Usa variable de espaciado */
-    box-shadow: var(--shadow-light);
-}
-
-.items-container .record-item .record-date {
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs); /* Usa variable de espaciado */
-    color: var(--color-text);
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--spacing-xs); /* Usa variable de espaciado */
-    font-size: var(--font-size-base); /* Usa variable de tamaño de fuente */
-}
-.items-container .record-item .record-value {
-    font-size: var(--font-size-sm); /* Usa variable de tamaño de fuente */
-    color: var(--color-muted-light);
-    margin-top: var(--spacing-xs); /* Usa variable de espaciado */
-}
-
-/* ----------------------------------------------------------
-   14) Scrollbar Personalizado (solo WebKit)
-   ---------------------------------------------------------- */
-.items-container::-webkit-scrollbar {
-    width: 6px;
-}
-.items-container::-webkit-scrollbar-track {
-    background: transparent;
-}
-.items-container::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-}
-
-/* ----------------------------------------------------------
-   15) Estilos específicos para la sección de contenido (como 'Sobre el desarrollador')
-   ---------------------------------------------------------- */
-.habit-type-form-section {
-    background-color: var(--color-surface);
-    padding: var(--spacing-xl); /* Espaciado interno generoso y responsivo */
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-medium); /* Una sombra más pronunciada para destacarla */
-    max-width: 60rem; /* Limitar el ancho para legibilidad en pantallas grandes (~960px) */
-    margin: var(--spacing-xl) auto; /* Centrar y añadir margen responsivo superior/inferior */
-}
-
-.habit-type-form-section h2 {
-    font-size: var(--font-size-xl); /* Coherente con section-title, adaptable */
-    color: var(--color-primary);
-    margin-top: var(--spacing-lg); /* Margen superior responsivo */
-    margin-bottom: var(--spacing-md); /* Margen inferior responsivo */
-}
-
-.habit-type-form-section h2:first-of-type {
-    margin-top: 0; /* Asegura que el primer h2 no tenga margen superior excesivo */
-}
-
-.habit-type-form-section p {
-    font-size: var(--font-size-base); /* Tamaño base de texto, adaptable */
-    margin-bottom: var(--spacing-md); /* Margen inferior responsivo para párrafos */
-    line-height: 1.7; /* Mejora la legibilidad del texto */
-}
-
-.habit-type-form-section ul {
-    list-style-type: disc;
-    margin-left: var(--spacing-lg); /* Sangría para las viñetas, responsiva */
-    margin-bottom: var(--spacing-md); /* Reemplaza el estilo inline del HTML */
-    font-size: var(--font-size-base); /* Asegura que el texto de la lista escale */
-}
-
-.habit-type-form-section ul li {
-    margin-bottom: var(--spacing-xs); /* Espacio entre ítems de lista, responsivo */
-}
-
-.habit-type-form-section strong {
-    color: var(--color-text); /* Asegurar un buen contraste para texto resaltado */
-}
-
-.habit-type-form-section a {
-    color: var(--color-secondary); /* Color de enlaces, se puede ajustar */
-    text-decoration: none;
-    font-weight: 500;
-    transition: color var(--transition-speed), text-decoration var(--transition-speed);
-}
-
-.habit-type-form-section a:hover {
-    color: var(--color-accent); /* Color de hover para enlaces */
-    text-decoration: underline;
-}
-
-/* ----------------------------------------------------------
-   16) Estilos para la barra lateral móvil (Hamburger Menu, Overlay) - COPIADO LITERALMENTE DE daily-records-styles.css
-   ---------------------------------------------------------- */
+   10) Utilidades responsivas adicionales
+---------------------------------------------------------- */
 .mobile-header {
-    display: none; /* Hidden by default */
+    display: none;
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -507,7 +320,7 @@ body {
 
 @media (max-width: 768px) {
     .mobile-header {
-        display: flex; /* Show on small screens */
+        display: flex;
     }
 }
 
@@ -518,135 +331,92 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
     padding: var(--spacing-xs);
+    border-radius: var(--radius);
+    transition: background-color var(--transition-speed);
+}
+
+.mobile-menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--transition-speed), visibility var(--transition-speed);
-}
-
-.sidebar-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Mobile menu content (sidebar when active on small screens) */
-.mobile-menu-content {
-    position: fixed;
-    top: 0;
-    left: 0; /* Start off-screen */
-    bottom: 0;
-    width: var(--sidebar-width); /* Same width as desktop sidebar */
-    background-color: var(--color-primary);
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding: var(--spacing-lg) 0;
-    overflow-y: auto;
-    z-index: 1000;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
-    transform: translateX(-100%); /* Hidden initially */
-    transition: transform var(--transition-speed);
-}
-
-.mobile-menu-content.active {
-    transform: translateX(0); /* Slide in */
-}
-
-.mobile-menu-content .logo-container {
-    padding: var(--spacing-lg) 0; /* Ajustar padding */
-}
-
-.mobile-menu-content .menu-item {
-    padding: var(--spacing-md) var(--spacing-lg);
-}
-
-.mobile-menu-content .menu-divider {
-    margin: var(--spacing-lg) var(--spacing-lg);
-}
-
-.mobile-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    align-self: flex-end; /* Align to the right */
-    padding: var(--spacing-sm) var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
-}
-
-/* ----------------------------------------------------------
-   17) Ajustes Responsivos (Ajustados con variables y sidebar móvil) - COPIADO LITERALMENTE DE daily-records-styles.css
-   ---------------------------------------------------------- */
-@media (max-width: 1024px) {
-    .summary-section {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* minmax(280px, 1fr) for 1024px */
-    }
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        display: none;            /* Ocultar la sidebar fija */
-    }
-    .dashboard-container {
-        flex-direction: column;
-    }
-    .main-content {
-        margin-left: 0;           /* Eliminar el margen de la sidebar */
-        padding: 1rem;            /* Reducir padding en móvil */
-    }
-    /* Mostrar el mobile header en pantallas pequeñas */
-    .mobile-header {
-        display: flex;
-    }
-    /* REGLA AÑADIDA / CORREGIDA: COPIADA DE daily-records-styles.css */
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-    .summary-section {
-        grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-        gap: 0.75rem; /* Usar gap: 0.75rem en lugar de var(--spacing-md) que es 12px */
-    }
-    .items-container {
-        max-height: none; /* Elimina el scroll interno para ver todos los ítems en móvil */
-    }
-    .habit-type-form-section {
-        margin: 1rem auto; /* Reduce el margen en móvil */
-        padding: 1rem; /* Reduce el padding en móvil */
+    .sidebar-overlay.active {
+        display: block;
     }
 }
 
-@media (max-width: 480px) {
-    .btn,
-    .btn-create,
-    .btn-cancel,
-    .btn-primary {
-        font-size: 0.875rem; /* Botones más pequeños */
-        padding: 0.25rem 0.5rem; /* Padding más pequeño */
-    }
-    .header h1 {
-        font-size: 2rem; /* Título principal un poco más pequeño en móviles muy pequeños */
-    }
-    .section-title {
-        font-size: 1.5rem; /* Título de sección un poco más pequeño */
-    }
-    .habit-type-form-section h2 {
-        font-size: 1.25rem; /* Títulos h2 más pequeños en móvil */
-    }
-    .habit-type-form-section p,
-    .habit-type-form-section ul,
-    .habit-type-form-section ul li {
-        font-size: 0.875rem; /* Texto general un poco más pequeño en móvil */
-    }
+/* ----------------------------------------------------------
+   11) Estilos para la sección de Perfil (AÑADIDO PARA LA PÁGINA DE PERFIL)
+---------------------------------------------------------- */
+.profile-section {
+    background-color: var(--color-surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+    margin-top: var(--spacing-lg);
+}
+
+.profile-section h2 {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: var(--spacing-xs);
+}
+
+.profile-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-info p {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+}
+
+.profile-info strong {
+    color: var(--color-muted);
+}
+
+.btn-edit-profile {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--color-accent);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color var(--transition-speed);
+    font-size: var(--font-size-base);
+    box-shadow: var(--shadow-light);
+}
+
+.btn-edit-profile .material-icons {
+    margin-right: var(--spacing-xs);
+    font-size: 1.25rem;
+}
+
+.btn-edit-profile:hover:not(.btn-disabled) {
+    background-color: var(--color-secondary);
+}
+
+.btn-edit-profile.btn-disabled {
+    background-color: var(--color-muted-light);
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
 }
