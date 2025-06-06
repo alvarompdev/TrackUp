@@ -1,5 +1,8 @@
 package trackup.dto.request;
 
+import jakarta.validation.constraints.NotBlank; // Importar esta
+import jakarta.validation.constraints.Size;    // Importar esta
+
 /**
  * DTO para los cuerpos de las solicitudes (Objetivos)
  *
@@ -7,6 +10,8 @@ package trackup.dto.request;
  */
 public class GoalRequestDTO {
 
+    @NotBlank(message = "El nombre de la meta es obligatorio")
+    @Size(min = 3, max = 100, message = "El nombre debe tener entre 3 y 100 caracteres")
     private String name; // Nombre del objetivo
     private String description; // Descripción del objetivo
     private Long userId; // ID del usuario al que pertenece el objetivo

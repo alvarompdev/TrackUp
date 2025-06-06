@@ -97,30 +97,36 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
-    public HabitResponseDTO createHabit(HabitRequestDTO habitRequestDTO) {
-        // Buscar el HabitType por ID (Usar el método que devuelve la entidad)
-        HabitType habitType = habitTypeService.findHabitTypeEntityById(habitRequestDTO.getHabitTypeId())
-                .orElseThrow(() -> new RuntimeException("Tipo de hábito no encontrado con ID: " + habitRequestDTO.getHabitTypeId()));
+    public HabitResponseDTO createHabit(HabitRequestDTO dto) {
+        // Buscar el tipo de hábito
+        HabitType habitType = habitTypeService.findHabitTypeEntityById(dto.getHabitTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de hábito no encontrado"));
 
-        // Buscar el Usuario por ID (Usar el método que devuelve la entidad)
-        User user = userService.findUserEntityById(habitRequestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + habitRequestDTO.getUserId()));
+        // Buscar el usuario
+        User user = userService.findUserEntityById(dto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        // Crear la entidad Habit
+        // Validar unicidad: nombre + usuario
+        if (findHabitByNameAndUserId(dto.getName(), dto.getUserId()).isPresent()) {
+            throw new IllegalArgumentException("Ya existe un hábito con este nombre para el usuario seleccionado");
+        }
+
+        // Validar fechas: startDate ≤ endDate
+        if (dto.getStartDate() != null && dto.getEndDate() != null && dto.getStartDate().isAfter(dto.getEndDate())) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
+
+        // Mapear y guardar
         Habit habit = new Habit();
-        habit.setName(habitRequestDTO.getName());
-        habit.setDescription(habitRequestDTO.getDescription());
-        habit.setFrequency(habitRequestDTO.getFrequency());
-        habit.setStartDate(habitRequestDTO.getStartDate());
-        habit.setEndDate(habitRequestDTO.getEndDate());
-        habit.setUser(user);  // Asignar la entidad User
-        habit.setHabitType(habitType);  // Asignar la entidad HabitType
+        habit.setName(dto.getName());
+        habit.setDescription(dto.getDescription());
+        habit.setFrequency(dto.getFrequency());
+        habit.setStartDate(dto.getStartDate());
+        habit.setEndDate(dto.getEndDate());
+        habit.setUser(user);
+        habit.setHabitType(habitType);
 
-        // Guardar el hábito en la base de datos
-        Habit savedHabit = habitRepository.save(habit);
-
-        // Convertir la entidad Habit guardada a HabitResponseDTO y devolverla
-        return mapToDTO(savedHabit);
+        return mapToDTO(habitRepository.save(habit));
     }
 
     @Override

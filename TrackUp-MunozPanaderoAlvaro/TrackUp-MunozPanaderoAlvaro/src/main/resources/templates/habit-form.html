@@ -7,53 +7,82 @@
 </head>
 <body>
 <div class="form-container">
+
+    <div th:if="${successMsg != null}"
+         class="message success-message"
+         th:text="${successMsg}">
+    </div>
+
+    <div th:if="${errorMsg != null}"
+         class="message error-message"
+         th:text="${errorMsg}">
+    </div>
+
     <h2 th:text="${isEdit ? 'Editar Hábito' : 'Nuevo Hábito'}">Nuevo Hábito</h2>
+
     <form th:action="@{/habits/save}" th:object="${habit}" method="post">
-        <!-- ID oculto -->
+
         <input type="hidden" th:field="*{id}" />
-        <!-- UserID oculto -->
         <input type="hidden" th:field="*{userId}" />
 
-        <!-- Nombre -->
         <label for="name">Nombre:</label>
-        <input id="name" type="text" th:field="*{name}" required />
-
-        <!-- Descripción -->
-        <label for="description">Descripción:</label>
-        <textarea id="description" th:field="*{description}" rows="4"></textarea>
-
-        <!-- Frecuencia -->
+        <input id="name"
+               type="text"
+               th:field="*{name}"
+               required
+               minlength="3"
+               maxlength="100" />
+        <label for="description">Descripción (opcional):</label>
+        <textarea id="description"
+                  th:field="*{description}"
+                  rows="4"
+                  maxlength="500"></textarea>
         <label for="frequency">Frecuencia:</label>
-        <input id="frequency" type="text" th:field="*{frequency}"
-               required placeholder="Ej: Diario, Semanal, Mensual" />
-
-        <!-- Fecha Inicio -->
+        <input id="frequency"
+               type="text"
+               th:field="*{frequency}"
+               required
+               maxlength="50"
+               placeholder="Ej: Diario, Semanal" />
         <label for="startDate">Fecha de Inicio:</label>
-        <input id="startDate" type="date" th:field="*{startDate}" required />
-
-        <!-- Fecha Fin -->
-        <label for="endDate">Fecha de Fin (opcional):</label>
-        <input id="endDate" type="date" th:field="*{endDate}" />
-
-        <!-- Select Tipo de Hábito -->
+        <input id="startDate"
+               type="date"
+               th:field="*{startDate}"
+               required />
+        <label for="endDate">Fecha de Fin:</label>
+        <input id="endDate"
+               type="date"
+               th:field="*{endDate}" />
         <label for="habitTypeId">Tipo de Hábito:</label>
-        <select id="habitTypeId" th:field="*{habitTypeId}" required>
+        <select id="habitTypeId"
+                th:field="*{habitTypeId}"
+                required>
             <option value="" disabled th:if="${!isEdit}" selected>-- Selecciona un tipo --</option>
             <option th:each="type : ${habitTypes}"
                     th:value="${type.id}"
                     th:text="${type.name}">
             </option>
         </select>
-
-        <!-- Botones -->
         <div class="button-group">
-            <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="btn btn-cancel">Cancelar</a>
-            <button type="submit" class="btn btn-primary"
+            <a th:href="@{/habits/user/{userId}(userId=${userId})}"
+               class="btn btn-cancel">Cancelar</a>
+            <button type="submit"
+                    class="btn btn-primary"
                     th:text="${isEdit ? 'Actualizar' : 'Crear'}">
                 Guardar
             </button>
         </div>
     </form>
 </div>
+
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.message').forEach(msg => {
+            msg.style.transition = 'opacity 0.5s ease-out';
+            msg.style.opacity = '0';
+            setTimeout(() => msg.remove(), 500);
+        });
+    }, 5000);
+</script>
 </body>
 </html>

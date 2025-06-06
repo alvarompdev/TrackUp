@@ -6,56 +6,42 @@ import trackup.dto.request.GoalRequestDTO;
 import trackup.dto.response.GoalResponseDTO;
 import trackup.entity.Goal;
 import trackup.entity.User;
-import trackup.repository.GoalRepository;
-import trackup.repository.UserRepository;
-import trackup.services.GoalService;
+import trackup.repository.GoalRepository; // Ya tienes esta importación
+import trackup.repository.UserRepository; // Ya tienes esta importación
+import trackup.services.GoalService; // Ya tienes esta importación
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Collectors; // Ya tienes esta importación
 
-/**
- * Implementación del servicio de objetivos
- * Se encarga de la lógica de negocio relacionada con los objetivos,
- * incluyendo la creación, actualización, eliminación y obtención de objetivos
- *
- * Utiliza un repositorio para acceder a la base de datos y
- * convierte las entidades a DTOs para mantener la separación de capas
- *
- * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
- */
-@Service // Anotación que indica que esta clase es un servicio
+@Service
 public class GoalServiceImpl implements GoalService {
 
-    private final GoalRepository goalRepository; // Repositorio de objetivos
-    private final UserRepository userRepository; // Repositorio de usuarios
+    private final GoalRepository goalRepository;
+    private final UserRepository userRepository;
 
-    /**
-     * Constructor de la clase e inyección de dependencias
-     *
-     * @param goalRepository Repositorio de objetivos
-     */
     @Autowired
     public GoalServiceImpl(GoalRepository goalRepository, UserRepository userRepository) {
         this.goalRepository = goalRepository;
         this.userRepository = userRepository;
     }
 
-
     @Override
     public Optional<GoalResponseDTO> findGoalById(Long id) {
-        return goalRepository.findById(id) // Busca el objetivo por su ID
+        return goalRepository.findById(id)
                 .map(this::mapToDTO);
     }
 
     @Override
     public Optional<GoalResponseDTO> findGoalByName(String name) {
+        // Usamos el método tal como está en tu repositorio
         return goalRepository.findByName(name)
                 .map(this::mapToDTO);
     }
 
     @Override
     public Optional<GoalResponseDTO> findGoalByNameAndUserId(String name, Long userId) {
+        // ¡¡¡AHORA COINCIDE CON EL NOMBRE EN TU REPOSITORIO!!!
         return goalRepository
                 .findGoalByNameAndUserId(name, userId)
                 .map(this::mapToDTO);
@@ -63,55 +49,76 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public List<GoalResponseDTO> getAllGoals() {
-        return goalRepository.findAll() // Busca todos los objetivos
-                .stream() // Convierte la lista a un stream
+        return goalRepository.findAll()
+                .stream()
                 .map(this::mapToDTO)
-                .toList(); // Convierte el stream de vuelta a una lista
+                .toList();
     }
 
     @Override
     public List<GoalResponseDTO> getAllGoalsByUserId(Long userId) {
-        List<Goal> goals = goalRepository.findAllGoalsByUserId(userId); // Obtener metas por usuario
+        // ¡¡¡AHORA COINCIDE CON EL NOMBRE EN TU REPOSITORIO!!!
+        List<Goal> goals = goalRepository.findAllGoalsByUserId(userId);
 
-        return goals.stream() // Convertir a DTOs
+        return goals.stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public GoalResponseDTO createGoal(GoalRequestDTO goalRequestDTO) {
-        User user = userRepository.findById(goalRequestDTO.getUserId()) // Busca la entidad User por ID
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + goalRequestDTO.getUserId()));
+        // === VALIDACIÓN DE UNICIDAD ANTES DE GUARDAR ===
+        // Usamos el método findGoalByNameAndUserId tal como lo tienes en el repositorio
+        Optional<Goal> existingGoal = goalRepository.findGoalByNameAndUserId(goalRequestDTO.getName(), goalRequestDTO.getUserId());
+        if (existingGoal.isPresent()) {
+            throw new IllegalArgumentException("Ya existe una meta con el nombre '" + goalRequestDTO.getName() + "' para tu usuario.");
+        }
+        // ===============================================
 
-        // Crea nuevo objetivo
+        User user = userRepository.findById(goalRequestDTO.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + goalRequestDTO.getUserId()));
+
         Goal goal = new Goal();
         goal.setName(goalRequestDTO.getName());
         goal.setDescription(goalRequestDTO.getDescription());
-        goal.setUser(user);  // Asigna entidad User
+        goal.setUser(user);
 
-        Goal savedGoal = goalRepository.save(goal); // Guarda el objetivo
-        return mapToDTO(savedGoal); // Devuelve el DTO del objetivo guardado
+        Goal savedGoal = goalRepository.save(goal);
+        return mapToDTO(savedGoal);
     }
 
     @Override
     public GoalResponseDTO updateGoal(Long id, GoalRequestDTO goalRequestDTO) {
-        Goal goal = goalRepository.findById(id) // Busca el objetivo por su ID
-                .orElseThrow(() -> new RuntimeException("Goal not found")); // Lanza una excepción si no lo encuentra
+        Goal goalToUpdate = goalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Meta no encontrada con ID: " + id));
 
-        // Actualiza los campos del objetivo
-        goal.setName(goalRequestDTO.getName());
-        goal.setDescription(goalRequestDTO.getDescription());
+        // === VALIDACIÓN DE UNICIDAD PARA ACTUALIZACIÓN ===
+        // Usamos el método findGoalByNameAndUserId tal como lo tienes en el repositorio
+        Optional<Goal> duplicatedGoal = goalRepository.findGoalByNameAndUserId(goalRequestDTO.getName(), goalRequestDTO.getUserId());
+        if (duplicatedGoal.isPresent() && !duplicatedGoal.get().getId().equals(id)) {
+            throw new IllegalArgumentException("Ya existe otra meta con el nombre '" + goalRequestDTO.getName() + "' para tu usuario.");
+        }
+        // ===============================================
 
-        Goal updatedGoal = goalRepository.save(goal); // Guarda el objetivo actualizado en la base de datos
-        return mapToDTO(updatedGoal); // Devuelve el DTO del objetivo actualizado
+        goalToUpdate.setName(goalRequestDTO.getName());
+        goalToUpdate.setDescription(goalRequestDTO.getDescription());
+
+        // Asegúrate de que el usuario no cambie inesperadamente si no está previsto en la actualización
+        // Si el userId puede cambiar en la actualización, deberías buscar y asignar el nuevo User aquí:
+        // User user = userRepository.findById(goalRequestDTO.getUserId())
+        //         .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + goalRequestDTO.getUserId()));
+        // goalToUpdate.setUser(user);
+
+        Goal updatedGoal = goalRepository.save(goalToUpdate);
+        return mapToDTO(updatedGoal);
     }
 
     @Override
     public void deleteGoal(Long id) {
-        Goal goal = goalRepository.findById(id) // Busca el objetivo por su ID
-                .orElseThrow(() -> new RuntimeException("Goal not found")); // Lanza una excepción si no lo encuentra
+        Goal goal = goalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Meta no encontrada para eliminar con ID: " + id));
 
-        goalRepository.delete(goal); // Elimina el objetivo de la base de datos
+        goalRepository.delete(goal);
     }
 
     /**

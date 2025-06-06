@@ -9,25 +9,34 @@
 </head>
 <body>
 <div class="form-container">
+
+  <div th:if="${successMsg != null}"
+       class="message success-message"
+       th:text="${successMsg}">
+  </div>
+
+  <div th:if="${errorMsg != null}"
+       class="message error-message"
+       th:text="${errorMsg}">
+  </div>
+
   <h2 th:text="${isEdit ? 'Editar Meta' : 'Nueva Meta'}">Nueva Meta</h2>
+
   <form th:action="@{/goals/save}" th:object="${goal}" method="post">
-    <!-- Hidden fields -->
     <input type="hidden" th:if="${isEdit}" name="goalId" th:value="${goalId}" />
     <input type="hidden" th:field="*{userId}" />
 
-    <!-- Nombre -->
     <label for="name">Nombre:</label>
-    <input id="name" type="text" th:field="*{name}" required maxlength="100" />
-
-    <!-- Descripción -->
-    <label for="description">Descripción:</label>
+    <input id="name"
+           type="text"
+           th:field="*{name}"
+           maxlength="100" /> <label for="description">Descripción:</label>
     <textarea id="description" th:field="*{description}" rows="4"></textarea>
 
-    <!-- Botones -->
     <div class="button-group">
       <a th:href="@{/goals/user/{userId}(userId=${userId})}"
          class="btn btn-cancel">
-         Cancelar
+        Cancelar
       </a>
       <button type="submit" class="btn btn-primary"
               th:text="${isEdit ? 'Actualizar' : 'Crear'}">
@@ -36,5 +45,15 @@
     </div>
   </form>
 </div>
+
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('.message').forEach(msg => {
+      msg.style.transition = 'opacity 0.5s ease-out';
+      msg.style.opacity = '0';
+      setTimeout(() => msg.remove(), 500);
+    });
+  }, 5000);
+</script>
 </body>
 </html>

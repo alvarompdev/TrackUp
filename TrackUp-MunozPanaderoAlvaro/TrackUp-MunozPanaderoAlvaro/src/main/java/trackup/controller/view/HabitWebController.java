@@ -1,9 +1,12 @@
 package trackup.controller.view;
 
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError; // Asegúrate de que esta importación esté
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trackup.dto.request.HabitRequestDTO;
@@ -15,6 +18,7 @@ import trackup.services.UserService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors; // Asegúrate de que esta importación esté
 
 @Controller
 @RequestMapping("/habits")
@@ -111,7 +115,7 @@ public class HabitWebController {
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<HabitResponseDTO> habitOpt = habitService.findHabitById(id);
         if (habitOpt.isEmpty()) {
-            return "redirect:/habits?error=habit_not_found";
+            return "redirect:/habits/user/" + getCurrentUserId() + "?error=habit_not_found";
         }
         HabitResponseDTO habit = habitOpt.get();
 
@@ -133,15 +137,45 @@ public class HabitWebController {
     }
 
     @PostMapping("/save")
-    public String saveHabit(@ModelAttribute("habit") HabitRequestDTO dto, RedirectAttributes ra) {
-        if (dto.getId() == null) {
-            habitService.createHabit(dto);
-            ra.addFlashAttribute("successMsg", "Hábito creado correctamente");
-        } else {
-            habitService.updateHabit(dto.getId(), dto);
-            ra.addFlashAttribute("successMsg", "Hábito actualizado correctamente");
+    public String saveHabit(
+            @Valid @ModelAttribute("habit") HabitRequestDTO dto,
+            BindingResult result,
+            RedirectAttributes ra,
+            Model model) {
+
+        if (result.hasErrors()) {
+            // Recolectar todos los errores del BindingResult en una sola cadena para mostrar
+            String validationErrors = result.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.joining(". "));
+            model.addAttribute("errorMsg", validationErrors); // Usamos errorMsg para ambos tipos de errores
+            model.addAttribute("habit", dto);
+            model.addAttribute("userId", dto.getUserId());
+            model.addAttribute("habitTypes", habitTypeService.getAllHabitTypes());
+            model.addAttribute("isEdit", dto.getId() != null);
+            return "habit-form";
         }
-        return "redirect:/habits/user/" + dto.getUserId();
+
+        try {
+            if (dto.getId() == null) {
+                habitService.createHabit(dto);
+                ra.addFlashAttribute("successMsg", "Hábito creado correctamente.");
+            } else {
+                habitService.updateHabit(dto.getId(), dto);
+                ra.addFlashAttribute("successMsg", "Hábito actualizado correctamente.");
+            }
+            return "redirect:/habits/user/" + dto.getUserId();
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("errorMsg", e.getMessage());
+            ra.addFlashAttribute("habit", dto);
+            // Ya no es necesario pasar BindingResult si todos los errores se consolidan en errorMsg
+            // ra.addFlashAttribute("org.springframework.validation.BindingResult.habit", result);
+            if (dto.getId() == null) {
+                return "redirect:/habits/new?userId=" + dto.getUserId();
+            } else {
+                return "redirect:/habits/edit/" + dto.getId();
+            }
+        }
     }
 
     @GetMapping("/delete/{id}")
@@ -149,9 +183,9 @@ public class HabitWebController {
         Long currentUserId = getCurrentUserId();
         try {
             habitService.deleteHabit(id);
-            ra.addFlashAttribute("successMsg", "Hábito eliminado correctamente");
+            ra.addFlashAttribute("successMsg", "Hábito eliminado correctamente.");
         } catch (RuntimeException e) {
-            ra.addFlashAttribute("errorMsg", "No se pudo eliminar el hábito");
+            ra.addFlashAttribute("errorMsg", "No se pudo eliminar el hábito.");
         }
         return "redirect:/habits/user/" + currentUserId;
     }

@@ -6,18 +6,8 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-:root {
-    --primary-color: #1abc9c;
-    --primary-dark: #16a085;
-    --secondary-color: #34495e;
-    --light-gray: #ecf0f1;
-    --gray: #bdc3c7;
-    --background: #f4f4f4;
-    --white: #ffffff;
-    --error-color: #e74c3c;
-    --success-color: #2ecc71;
-    --border-radius: 8px;
-    --transition-speed: 0.3s;
+html {
+    font-size: clamp(14px, 1.5vw, 16px);
 }
 
 body {
@@ -27,7 +17,28 @@ body {
     padding: 20px 0;
 }
 
-/* === DASHBOARD LAYOUT === */
+/* === VARIABLES GLOBALES === */
+:root {
+    --primary-color: #1abc9c;
+    --primary-dark: #16a085;
+    --secondary-color: #34495e;
+    --light-gray: #ecf0f1;
+    --gray: #bdc3c7;
+    --background: #f4f4f4;
+    --white: #ffffff;
+    --error-color: #e74c3c; /* Rojo intenso */
+    --success-color: #2ecc71; /* Verde intenso */
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+    --font-size-sm: clamp(0.8rem, 2.5vw, 1rem);
+    --font-size-base: clamp(0.9rem, 2.5vw, 1.1rem);
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+}
+
+/* === LAYOUT GENERAL === */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
@@ -118,49 +129,7 @@ body {
     font-weight: 600;
 }
 
-/* === SECCIÓN DE RESÚMENES (Hábitos, Metas, Registros) === */
-.summary-section {
-    display: grid;
-    gap: 20px;
-}
-
-.summary-card {
-    background: var(--light-gray);
-    padding: 20px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    border-left: 4px solid var(--primary-color);
-    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-}
-
-.summary-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.summary-card h3 {
-    margin-bottom: 12px;
-    font-size: 1.1rem;
-    color: var(--secondary-color);
-    font-weight: 600;
-}
-
-.summary-card ul {
-    list-style: none;
-    padding: 0;
-}
-
-.summary-card li {
-    margin: 8px 0;
-    color: #34495e;
-}
-
-.summary-card p {
-    color: #7f8c8d;
-    font-style: italic;
-}
-
-/* === FORMULARIOS === */
+/* === FORM CONTAINER === */
 .form-container {
     max-width: 700px;
     margin: 2rem auto;
@@ -168,7 +137,6 @@ body {
     background: var(--white);
     border-radius: var(--border-radius);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    border-left: 4px solid var(--primary-color);
     position: relative;
     z-index: 1;
     animation: fadeInUp 0.5s ease;
@@ -185,6 +153,72 @@ body {
     z-index: 0;
 }
 
+/* === MENSAJES GLOBALES DE ERROR Y ÉXITO === */
+/* Estilos comunes para ambos mensajes */
+.message {
+    max-width: 700px;
+    margin: 1rem auto; /* Centrado horizontal y margen superior/inferior */
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    text-align: center;
+    color: var(--white); /* Texto siempre blanco */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra para que destaque un poco */
+    animation: fadeInUp 0.5s ease;
+    /* Para el icono, si quieres añadirlo más adelante, ya está preparado con flexbox */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Estilo específico para mensaje de error */
+.error-message {
+    background-color: var(--error-color); /* Rojo intenso */
+}
+
+/* Estilo específico para mensaje de éxito */
+.success-message {
+    background-color: var(--success-color); /* Verde intenso */
+}
+
+/* Si en algún momento quieres añadir iconos dentro de los mensajes globales, puedes descomentar y ajustar estas reglas */
+/*
+.error-message::before {
+    content: "⚠";
+    font-family: 'Material Icons'; // Necesitarás enlazar Material Icons en tu HTML <head>
+    font-size: 1.2em;
+}
+
+.success-message::before {
+    content: "✓";
+    font-family: 'Material Icons'; // Necesitarás enlazar Material Icons en tu HTML <head>
+    font-size: 1.2em;
+}
+*/
+
+/* === MENSAJES DE ERROR POR CAMPO === */
+.field-error {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--error-color);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+    position: relative;
+    padding-left: 1.2rem; /* Espacio para el icono */
+}
+
+.field-error::before {
+    content: "⚠"; /* Icono de advertencia para cada campo */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* === ESTILO DE FORMULARIO === */
 form {
     position: relative;
     z-index: 1;
@@ -196,6 +230,7 @@ label {
     font-weight: 600;
     color: var(--secondary-color);
     font-size: 0.95rem;
+    display: block;
 }
 
 input[type="text"],
@@ -244,12 +279,8 @@ textarea {
     flex-wrap: wrap;
 }
 
-.button-group .btn {
-    flex: 1 1 45%;
-    text-align: center;
-}
-
 .btn {
+    flex: 1 1 45%;
     padding: 0.9rem 2rem;
     border: none;
     border-radius: var(--border-radius);
@@ -257,9 +288,9 @@ textarea {
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-speed) ease;
-    width: fit-content;
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .btn::after {
@@ -280,10 +311,9 @@ textarea {
     opacity: 0;
 }
 
-/* Botón Primario (Guardar/Actualizar) */
 .btn-primary {
     background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
-    color: white;
+    color: var(--white);
     box-shadow: 0 4px 12px rgba(26, 188, 156, 0.2);
 }
 
@@ -293,10 +323,9 @@ textarea {
     box-shadow: 0 6px 16px rgba(26, 188, 156, 0.3);
 }
 
-/* Botón de Cancelar (Rojo) */
 .btn-cancel {
     background: linear-gradient(45deg, var(--error-color), #c0392b);
-    color: white;
+    color: var(--white);
     box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
 }
 
@@ -306,82 +335,8 @@ textarea {
     box-shadow: 0 6px 16px rgba(231, 76, 60, 0.3);
 }
 
-/* === TARJETAS === */
-.card {
-    background: var(--white);
-    padding: 20px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-    border-left: 4px solid var(--primary-color);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* === MENSAJES DE ERROR Y ÉXITO === */
-.error {
-    color: var(--error-color);
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    background: #ffebee;
-    padding: 8px 12px;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--error-color);
-    animation: fadeIn 0.3s ease;
-}
-
-.success {
-    color: var(--success-color);
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    background: #e8ffe8;
-    padding: 8px 12px;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--success-color);
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+/* === ANIMACIONES === */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* === RESPUESTA EN MÓVILES === */
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    .form-container {
-        margin: 1.5rem auto;
-        padding: 1.5rem;
-    }
-
-    .summary-card {
-        margin: 1rem 0;
-    }
-
-    .button-group {
-        flex-direction: column-reverse;
-        align-items: stretch;
-    }
-
-    .button-group .btn {
-        width: 100%;
-        text-align: center;
-    }
+    to   { opacity: 1; transform: translateY(0); }
 }
