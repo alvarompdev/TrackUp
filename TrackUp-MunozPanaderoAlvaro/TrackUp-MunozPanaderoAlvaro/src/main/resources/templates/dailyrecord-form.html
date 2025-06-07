@@ -16,9 +16,18 @@
         <!-- userId oculto -->
         <input type="hidden" th:field="*{userId}" />
 
-        <!-- Fecha -->
+        <!-- Fecha: CORRECCIÓN APLICADA AQUÍ -->
         <label for="date">Fecha:</label>
-        <input id="date" type="date" th:field="*{date}" required />
+        <input id="date" type="date"
+               th:value="${record.date != null ? #temporals.format(record.date, 'yyyy-MM-dd') : ''}"
+               required />
+        <!--
+            Nota: Al usar th:value directamente para formatear la fecha,
+            el atributo th:field para el campo de fecha ya no es necesario
+            en este input específico, ya que manejamos el valor directamente.
+            Spring y Thymeleaf seguirán ligando el campo 'date' del DTO
+            cuando se envíe el formulario.
+        -->
 
         <!-- Seleccionar Hábito -->
         <label for="habitId">Hábito:</label>
@@ -38,7 +47,6 @@
         </select>
 
         <div class="button-group" style="margin-top: 1.5rem;">
-            <!-- Cancelar vuelve al listado bajo /daily-records/user/{userId} -->
             <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="btn btn-cancel">
                 Cancelar
             </a>

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors; // Asegúrate de que esta importación exista
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/daily-records")
