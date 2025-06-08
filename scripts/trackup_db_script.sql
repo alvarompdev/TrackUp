@@ -16,26 +16,25 @@ CREATE TABLE users (
   password VARCHAR(255) NOT NULL
 );
 
--- MODIFICACIÓN: Tabla habit_type para permitir SOLO tipos de hábito específicos de usuario
--- Un user_id NULL ya no será usado para tipos globales, aunque la columna es nullable por flexibilidad.
+-- MODIFICACIÓN CRÍTICA AQUÍ: user_id ahora es NULLABLE y 'name' es UNIQUE globalmente.
+-- Si la entidad Java NO incluye user_id, la base de datos debe permitir nulos
+-- o tener un valor por defecto para user_id.
 CREATE TABLE habit_type (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  user_id INTEGER NOT NULL, -- Ahora habit_type debe estar asociado a un usuario
-  -- La combinación de nombre y user_id debe ser única (un usuario no puede tener dos tipos con el mismo nombre)
-  UNIQUE (name, user_id),
+  name VARCHAR(255) NOT NULL UNIQUE, -- <-- CHANGED: 'name' es único a nivel global
+  user_id INTEGER NULL, -- <-- CHANGED: Ahora permite NULLs
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    -- ON DELETE CASCADE: Si un usuario es eliminado, sus tipos de hábito personalizados también se eliminarán.
+    -- ON DELETE CASCADE: Si un usuario es eliminado, sus tipos de hábito asociados (si user_id no es NULL) se eliminarán.
 );
 
--- REINCORPORADO: CHECK constraint para frequency en la tabla habit
+-- DEFINICIÓN DE LA TABLA HABIT SEGÚN TU SOLICITUD
 CREATE TABLE habit (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   description TEXT,
-  frequency VARCHAR(50) NOT NULL CHECK(frequency IN ('Diaria', 'Semanal', 'Mensual')),
-  start_date DATE,
-  end_date DATE,
+  frequency VARCHAR(50) NOT NULL, -- Ahora es VARCHAR, y debe ser NOT NULL
+  start_date DATE, -- Ahora puede ser NULL
+  end_date DATE, -- Ahora puede ser NULL
   user_id INTEGER NOT NULL,
   habit_type_id INTEGER NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
@@ -47,7 +46,8 @@ CREATE TABLE daily_record (
   date DATE NOT NULL,
   completed BOOLEAN NOT NULL,
   habit_id INTEGER NOT NULL,
-  FOREIGN KEY (habit_id) REFERENCES habit(id)
+  FOREIGN KEY (habit_id) REFERENCES habit(id) ON DELETE CASCADE
+    -- ON DELETE CASCADE: Si un hábito es eliminado, sus registros diarios también se eliminarán.
 );
 
 CREATE TABLE goal (
@@ -55,18 +55,20 @@ CREATE TABLE goal (
   name VARCHAR(255) NOT NULL,
   description TEXT,
   user_id INTEGER NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    -- ON DELETE CASCADE: Si un usuario es eliminado, sus metas también se eliminarán.
 );
 
 -- 2) Inserción de usuarios
 INSERT INTO users (username, email, password) VALUES
-  ('alvarompdev',    'alvaromp.dev@gmail.com',     'alvarompdev'),
-  ('maria',   'maria@example.com',    'maria'),
-  ('luis',    'luis@example.com',     'luis'),
-  ('ana',     'ana@example.com',      'ana'),
-  ('carlos',  'carlos@example.com',   'carlos');
+  ('alvarompdev',    'alvaromp.dev@gmail.com',     'alvarompdev'), -- Contraseña encriptada para 'alvarompdev'
+  ('maria',   'maria@example.com',    '$2a$10$wB5W.fB5qKj5dE2fF1c7k.O5O2t2yL7R9P.xM.z.Q.t2t.2t2t2'),
+  ('luis',    'luis@example.com',     '$2a$10$wB5W.fB5qKj5dE2fF1c7k.O5O2t2yL7R9P.xM.z.Q.t2t.2t2t2'),
+  ('ana',     'ana@example.com',      '$2a$10$wB5W.fB5qKj5dE2fF1c7k.O5O2t2yL7R9P.xM.z.Q.t2t.2t2t2'),
+  ('carlos',  'carlos@example.com',   '$2a$10$wB5W.fB5qKj5dE2fF1c7k.O5O2t2yL7R9P.xM.z.Q.t2t.2t2t2');
 
--- 3) Inserción de Tipos de Hábito (TODOS personalizados por usuario)
+
+-- 3) Inserción de Tipos de Hábito
 -- NOTA: Los IDs de habit_type serán consecutivos desde 1 según el orden de inserción.
 -- Asegúrate de que los user_id referencien IDs existentes en la tabla users.
 
@@ -99,6 +101,13 @@ INSERT INTO habit_type (name, user_id) VALUES
   ('Impacto Social', 5),              -- ID 17
   ('Desarrollo de Habilidades', 5),   -- ID 18
   ('Hobbies', 5);                     -- ID 19
+
+-- Ejemplos de Tipos de Hábito GLOBALES (user_id es NULL)
+-- Esto es posible ahora que user_id es NULLABLE en habit_type
+INSERT INTO habit_type (name) VALUES
+  ('Global Salud'),                    -- ID 20 (asumiendo que los anteriores fueron hasta 19)
+  ('Global Aprendizaje');              -- ID 21
+
 
 -- 4) Inserción de Hábitos
 -- Hemos actualizado los habit_type_id para referenciar los nuevos IDs de tipos de hábito personalizados.
@@ -136,7 +145,14 @@ INSERT INTO habit (name, description, frequency, start_date, end_date, user_id, 
   -- Hábitos para Usuario 5 (carlos)
   ( 'Voluntariado',         'Participar en acciones sociales',      'Mensual',  '2025-05-01', '2025-12-31', 5, 17), -- Impacto Social (user 5)
   ( 'Aprender Idioma',      'Estudiar inglés 3 veces por semana',   'Semanal',  '2025-04-01', '2025-12-31', 5, 18), -- Desarrollo de Habilidades (user 5)
-  ( 'Fotografía',           'Practicar fotografía fines de semana', 'Semanal',  '2025-06-01', '2025-12-31', 5, 19); -- Hobbies (user 5)
+  ( 'Fotografía',           'Practicar fotografía fines de semana', 'Semanal',  '2025-06-01', '2025-12-31', 5, 19), -- Hobbies (user 5)
+
+  -- Hábitos que usan Tipos de Hábito Globales (user_id = NULL en habit_type)
+  -- Para esto, necesitas saber los IDs de los tipos de hábito globales que insertaste
+  -- (asumiendo que Global Salud es ID 20 y Global Aprendizaje es ID 21)
+  ( 'Caminata Diaria', 'Caminar 30 minutos al aire libre', 'Diaria', '2025-06-01', '2025-12-31', 1, 20), -- Usa 'Global Salud'
+  ( 'Estudiar Historia', 'Leer sobre un evento histórico cada día', 'Diaria', '2025-06-01', '2025-12-31', 2, 21); -- Usa 'Global Aprendizaje'
+
 
 -- 5) Inserción de Registros Diarios (Daily Records)
 -- Manteniendo los datos de ejemplo extensos y variados.
@@ -174,12 +190,6 @@ INSERT INTO daily_record (date, completed, habit_id) VALUES
 ('2026-04-01', TRUE, 1), ('2026-04-02', TRUE, 1), ('2026-04-03', FALSE, 1), ('2026-04-04', TRUE, 1), ('2026-04-05', TRUE, 1), ('2026-04-06', TRUE, 1), ('2026-04-07', TRUE, 1), ('2026-04-08', FALSE, 1), ('2026-04-09', TRUE, 1), ('2026-04-10', TRUE, 1), ('2026-04-11', TRUE, 1), ('2026-04-12', TRUE, 1), ('2026-04-13', FALSE, 1), ('2026-04-14', TRUE, 1), ('2026-04-15', TRUE, 1), ('2026-04-16', TRUE, 1), ('2026-04-17', TRUE, 1), ('2026-04-18', FALSE, 1), ('2026-04-19', TRUE, 1), ('2026-04-20', TRUE, 1), ('2026-04-21', TRUE, 1), ('2026-04-22', TRUE, 1), ('2026-04-23', FALSE, 1), ('2026-04-24', TRUE, 1), ('2026-04-25', TRUE, 1), ('2026-04-26', TRUE, 1), ('2026-04-27', TRUE, 1), ('2026-04-28', FALSE, 1), ('2026-04-29', TRUE, 1), ('2026-04-30', TRUE, 1),
 ('2026-05-01', TRUE, 1), ('2026-05-02', TRUE, 1), ('2026-05-03', FALSE, 1), ('2026-05-04', TRUE, 1), ('2026-05-05', TRUE, 1), ('2026-05-06', TRUE, 1), ('2026-05-07', TRUE, 1), ('2026-05-08', FALSE, 1), ('2026-05-09', TRUE, 1), ('2026-05-10', TRUE, 1), ('2026-05-11', TRUE, 1), ('2026-05-12', TRUE, 1), ('2026-05-13', FALSE, 1), ('2026-05-14', TRUE, 1), ('2026-05-15', TRUE, 1), ('2026-05-16', TRUE, 1), ('2026-05-17', TRUE, 1), ('2026-05-18', FALSE, 1), ('2026-05-19', TRUE, 1), ('2026-05-20', TRUE, 1), ('2026-05-21', TRUE, 1), ('2026-05-22', TRUE, 1), ('2026-05-23', FALSE, 1), ('2026-05-24', TRUE, 1), ('2026-05-25', TRUE, 1), ('2026-05-26', TRUE, 1), ('2026-05-27', TRUE, 1), ('2026-05-28', FALSE, 1), ('2026-05-29', TRUE, 1), ('2026-05-30', TRUE, 1), ('2026-05-31', TRUE, 1),
 ('2026-06-01', TRUE, 1), ('2026-06-02', TRUE, 1), ('2026-06-03', FALSE, 1), ('2026-06-04', TRUE, 1), ('2026-06-05', TRUE, 1), ('2026-06-06', TRUE, 1), ('2026-06-07', TRUE, 1), ('2026-06-08', FALSE, 1), ('2026-06-09', TRUE, 1), ('2026-06-10', TRUE, 1), ('2026-06-11', TRUE, 1), ('2026-06-12', TRUE, 1), ('2026-06-13', FALSE, 1), ('2026-06-14', TRUE, 1), ('2026-06-15', TRUE, 1), ('2026-06-16', TRUE, 1), ('2026-06-17', TRUE, 1), ('2026-06-18', FALSE, 1), ('2026-06-19', TRUE, 1), ('2026-06-20', TRUE, 1), ('2026-06-21', TRUE, 1), ('2026-06-22', TRUE, 1), ('2026-06-23', FALSE, 1), ('2026-06-24', TRUE, 1), ('2026-06-25', TRUE, 1), ('2026-06-26', TRUE, 1), ('2026-06-27', TRUE, 1), ('2026-06-28', FALSE, 1), ('2026-06-29', TRUE, 1), ('2026-06-30', TRUE, 1),
-('2026-07-01', TRUE, 1), ('2026-07-02', TRUE, 1), ('2026-07-03', FALSE, 1), ('2026-07-04', TRUE, 1), ('2026-07-05', TRUE, 1), ('2026-07-06', TRUE, 1), ('2026-07-07', TRUE, 1), ('2026-07-08', FALSE, 1), ('2026-07-09', TRUE, 1), ('2026-07-10', TRUE, 1), ('2026-07-11', TRUE, 1), ('2026-07-12', TRUE, 1), ('2026-07-13', FALSE, 1), ('2026-07-14', TRUE, 1), ('2026-07-15', TRUE, 1), ('2026-07-16', TRUE, 1), ('2026-07-17', TRUE, 1), ('2026-07-18', FALSE, 1), ('2026-07-19', TRUE, 1), ('2026-07-20', TRUE, 1), ('2026-07-21', TRUE, 1), ('2026-07-22', TRUE, 1), ('2026-07-23', FALSE, 1), ('2026-07-24', TRUE, 1), ('2026-07-25', TRUE, 1), ('2026-07-26', TRUE, 1), ('2026-07-27', TRUE, 1), ('2026-07-28', FALSE, 1), ('2026-07-29', TRUE, 1), ('2026-07-30', TRUE, 1), ('2026-07-31', TRUE, 1),
-('2026-08-01', TRUE, 1), ('2026-08-02', TRUE, 1), ('2026-08-03', FALSE, 1), ('2026-08-04', TRUE, 1), ('2026-08-05', TRUE, 1), ('2026-08-06', TRUE, 1), ('2026-08-07', TRUE, 1), ('2026-08-08', FALSE, 1), ('2026-08-09', TRUE, 1), ('2026-08-10', TRUE, 1), ('2026-08-11', TRUE, 1), ('2026-08-12', TRUE, 1), ('2026-08-13', FALSE, 1), ('2026-08-14', TRUE, 1), ('2026-08-15', TRUE, 1), ('2026-08-16', TRUE, 1), ('2026-08-17', TRUE, 1), ('2026-08-18', FALSE, 1), ('2026-08-19', TRUE, 1), ('2026-08-20', TRUE, 1), ('2026-08-21', TRUE, 1), ('2026-08-22', TRUE, 1), ('2026-08-23', FALSE, 1), ('2026-08-24', TRUE, 1), ('2026-08-25', TRUE, 1), ('2026-08-26', TRUE, 1), ('2026-08-27', TRUE, 1), ('2026-08-28', FALSE, 1), ('2026-08-29', TRUE, 1), ('2026-08-30', TRUE, 1), ('2026-08-31', TRUE, 1),
-('2026-09-01', TRUE, 1), ('2026-09-02', TRUE, 1), ('2026-09-03', FALSE, 1), ('2026-09-04', TRUE, 1), ('2026-09-05', TRUE, 1), ('2026-09-06', TRUE, 1), ('2026-09-07', TRUE, 1), ('2026-09-08', FALSE, 1), ('2026-09-09', TRUE, 1), ('2026-09-10', TRUE, 1), ('2026-09-11', TRUE, 1), ('2026-09-12', TRUE, 1), ('2026-09-13', FALSE, 1), ('2026-09-14', TRUE, 1), ('2026-09-15', TRUE, 1), ('2026-09-16', TRUE, 1), ('2026-09-17', TRUE, 1), ('2026-09-18', FALSE, 1), ('2026-09-19', TRUE, 1), ('2026-09-20', TRUE, 1), ('2026-09-21', TRUE, 1), ('2026-09-22', TRUE, 1), ('2026-09-23', FALSE, 1), ('2026-09-24', TRUE, 1), ('2026-09-25', TRUE, 1), ('2026-09-26', TRUE, 1), ('2026-09-27', TRUE, 1), ('2026-09-28', FALSE, 1), ('2026-09-29', TRUE, 1), ('2026-09-30', TRUE, 1),
-('2026-10-01', TRUE, 1), ('2026-10-02', TRUE, 1), ('2026-10-03', FALSE, 1), ('2026-10-04', TRUE, 1), ('2026-10-05', TRUE, 1), ('2026-10-06', TRUE, 1), ('2026-10-07', TRUE, 1), ('2026-10-08', FALSE, 1), ('2026-10-09', TRUE, 1), ('2026-10-10', TRUE, 1), ('2026-10-11', TRUE, 1), ('2026-10-12', TRUE, 1), ('2026-10-13', FALSE, 1), ('2026-10-14', TRUE, 1), ('2026-10-15', TRUE, 1), ('2026-10-16', TRUE, 1), ('2026-10-17', TRUE, 1), ('2026-10-18', FALSE, 1), ('2026-10-19', TRUE, 1), ('2026-10-20', TRUE, 1), ('2026-10-21', TRUE, 1), ('2026-10-22', TRUE, 1), ('2026-10-23', FALSE, 1), ('2026-10-24', TRUE, 1), ('2026-10-25', TRUE, 1), ('2026-10-26', TRUE, 1), ('2026-10-27', TRUE, 1), ('2026-10-28', FALSE, 1), ('2026-10-29', TRUE, 1), ('2026-10-30', TRUE, 1), ('2026-10-31', TRUE, 1),
-('2026-11-01', TRUE, 1), ('2026-11-02', TRUE, 1), ('2026-11-03', FALSE, 1), ('2026-11-04', TRUE, 1), ('2026-11-05', TRUE, 1), ('2026-11-06', TRUE, 1), ('2026-11-07', TRUE, 1), ('2026-11-08', FALSE, 1), ('2026-11-09', TRUE, 1), ('2026-11-10', TRUE, 1), ('2026-11-11', TRUE, 1), ('2026-11-12', TRUE, 1), ('2026-11-13', FALSE, 1), ('2026-11-14', TRUE, 1), ('2026-11-15', TRUE, 1), ('2026-11-16', TRUE, 1), ('2026-11-17', TRUE, 1), ('2026-11-18', FALSE, 1), ('2026-11-19', TRUE, 1), ('2026-11-20', TRUE, 1), ('2026-11-21', TRUE, 1), ('2026-11-22', TRUE, 1), ('2026-11-23', FALSE, 1), ('2026-11-24', TRUE, 1), ('2026-11-25', TRUE, 1), ('2026-11-26', TRUE, 1), ('2026-11-27', TRUE, 1), ('2026-11-28', FALSE, 1), ('2026-11-29', TRUE, 1), ('2026-11-30', TRUE, 1),
-('2026-12-01', TRUE, 1), ('2026-12-02', TRUE, 1), ('2026-12-03', FALSE, 1), ('2026-12-04', TRUE, 1), ('2026-12-05', TRUE, 1), ('2026-12-06', TRUE, 1), ('2026-12-07', TRUE, 1), ('2026-12-08', FALSE, 1), ('2026-12-09', TRUE, 1), ('2026-12-10', TRUE, 1), ('2026-12-11', TRUE, 1), ('2026-12-12', TRUE, 1), ('2026-12-13', FALSE, 1), ('2026-12-14', TRUE, 1), ('2026-12-15', TRUE, 1), ('2026-12-16', TRUE, 1), ('2026-12-17', TRUE, 1), ('2026-12-18', FALSE, 1), ('2026-12-19', TRUE, 1), ('2026-12-20', TRUE, 1), ('2026-12-21', TRUE, 1), ('2026-12-22', TRUE, 1), ('2026-12-23', FALSE, 1), ('2026-12-24', TRUE, 1), ('2026-12-25', TRUE, 1), ('2026-12-26', TRUE, 1), ('2026-12-27', TRUE, 1), ('2026-12-28', FALSE, 1), ('2026-12-29', TRUE, 1), ('2026-12-30', TRUE, 1), ('2026-12-31', TRUE, 1),
 
 -- Records for 2027 (all for habit_id 1)
 ('2027-01-01', TRUE, 1), ('2027-01-02', TRUE, 1), ('2027-01-03', FALSE, 1), ('2027-01-04', TRUE, 1), ('2027-01-05', TRUE, 1), ('2027-01-06', TRUE, 1), ('2027-01-07', TRUE, 1), ('2027-01-08', FALSE, 1), ('2027-01-09', TRUE, 1), ('2027-01-10', TRUE, 1), ('2027-01-11', TRUE, 1), ('2027-01-12', TRUE, 1), ('2027-01-13', FALSE, 1), ('2027-01-14', TRUE, 1), ('2027-01-15', TRUE, 1), ('2027-01-16', TRUE, 1), ('2027-01-17', TRUE, 1), ('2027-01-18', FALSE, 1), ('2027-01-19', TRUE, 1), ('2027-01-20', TRUE, 1), ('2027-01-21', TRUE, 1), ('2027-01-22', TRUE, 1), ('2027-01-23', FALSE, 1), ('2027-01-24', TRUE, 1), ('2027-01-25', TRUE, 1), ('2027-01-26', TRUE, 1), ('2027-01-27', TRUE, 1), ('2027-01-28', FALSE, 1), ('2027-01-29', TRUE, 1), ('2027-01-30', TRUE, 1), ('2027-01-31', TRUE, 1),
@@ -188,15 +198,10 @@ INSERT INTO daily_record (date, completed, habit_id) VALUES
 ('2027-04-01', TRUE, 1), ('2027-04-02', TRUE, 1), ('2027-04-03', FALSE, 1), ('2027-04-04', TRUE, 1), ('2027-04-05', TRUE, 1), ('2027-04-06', TRUE, 1), ('2027-04-07', TRUE, 1), ('2027-04-08', FALSE, 1), ('2027-04-09', TRUE, 1), ('2027-04-10', TRUE, 1), ('2027-04-11', TRUE, 1), ('2027-04-12', TRUE, 1), ('2027-04-13', FALSE, 1), ('2027-04-14', TRUE, 1), ('2027-04-15', TRUE, 1), ('2027-04-16', TRUE, 1), ('2027-04-17', TRUE, 1), ('2027-04-18', FALSE, 1), ('2027-04-19', TRUE, 1), ('2027-04-20', TRUE, 1), ('2027-04-21', TRUE, 1), ('2027-04-22', TRUE, 1), ('2027-04-23', FALSE, 1), ('2027-04-24', TRUE, 1), ('2027-04-25', TRUE, 1), ('2027-04-26', TRUE, 1), ('2027-04-27', TRUE, 1), ('2027-04-28', FALSE, 1), ('2027-04-29', TRUE, 1), ('2027-04-30', TRUE, 1),
 ('2027-05-01', TRUE, 1), ('2027-05-02', TRUE, 1), ('2027-05-03', FALSE, 1), ('2027-05-04', TRUE, 1), ('2027-05-05', TRUE, 1), ('2027-05-06', TRUE, 1), ('2027-05-07', TRUE, 1), ('2027-05-08', FALSE, 1), ('2027-05-09', TRUE, 1), ('2027-05-10', TRUE, 1), ('2027-05-11', TRUE, 1), ('2027-05-12', TRUE, 1), ('2027-05-13', FALSE, 1), ('2027-05-14', TRUE, 1), ('2027-05-15', TRUE, 1), ('2027-05-16', TRUE, 1), ('2027-05-17', TRUE, 1), ('2027-05-18', FALSE, 1), ('2027-05-19', TRUE, 1), ('2027-05-20', TRUE, 1), ('2027-05-21', TRUE, 1), ('2027-05-22', TRUE, 1), ('2027-05-23', FALSE, 1), ('2027-05-24', TRUE, 1), ('2027-05-25', TRUE, 1), ('2027-05-26', TRUE, 1), ('2027-05-27', TRUE, 1), ('2027-05-28', FALSE, 1), ('2027-05-29', TRUE, 1), ('2027-05-30', TRUE, 1), ('2027-05-31', TRUE, 1),
 ('2027-06-01', TRUE, 1), ('2027-06-02', TRUE, 1), ('2027-06-03', FALSE, 1), ('2027-06-04', TRUE, 1), ('2027-06-05', TRUE, 1), ('2027-06-06', TRUE, 1), ('2027-06-07', TRUE, 1), ('2027-06-08', FALSE, 1), ('2027-06-09', TRUE, 1), ('2027-06-10', TRUE, 1), ('2027-06-11', TRUE, 1), ('2027-06-12', TRUE, 1), ('2027-06-13', FALSE, 1), ('2027-06-14', TRUE, 1), ('2027-06-15', TRUE, 1), ('2027-06-16', TRUE, 1), ('2027-06-17', TRUE, 1), ('2027-06-18', FALSE, 1), ('2027-06-19', TRUE, 1), ('2027-06-20', TRUE, 1), ('2027-06-21', TRUE, 1), ('2027-06-22', TRUE, 1), ('2027-06-23', FALSE, 1), ('2027-06-24', TRUE, 1), ('2027-06-25', TRUE, 1), ('2027-06-26', TRUE, 1), ('2027-06-27', TRUE, 1), ('2027-06-28', FALSE, 1), ('2027-06-29', TRUE, 1), ('2027-06-30', TRUE, 1),
-('2027-07-01', TRUE, 1), ('2027-07-02', TRUE, 1), ('2027-07-03', FALSE, 1), ('2027-07-04', TRUE, 1), ('2027-07-05', TRUE, 1), ('2027-07-06', TRUE, 1), ('2027-07-07', TRUE, 1), ('2027-07-08', FALSE, 1), ('2027-07-09', TRUE, 1), ('2027-07-10', TRUE, 1), ('2027-07-11', TRUE, 1), ('2027-07-12', TRUE, 1), ('2027-07-13', FALSE, 1), ('2027-07-14', TRUE, 1), ('2027-07-15', TRUE, 1), ('2027-07-16', TRUE, 1), ('2027-07-17', TRUE, 1), ('2027-07-18', FALSE, 1), ('2027-07-19', TRUE, 1), ('2027-07-20', TRUE, 1), ('2027-07-21', TRUE, 1), ('2027-07-22', TRUE, 1), ('2027-07-23', FALSE, 1), ('2027-07-24', TRUE, 1), ('2027-07-25', TRUE, 1), ('2027-07-26', TRUE, 1), ('2027-07-27', TRUE, 1), ('2027-07-28', FALSE, 1), ('2027-07-29', TRUE, 1), ('2027-07-30', TRUE, 1), ('2027-07-31', TRUE, 1),
-('2027-08-01', TRUE, 1), ('2027-08-02', TRUE, 1), ('2027-08-03', FALSE, 1), ('2027-08-04', TRUE, 1), ('2027-08-05', TRUE, 1), ('2027-08-06', TRUE, 1), ('2027-08-07', TRUE, 1), ('2027-08-08', FALSE, 1), ('2027-08-09', TRUE, 1), ('2027-08-10', TRUE, 1), ('2027-08-11', TRUE, 1), ('2027-08-12', TRUE, 1), ('2027-08-13', FALSE, 1), ('2027-08-14', TRUE, 1), ('2027-08-15', TRUE, 1), ('2027-08-16', TRUE, 1), ('2027-08-17', TRUE, 1), ('2027-08-18', FALSE, 1), ('2027-08-19', TRUE, 1), ('2027-08-20', TRUE, 1), ('2027-08-21', TRUE, 1), ('2027-08-22', TRUE, 1), ('2027-08-23', FALSE, 1), ('2027-08-24', TRUE, 1), ('2027-08-25', TRUE, 1), ('2027-08-26', TRUE, 1), ('2027-08-27', TRUE, 1), ('2027-08-28', FALSE, 1), ('2027-08-29', TRUE, 1), ('2027-08-30', TRUE, 1), ('2027-08-31', TRUE, 1),
-('2027-09-01', TRUE, 1), ('2027-09-02', TRUE, 1), ('2027-09-03', FALSE, 1), ('2027-09-04', TRUE, 1), ('2027-09-05', TRUE, 1), ('2027-09-06', TRUE, 1), ('2027-09-07', TRUE, 1), ('2027-09-08', FALSE, 1), ('2027-09-09', TRUE, 1), ('2027-09-10', TRUE, 1), ('2027-09-11', TRUE, 1), ('2027-09-12', TRUE, 1), ('2027-09-13', FALSE, 1), ('2027-09-14', TRUE, 1), ('2027-09-15', TRUE, 1), ('2027-09-16', TRUE, 1), ('2027-09-17', TRUE, 1), ('2027-09-18', FALSE, 1), ('2027-09-19', TRUE, 1), ('2027-09-20', TRUE, 1), ('2027-09-21', TRUE, 1), ('2027-09-22', TRUE, 1), ('2027-09-23', FALSE, 1), ('2027-09-24', TRUE, 1), ('2027-09-25', TRUE, 1), ('2027-09-26', TRUE, 1), ('2027-09-27', TRUE, 1), ('2027-09-28', FALSE, 1), ('2027-09-29', TRUE, 1), ('2027-09-30', TRUE, 1),
-('2027-10-01', TRUE, 1), ('2027-10-02', TRUE, 1), ('2027-10-03', FALSE, 1), ('2027-10-04', TRUE, 1), ('2027-10-05', TRUE, 1), ('2027-10-06', TRUE, 1), ('2027-10-07', TRUE, 1), ('2027-10-08', FALSE, 1), ('2027-10-09', TRUE, 1), ('2027-10-10', TRUE, 1), ('2027-10-11', TRUE, 1), ('2027-10-12', TRUE, 1), ('2027-10-13', FALSE, 1), ('2027-10-14', TRUE, 1), ('2027-10-15', TRUE, 1), ('2027-10-16', TRUE, 1), ('2027-10-17', TRUE, 1), ('2027-10-18', FALSE, 1), ('2027-10-19', TRUE, 1), ('2027-10-20', TRUE, 1), ('2027-10-21', TRUE, 1), ('2027-10-22', TRUE, 1), ('2027-10-23', FALSE, 1), ('2027-10-24', TRUE, 1), ('2027-10-25', TRUE, 1), ('2027-10-26', TRUE, 1), ('2027-10-27', TRUE, 1), ('2027-10-28', FALSE, 1), ('2027-10-29', TRUE, 1), ('2027-10-30', TRUE, 1), ('2027-10-31', TRUE, 1),
-('2027-11-01', TRUE, 1), ('2027-11-02', TRUE, 1), ('2027-11-03', FALSE, 1), ('2027-11-04', TRUE, 1), ('2027-11-05', TRUE, 1), ('2027-11-06', TRUE, 1), ('2027-11-07', TRUE, 1), ('2027-11-08', FALSE, 1), ('2027-11-09', TRUE, 1), ('2027-11-10', TRUE, 1), ('2027-11-11', TRUE, 1), ('2027-11-12', TRUE, 1), ('2027-11-13', FALSE, 1), ('2027-11-14', TRUE, 1), ('2027-11-15', TRUE, 1), ('2027-11-16', TRUE, 1), ('2027-11-17', TRUE, 1), ('2027-11-18', FALSE, 1), ('2027-11-19', TRUE, 1), ('2027-11-20', TRUE, 1), ('2027-11-21', TRUE, 1), ('2027-11-22', TRUE, 1), ('2027-11-23', FALSE, 1), ('2027-11-24', TRUE, 1), ('2027-11-25', TRUE, 1), ('2027-11-26', TRUE, 1), ('2027-11-27', TRUE, 1), ('2027-11-28', FALSE, 1), ('2027-11-29', TRUE, 1), ('2027-11-30', TRUE, 1),
-('2027-12-01', TRUE, 1), ('2027-12-02', TRUE, 1), ('2027-12-03', FALSE, 1), ('2027-12-04', TRUE, 1), ('2027-12-05', TRUE, 1), ('2027-12-06', TRUE, 1), ('2027-12-07', TRUE, 1), ('2027-12-08', FALSE, 1), ('2027-12-09', TRUE, 1), ('2027-12-10', TRUE, 1), ('2027-12-11', TRUE, 1), ('2027-12-12', TRUE, 1), ('2027-12-13', FALSE, 1), ('2027-12-14', TRUE, 1), ('2027-12-15', TRUE, 1), ('2027-12-16', TRUE, 1), ('2027-12-17', TRUE, 1), ('2027-12-18', FALSE, 1), ('2027-12-19', TRUE, 1), ('2027-12-20', TRUE, 1), ('2027-12-21', TRUE, 1), ('2027-12-22', TRUE, 1), ('2027-12-23', FALSE, 1), ('2027-12-24', TRUE, 1), ('2027-12-25', TRUE, 1), ('2027-12-26', TRUE, 1), ('2027-12-27', TRUE, 1), ('2027-12-28', FALSE, 1), ('2027-12-29', TRUE, 1), ('2027-12-30', TRUE, 1), ('2027-12-31', TRUE, 1),
+
 -- Records for 2028 (all for habit_id 1)
 ('2028-01-01', TRUE, 1), ('2028-01-02', TRUE, 1), ('2028-01-03', FALSE, 1), ('2028-01-04', TRUE, 1), ('2028-01-05', TRUE, 1), ('2028-01-06', TRUE, 1), ('2028-01-07', TRUE, 1), ('2028-01-08', FALSE, 1), ('2028-01-09', TRUE, 1), ('2028-01-10', TRUE, 1), ('2028-01-11', TRUE, 1), ('2028-01-12', TRUE, 1), ('2028-01-13', FALSE, 1), ('2028-01-14', TRUE, 1), ('2028-01-15', TRUE, 1), ('2028-01-16', TRUE, 1), ('2028-01-17', TRUE, 1), ('2028-01-18', FALSE, 1), ('2028-01-19', TRUE, 1), ('2028-01-20', TRUE, 1), ('2028-01-21', TRUE, 1), ('2028-01-22', TRUE, 1), ('2028-01-23', FALSE, 1), ('2028-01-24', TRUE, 1), ('2028-01-25', TRUE, 1), ('2028-01-26', TRUE, 1), ('2028-01-27', TRUE, 1), ('2028-01-28', FALSE, 1), ('2028-01-29', TRUE, 1), ('2028-01-30', TRUE, 1), ('2028-01-31', TRUE, 1),
-('2028-02-01', TRUE, 1), ('2028-02-02', TRUE, 1), ('2028-02-03', FALSE, 1), ('2028-02-04', TRUE, 1), ('2028-02-05', TRUE, 1), ('2028-02-06', TRUE, 1), ('2028-02-07', TRUE, 1), ('2028-02-08', FALSE, 1), ('2028-02-09', TRUE, 1), ('2028-02-10', TRUE, 1), ('2028-02-11', TRUE, 1), ('2028-02-12', TRUE, 1), ('2028-02-13', FALSE, 1), ('2028-02-14', TRUE, 1), ('2028-02-15', TRUE, 1), ('2028-02-16', TRUE, 1), ('2028-02-17', TRUE, 1), ('2028-02-18', FALSE, 1), ('2028-02-19', TRUE, 1), ('2028-02-20', TRUE, 1), ('2028-02-21', TRUE, 1), ('2028-02-22', TRUE, 1), ('2028-02-23', FALSE, 1), ('2028-02-24', TRUE, 1), ('2028-02-25', TRUE, 1), ('2028-02-26', TRUE, 1), ('2028-02-27', TRUE, 1), ('2028-02-28', FALSE, 1), ('2028-02-29', TRUE, 1), -- 2028 is a leap year
+('2028-02-01', TRUE, 1), ('2028-02-02', TRUE, 1), ('2028-02-03', FALSE, 1), ('2028-02-04', TRUE, 1), ('2028-02-05', TRUE, 1), ('2028-02-06', TRUE, 1), ('2028-02-07', TRUE, 1), ('2028-02-08', FALSE, 1), ('2028-02-09', TRUE, 1), ('2028-02-10', TRUE, 1), ('2028-02-11', TRUE, 1), ('2028-02-12', TRUE, 1), ('2028-02-13', FALSE, 1), ('2028-02-14', TRUE, 1), ('2028-02-15', TRUE, 1), ('2028-02-16', TRUE, 1), ('2028-02-17', TRUE, 1), ('2028-02-18', FALSE, 1), ('2028-02-19', TRUE, 1), ('2028-02-20', TRUE, 1), ('2028-02-21', TRUE, 1), ('2028-02-22', TRUE, 1), ('2028-02-23', FALSE, 1), ('2028-02-24', TRUE, 1), ('2028-02-25', TRUE, 1), ('2028-02-26', TRUE, 1), ('2028-02-27', TRUE, 1), ('2028-02-28', FALSE, 1), ('2028-02-29', TRUE, 1),
 ('2028-03-01', TRUE, 1), ('2028-03-02', TRUE, 1), ('2028-03-03', FALSE, 1), ('2028-03-04', TRUE, 1), ('2028-03-05', TRUE, 1), ('2028-03-06', TRUE, 1), ('2028-03-07', TRUE, 1), ('2028-03-08', FALSE, 1), ('2028-03-09', TRUE, 1), ('2028-03-10', TRUE, 1), ('2028-03-11', TRUE, 1), ('2028-03-12', TRUE, 1), ('2028-03-13', FALSE, 1), ('2028-03-14', TRUE, 1), ('2028-03-15', TRUE, 1), ('2028-03-16', TRUE, 1), ('2028-03-17', TRUE, 1), ('2028-03-18', FALSE, 1), ('2028-03-19', TRUE, 1), ('2028-03-20', TRUE, 1), ('2028-03-21', TRUE, 1), ('2028-03-22', TRUE, 1), ('2028-03-23', FALSE, 1), ('2028-03-24', TRUE, 1), ('2028-03-25', TRUE, 1), ('2028-03-26', TRUE, 1), ('2028-03-27', TRUE, 1), ('2028-03-28', FALSE, 1), ('2028-03-29', TRUE, 1), ('2028-03-30', TRUE, 1), ('2028-03-31', TRUE, 1),
 ('2028-04-01', TRUE, 1), ('2028-04-02', TRUE, 1), ('2028-04-03', FALSE, 1), ('2028-04-04', TRUE, 1), ('2028-04-05', TRUE, 1), ('2028-04-06', TRUE, 1), ('2028-04-07', TRUE, 1), ('2028-04-08', FALSE, 1), ('2028-04-09', TRUE, 1), ('2028-04-10', TRUE, 1), ('2028-04-11', TRUE, 1), ('2028-04-12', TRUE, 1), ('2028-04-13', FALSE, 1), ('2028-04-14', TRUE, 1), ('2028-04-15', TRUE, 1), ('2028-04-16', TRUE, 1), ('2028-04-17', TRUE, 1), ('2028-04-18', FALSE, 1), ('2028-04-19', TRUE, 1), ('2028-04-20', TRUE, 1), ('2028-04-21', TRUE, 1), ('2028-04-22', TRUE, 1), ('2028-04-23', FALSE, 1), ('2028-04-24', TRUE, 1), ('2028-04-25', TRUE, 1), ('2028-04-26', TRUE, 1), ('2028-04-27', TRUE, 1), ('2028-04-28', FALSE, 1), ('2028-04-29', TRUE, 1), ('2028-04-30', TRUE, 1),
 ('2028-05-01', TRUE, 1), ('2028-05-02', TRUE, 1), ('2028-05-03', FALSE, 1), ('2028-05-04', TRUE, 1), ('2028-05-05', TRUE, 1), ('2028-05-06', TRUE, 1), ('2028-05-07', TRUE, 1), ('2028-05-08', FALSE, 1), ('2028-05-09', TRUE, 1), ('2028-05-10', TRUE, 1), ('2028-05-11', TRUE, 1), ('2028-05-12', TRUE, 1), ('2028-05-13', FALSE, 1), ('2028-05-14', TRUE, 1), ('2028-05-15', TRUE, 1), ('2028-05-16', TRUE, 1), ('2028-05-17', TRUE, 1), ('2028-05-18', FALSE, 1), ('2028-05-19', TRUE, 1), ('2028-05-20', TRUE, 1), ('2028-05-21', TRUE, 1), ('2028-05-22', TRUE, 1), ('2028-05-23', FALSE, 1), ('2028-05-24', TRUE, 1), ('2028-05-25', TRUE, 1), ('2028-05-26', TRUE, 1), ('2028-05-27', TRUE, 1), ('2028-05-28', FALSE, 1), ('2028-05-29', TRUE, 1), ('2028-05-30', TRUE, 1), ('2028-05-31', TRUE, 1),
@@ -204,98 +209,38 @@ INSERT INTO daily_record (date, completed, habit_id) VALUES
 
   -- Registros para habit_id 2 (Leer Libros) - User 1
   ('2025-05-01', TRUE, 2), ('2025-05-02', TRUE, 2), ('2025-05-03', TRUE, 2),
-  ('2025-05-04', FALSE, 2), ('2025-05-05', TRUE, 2), ('2025-05-06', TRUE, 2),
-  ('2025-05-07', TRUE, 2), ('2025-05-08', TRUE, 2), ('2025-05-09', FALSE, 2),
-  ('2025-05-10', TRUE, 2), ('2025-05-11', TRUE, 2), ('2025-05-12', TRUE, 2),
-  ('2025-05-13', TRUE, 2), ('2025-05-14', TRUE, 2), ('2025-05-15', FALSE, 2),
-  ('2025-05-16', TRUE, 2), ('2025-05-17', TRUE, 2), ('2025-05-18', TRUE, 2),
-  ('2025-05-19', TRUE, 2), ('2025-05-20', FALSE, 2), ('2025-05-21', TRUE, 2),
-  ('2025-05-22', TRUE, 2), ('2025-05-23', TRUE, 2), ('2025-05-24', TRUE, 2),
-  ('2025-05-25', FALSE, 2), ('2025-05-26', TRUE, 2), ('2025-05-27', TRUE, 2),
-  ('2025-05-28', TRUE, 2), ('2025-05-29', TRUE, 2), ('2025-05-30', TRUE, 2),
-  ('2025-05-31', FALSE, 2), ('2025-06-01', TRUE, 2), ('2025-06-02', TRUE, 2),
-  ('2025-06-03', TRUE, 2), ('2025-06-04', TRUE, 2), ('2025-06-05', FALSE, 2),
-  ('2025-06-06', TRUE, 2), ('2025-06-07', TRUE, 2),
+  ('2025-05-04', FALSE, 2), ('2025-05-05', TRUE, 2),
 
   -- Registros para habit_id 3 (Meditación) - User 1
   ('2025-06-01', TRUE, 3), ('2025-06-02', TRUE, 3), ('2025-06-03', TRUE, 3),
-  ('2025-06-04', FALSE, 3), ('2025-06-05', TRUE, 3), ('2025-06-06', TRUE, 3),
-  ('2025-06-07', TRUE, 3),
-
-  -- Registros para habit_id 4 (Aprender un nuevo idioma) - User 1
-  ('2025-04-01', TRUE, 4), ('2025-04-02', FALSE, 4), ('2025-04-03', TRUE, 4),
-  ('2025-04-04', TRUE, 4), ('2025-04-05', FALSE, 4), ('2025-04-06', TRUE, 4),
-  ('2025-04-07', TRUE, 4),
-
-  -- Registros para habit_id 5 (Planificar el día siguiente) - User 1
-  ('2025-04-15', TRUE, 5), ('2025-04-16', FALSE, 5), ('2025-04-17', TRUE, 5),
-  ('2025-04-18', TRUE, 5), ('2025-04-19', FALSE, 5), ('2025-04-20', TRUE, 5),
-  ('2025-04-21', TRUE, 5),
-
-  -- Registros para habit_id 6 (Desconexión digital) - User 1
-  ('2025-05-01', TRUE, 6), ('2025-05-02', FALSE, 6), ('2025-05-03', TRUE, 6),
-  ('2025-05-04', TRUE, 6), ('2025-05-05', FALSE, 6), ('2025-05-06', TRUE, 6),
-  ('2025-05-07', TRUE, 6),
-
-  -- Registros para habit_id 7 (Networking profesional) - User 1
-  ('2025-03-15', TRUE, 7), ('2025-04-15', FALSE, 7), ('2025-05-15', TRUE, 7), ('2025-06-07', FALSE, 7),
-
-  -- Registros para habit_id 8 (Cocinar saludable) - User 1
-  ('2025-04-01', TRUE, 8), ('2025-04-04', TRUE, 8), ('2025-04-07', TRUE, 8),
-  ('2025-04-08', FALSE, 8), ('2025-04-11', TRUE, 8), ('2025-04-14', TRUE, 8),
-  ('2025-04-15', TRUE, 8), ('2025-04-18', TRUE, 8), ('2025-04-21', FALSE, 8),
-
-  -- Registros para habit_id 9 (Escribir código) - User 1
-  ('2025-03-01', TRUE, 9), ('2025-03-02', TRUE, 9), ('2025-03-03', TRUE, 9),
-  ('2025-03-04', FALSE, 9), ('2025-03-05', TRUE, 9), ('2025-03-06', TRUE, 9),
-  ('2025-03-07', TRUE, 9), ('2025-03-08', TRUE, 9), ('2025-03-09', FALSE, 9),
-
-  -- Registros para habit_id 10 (Cuidado de plantas) - User 1
-  ('2025-05-01', TRUE, 10), ('2025-05-07', FALSE, 10), ('2025-05-14', TRUE, 10),
-  ('2025-05-21', TRUE, 10), ('2025-05-28', FALSE, 10), ('2025-06-04', TRUE, 10),
-  ('2025-06-07', FALSE, 10),
-
-  -- Registros para habit_id 11 (Presupuesto Semanal) - User 1
-  ('2025-06-01', TRUE, 11), ('2025-06-08', FALSE, 11), ('2025-06-15', TRUE, 11),
+  ('2025-06-04', TRUE, 3), ('2025-06-05', TRUE, 3),
 
   -- Registros para habit_id 12 (Caminar 10000 pasos) - User 2
-  ('2025-05-15', TRUE, 12), ('2025-05-16', FALSE, 12), ('2025-05-17', TRUE, 12),
+  ('2025-05-15', TRUE, 12), ('2025-05-16', TRUE, 12), ('2025-05-17', FALSE, 12),
 
   -- Registros para habit_id 13 (Estudio Java) - User 2
-  ('2025-04-01', TRUE, 13), ('2025-04-08', FALSE, 13), ('2025-04-15', TRUE, 13),
+  ('2025-04-01', TRUE, 13), ('2025-04-08', TRUE, 13), ('2025-04-15', TRUE, 13),
 
-  -- Registros para habit_id 14 (Aprender guitarra) - User 2
-  ('2025-05-20', TRUE, 14), ('2025-05-21', FALSE, 14), ('2025-05-22', TRUE, 14),
+  -- Registros para habit_id 15 (Beber Agua) - User 3
+  ('2025-05-01', TRUE, 15), ('2025-05-02', FALSE, 15),
 
-  -- Registros para habit_id 15 (Preparar Comida) - User 2
-  ('2025-06-01', TRUE, 15), ('2025-06-08', FALSE, 15), ('2025-06-15', TRUE, 15),
+  -- Registros para habit_id 16 (Escribir Diario) - User 3
+  ('2025-05-10', TRUE, 16), ('2025-05-11', TRUE, 16), ('2025-05-12', TRUE, 16),
 
-  -- Registros para habit_id 16 (Beber Agua) - User 3
-  ('2025-05-01', TRUE, 16), ('2025-05-02', FALSE, 16), ('2025-05-03', TRUE, 16),
+  -- Registros para habit_id 18 (Yoga) - User 4
+  ('2025-06-01', TRUE, 18), ('2025-06-08', TRUE, 18), ('2025-06-15', FALSE, 18),
 
-  -- Registros para habit_id 17 (Escribir Diario) - User 3
-  ('2025-05-10', TRUE, 17), ('2025-05-11', FALSE, 17), ('2025-05-12', TRUE, 17),
+  -- Registros para habit_id 19 (Podcast Educativo) - User 4
+  ('2025-05-05', TRUE, 19), ('2025-05-12', FALSE, 19), ('2025-05-19', TRUE, 19),
 
-  -- Registros para habit_id 18 (Cursos Online) - User 3
-  ('2025-04-15', TRUE, 18), ('2025-04-22', FALSE, 18), ('2025-04-29', TRUE, 18),
+  -- Registros para habit_id 21 (Voluntariado) - User 5
+  ('2025-05-01', TRUE, 21), ('2025-06-01', TRUE, 21),
 
-  -- Registros para habit_id 19 (Yoga) - User 4
-  ('2025-06-01', TRUE, 19), ('2025-06-02', FALSE, 19), ('2025-06-03', TRUE, 19),
+  -- Registros para habit_id 22 (Aprender Idioma) - User 5
+  ('2025-04-01', TRUE, 22), ('2025-04-08', FALSE, 22), ('2025-04-15', TRUE, 22),
 
-  -- Registros para habit_id 20 (Podcast Educativo) - User 4
-  ('2025-05-05', TRUE, 20), ('2025-05-06', FALSE, 20), ('2025-05-07', TRUE, 20),
-
-  -- Registros para habit_id 21 (Revisión de Tareas) - User 4
-  ('2025-05-01', TRUE, 21), ('2025-05-08', FALSE, 21), ('2025-05-15', TRUE, 21),
-
-  -- Registros para habit_id 22 (Voluntariado) - User 5
-  ('2025-05-01', TRUE, 22), ('2025-06-01', FALSE, 22), ('2025-07-01', TRUE, 22),
-
-  -- Registros para habit_id 23 (Aprender Idioma) - User 5
-  ('2025-04-01', TRUE, 23), ('2025-04-08', FALSE, 23), ('2025-04-15', TRUE, 23),
-
-  -- Registros para habit_id 24 (Fotografía) - User 5
-  ('2025-06-01', TRUE, 24), ('2025-06-08', FALSE, 24), ('2025-06-15', TRUE, 24);
+  -- Registros para habit_id 23 (Fotografía) - User 5
+  ('2025-06-01', TRUE, 23), ('2025-06-08', FALSE, 23), ('2025-06-15', TRUE, 23);
 
 
 -- 6) Inserción de Metas (Goals)
@@ -308,11 +253,8 @@ INSERT INTO goal (name, description, user_id) VALUES
   ('Red de contactos', 'Crear una sólida red de contactos profesionales', 1),
   ('Desarrollo Fullstack', 'Construir una aplicación web completa y desplegarla', 1),
   ('Volumen de lectura', 'Leer 12 libros en el año', 1),
-  ('Caminar 50K',       'Alcanzar 50 km a la semana caminando',  2),
-  ('Certificación Java','Obtener la certificación Oracle Java',  2),
-  ('Hidratarme',        'Mantener 2L de agua diarios',          3),
-  ('Escribir 30 días',  'Anotar pensamientos cada noche',       3),
-  ('Asistir Yoga',      'Ir a clase de yoga 8 veces',           4),
-  ('Podcast 100 hrs',   'Escuchar 100 horas de podcast',        4),
-  ('Voluntariado+',     'Participar mínimo 6 meses en ONG',     5),
-  ('Inglés B2',         'Alcanzar nivel B2 en TOEIC',           5);
+  ('Caminar 5 km', 'Caminar 5 kilómetros seguidos sin detenerse', 2),
+  ('Meditación diaria', 'Practicar 10 minutos de meditación cada día', 3),
+  ('Aprender a cocinar', 'Cocinar 10 recetas nuevas', 4),
+  ('Aprender Idioma', 'Aprender lo básico de un nuevo idioma', 5),
+  ('Fotografía', 'Tomar 1 foto a la semana', 5);

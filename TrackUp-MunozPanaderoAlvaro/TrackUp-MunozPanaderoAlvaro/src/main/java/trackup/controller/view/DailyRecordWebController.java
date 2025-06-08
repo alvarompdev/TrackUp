@@ -174,6 +174,12 @@ public class DailyRecordWebController {
             return "redirect:/daily-records?error=not_found";
         }
         DailyRecordResponseDTO rec = recordOpt.get();
+
+        // --- INICIO DE LÍNEAS DE DEPURACIÓN (PARA COPIAR Y PEGAR) ---
+        System.out.println("DEBUG: En DailyRecordWebController.showEditForm para ID: " + id);
+        System.out.println("DEBUG: Valor de rec.getDate() (desde el servicio/DB): " + rec.getDate());
+        // --- FIN DE LÍNEAS DE DEPURACIÓN ---
+
         Long uid = getCurrentUserId();
         if (!rec.getUserId().equals(uid)) {
             return "redirect:/daily-records?error=unauthorized";
@@ -184,6 +190,10 @@ public class DailyRecordWebController {
         dto.setCompleted(rec.getCompleted());
         dto.setHabitId(rec.getHabitId());
         dto.setUserId(rec.getUserId());
+
+        // --- INICIO DE LÍNEAS DE DEPURACIÓN (PARA COPIAR Y PEGAR) ---
+        System.out.println("DEBUG: Valor de dto.getDate() (enviado al formulario): " + dto.getDate());
+        // --- FIN DE LÍNEAS DE DEPURACIÓN ---
 
         model.addAttribute("record", dto);
         model.addAttribute("recordId", rec.getId());
