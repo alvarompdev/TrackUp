@@ -13,6 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuración de seguridad para la aplicación.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -23,20 +28,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Deshabilitamos CSRF (apto para REST + JWT)
                 .csrf(csrf -> csrf.disable())
 
                 // Rutas públicas y privadas
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/login", "/register", "/perform_login",
-                                "/css/**", "/js/**", "/images/**", "/error",
+                                "/css/**", "/js/**", "/img/**", "/images/**", "/error",
                                 "/api/auth/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
 
-                // Form-login (página /login)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
@@ -47,7 +50,6 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-                // Logout estándar
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
@@ -57,12 +59,10 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-                // Gestión de sesión (solo si no usas JWT en toda la app)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
 
-        // Añadimos el filtro JWT antes del filtro de usuario/password
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -70,7 +70,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // En desarrollo COMPARA en claro; no usar este encoder en producción
         return NoOpPasswordEncoder.getInstance();
     }
 

@@ -3,10 +3,14 @@ package trackup.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import trackup.entity.User;
-
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Implementación de UserDetails para la autenticación de usuarios.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;

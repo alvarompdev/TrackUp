@@ -9,14 +9,12 @@
 <body>
 <div class="auth-container">
 
-    <!-- Logo -->
     <div class="logo-container">
         <img th:src="@{/img/logo1.png}" alt="Logo de la aplicación" class="logo" />
     </div>
 
     <h2>Registrarse</h2>
 
-    <!-- Mostrar errores -->
     <div th:if="${error}" class="error" th:text="${error}">
         Error al registrar.
     </div>

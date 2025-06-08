@@ -1,26 +1,16 @@
-/* ==========================================================================
-   remain.css – Estilo unificado para TrackUp siguiendo la estructura de
-   index-styles.css (VERSIÓN RESPONSIVE FINAL adaptada a “remain”)
-   ========================================================================== */
-
-/* ----------------------------------------------------------
-   1) Variables globales y Reset básico
----------------------------------------------------------- */
 :root {
-    /* COLORES ORIGINALES - COHERENTES CON index-styles.css */
-    --color-primary: #1b5e20;       /* Verde bosque oscuro */
-    --color-secondary: #2e7d32;     /* Verde medio */
-    --color-accent: #43a047;        /* Verde vivo */
-    --color-bg: #e8f5e9;            /* Fondo muy suave verdoso */
-    --color-surface: #ffffff;       /* Blanco para "tarjetas" */
-    --color-text: #263238;          /* Gris oscuro azulado */
-    --color-muted: #546e7a;         /* Gris oscuro medio */
-    --color-muted-light: #757f88;   /* Gris más claro para descripciones */
-    --color-border: #e0e0e0;        /* Borde tenue */
-    --color-card-bg: #f1f9f1;       /* Verde muy suave para fondo de mini-tarjetas */
-    --color-error: #c62828;         /* Rojo oscuro */
-    --color-success: #2e7d32;       /* Verde oscuro para mensajes de éxito */
-    /* Variables responsive */
+    --color-primary: #1b5e20;
+    --color-secondary: #2e7d32;
+    --color-accent: #43a047;
+    --color-bg: #e8f5e9;
+    --color-surface: #ffffff;
+    --color-text: #263238;
+    --color-muted: #546e7a;
+    --color-muted-light: #757f88;
+    --color-border: #e0e0e0;
+    --color-card-bg: #f1f9f1;
+    --color-error: #c62828;
+    --color-success: #2e7d32;
     --radius: clamp(8px, 1.5vw, 12px);
     --transition-speed: 0.25s;
     --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -32,10 +22,8 @@
     --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
     --spacing-xl: clamp(1.5rem, 3vw, 2rem);
     --spacing-xxl: clamp(2rem, 4vw, 3rem);
-    /* Sidebar responsiva */
     --sidebar-width: clamp(200px, 20vw, 250px);
     --sidebar-width-collapsed: 60px;
-    /* Tipografía responsive */
     --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
     --font-size-sm: clamp(0.8rem, 2.2vw, 0.9rem);
     --font-size-base: clamp(0.9rem, 2.5vw, 1rem);
@@ -67,9 +55,6 @@ body {
     line-height: 1.6;
 }
 
-/* ----------------------------------------------------------
-   2) Dashboard Container / Sidebar / Main Content
----------------------------------------------------------- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
@@ -77,7 +62,6 @@ body {
     position: relative;
 }
 
-/* Sidebar fija a la izquierda */
 .sidebar {
     position: fixed;
     top: 0;
@@ -116,9 +100,6 @@ body {
     }
 }
 
-/* ----------------------------------------------------------
-   3) Logo Container y Logo
----------------------------------------------------------- */
 .logo-container {
     text-align: center;
     margin-bottom: var(--spacing-xl);
@@ -136,9 +117,6 @@ body {
     transform: scale(1.05);
 }
 
-/* ----------------------------------------------------------
-   4) Menú lateral
----------------------------------------------------------- */
 .menu {
     flex-grow: 1;
     display: flex;
@@ -200,9 +178,6 @@ body {
     cursor: pointer;
 }
 
-/* ----------------------------------------------------------
-   5) Main Content responsivo
----------------------------------------------------------- */
 .main-content {
     flex-grow: 1;
     margin-left: var(--sidebar-width);
@@ -221,9 +196,6 @@ body {
     }
 }
 
-/* ----------------------------------------------------------
-   6) Encabezados y Jerarquía Tipográfica
----------------------------------------------------------- */
 h1 {
     font-size: var(--font-size-xxl);
     font-weight: 700;
@@ -232,9 +204,6 @@ h1 {
     line-height: 1.2;
 }
 
-/* ----------------------------------------------------------
-   7) Sección de “Empty Message”
----------------------------------------------------------- */
 .empty-msg {
     text-align: center;
     color: var(--color-muted);
@@ -244,9 +213,6 @@ h1 {
     padding: var(--spacing-md);
 }
 
-/* ----------------------------------------------------------
-   8) Media Queries para diferentes dispositivos
----------------------------------------------------------- */
 @media (min-width: 1400px) {
     :root {
         --sidebar-width: min(250px, 20vw);
@@ -292,9 +258,6 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   9) Preferencias de accesibilidad
----------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -303,9 +266,6 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   10) Utilidades responsivas adicionales
----------------------------------------------------------- */
 .mobile-header {
     display: none;
     justify-content: space-between;
@@ -356,9 +316,6 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   11) Estilos para la sección de Perfil (AÑADIDO PARA LA PÁGINA DE PERFIL)
----------------------------------------------------------- */
 .profile-section {
     background-color: var(--color-surface);
     padding: var(--spacing-lg);
@@ -419,4 +376,26 @@ h1 {
     cursor: not-allowed;
     opacity: 0.7;
     box-shadow: none;
+}
+
+@media (max-width: 767px) {
+    .profile-info {
+        grid-template-columns: 1fr;
+    }
+    .btn-edit-profile {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .profile-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .profile-info {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }

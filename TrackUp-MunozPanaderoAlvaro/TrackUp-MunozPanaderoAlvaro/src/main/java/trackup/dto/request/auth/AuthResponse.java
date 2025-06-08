@@ -1,5 +1,10 @@
 package trackup.dto.request.auth;
 
+/**
+ * Clase que representa la respuesta de autenticación.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 public class AuthResponse {
 
     private String token;

@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import trackup.entity.User;
 import trackup.repository.UserRepository;
 
+/**
+ * Controlador para manejar las vistas de autenticación y registro de usuarios.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @Controller
 public class AuthViewController {
 

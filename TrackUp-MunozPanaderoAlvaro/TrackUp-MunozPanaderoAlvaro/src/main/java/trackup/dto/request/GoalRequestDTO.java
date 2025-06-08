@@ -1,7 +1,7 @@
 package trackup.dto.request;
 
-import jakarta.validation.constraints.NotBlank; // Importar esta
-import jakarta.validation.constraints.Size;    // Importar esta
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * DTO para los cuerpos de las solicitudes (Objetivos)

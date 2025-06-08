@@ -1,5 +1,10 @@
 package trackup.dto.request.auth;
 
+/**
+ * Clase que representa la solicitud de registro de un nuevo usuario.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 public class RegisterRequest {
 
     private String username;

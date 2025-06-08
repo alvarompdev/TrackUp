@@ -15,10 +15,13 @@ import trackup.entity.User;
 import trackup.repository.UserRepository;
 import trackup.security.UserDetailsImpl;
 import trackup.security.JwtUtil;
-
 import java.util.Map;
-import java.util.Optional;
 
+/**
+ * Controlador para manejar las operaciones de autenticación y registro de usuarios.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

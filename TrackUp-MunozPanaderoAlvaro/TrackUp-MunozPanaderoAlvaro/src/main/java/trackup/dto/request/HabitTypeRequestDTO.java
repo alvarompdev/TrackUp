@@ -13,7 +13,7 @@ public class HabitTypeRequestDTO {
     @Schema(description = "Nombre único del tipo de hábito", example = "Productividad", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name; // Nombre del tipo de hábito
 
-    private Long id; // ID del tipo de hábito (opcional, puede ser usado para actualizaciones)
+    private Long id; // ID del tipo de hábito
 
     /**
      * Constructor vacío del DTO
@@ -31,14 +31,6 @@ public class HabitTypeRequestDTO {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /**
      * Getters y Setters
      */
@@ -48,6 +40,14 @@ public class HabitTypeRequestDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

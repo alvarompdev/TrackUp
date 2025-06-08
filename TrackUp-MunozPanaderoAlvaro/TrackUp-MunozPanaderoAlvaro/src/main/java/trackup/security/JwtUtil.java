@@ -3,18 +3,21 @@ package trackup.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * Utilidad para manejar la generación y validación de tokens JWT.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @Component
 public class JwtUtil {
 
-    // Usa una clave segura y larga (mínimo 32 caracteres para HS256)
     private final String secretKey = "mi_clave_super_secreta_1234567890123456";
 
     private final Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
-    private final long expirationMs = 86400000; // 1 día
+    private final long expirationMs = 86400000;
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -28,7 +31,7 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
-                .setAllowedClockSkewSeconds(60) // 60 segundos de margen
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -39,7 +42,7 @@ public class JwtUtil {
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)
-                    .setAllowedClockSkewSeconds(60) // 60 segundos de margen
+                    .setAllowedClockSkewSeconds(60)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();

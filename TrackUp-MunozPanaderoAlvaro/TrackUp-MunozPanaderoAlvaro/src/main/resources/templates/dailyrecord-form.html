@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title th:text="${isEdit} ? 'Editar Registro' : 'Nuevo Registro'">Formulario de Registro</title>
+    <title th:text="${isEdit} ? 'Editar Registro' : 'Nuevo Registro'">TrackUp - Formulario de Registro</title>
     <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
     <link rel="stylesheet" th:href="@{/css/form-styles.css}" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -11,25 +11,14 @@
 <div class="form-container">
     <h2 th:text="${isEdit} ? 'Editar Registro' : 'Nuevo Registro'">Nuevo Registro</h2>
     <form th:action="@{/daily-records/save}" th:object="${record}" method="post">
-        <!-- ID oculto solo en edición -->
         <input type="hidden" th:if="${isEdit}" name="recordId" th:value="${recordId}" />
-        <!-- userId oculto -->
         <input type="hidden" th:field="*{userId}" />
 
-        <!-- Fecha: CORRECCIÓN APLICADA AQUÍ -->
         <label for="date">Fecha:</label>
         <input id="date" type="date"
                th:value="${record.date != null ? #temporals.format(record.date, 'yyyy-MM-dd') : ''}"
                required />
-        <!--
-            Nota: Al usar th:value directamente para formatear la fecha,
-            el atributo th:field para el campo de fecha ya no es necesario
-            en este input específico, ya que manejamos el valor directamente.
-            Spring y Thymeleaf seguirán ligando el campo 'date' del DTO
-            cuando se envíe el formulario.
-        -->
 
-        <!-- Seleccionar Hábito -->
         <label for="habitId">Hábito:</label>
         <select id="habitId" th:field="*{habitId}" required>
             <option value="" disabled th:if="${!isEdit}" selected>-- Selecciona un hábito --</option>
@@ -39,7 +28,6 @@
             </option>
         </select>
 
-        <!-- Completado -->
         <label for="completed">Completado:</label>
         <select id="completed" th:field="*{completed}" required>
             <option th:value="true">Sí</option>

@@ -1,47 +1,29 @@
-/* =========================================================================
-   daily-records-styles.css – Estilo unificado para la página de "Registros Diarios"
-   ========================================================================== */
-
-/* ----------------------------------------------------------
-   Variables de color y estilo global (DEBEN SER IDÉNTICAS EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 :root {
-    /* COLORES ORIGINALES - MANTENIDOS EXACTOS */
-    --color-primary: #1b5e20;       /* Verde bosque oscuro */
-    --color-secondary: #2e7d32;     /* Verde medio */
-    --color-accent: #43a047;        /* Verde vivo */
-    --color-bg: #e8f5e9;            /* Fondo muy suave verdoso */
-    --color-surface: #ffffff;       /* Blanco para "tarjetas" */
-    --color-text: #263238;          /* Gris oscuro azulado */
-    --color-muted: #546e7a;         /* Gris oscuro medio */
-    --color-muted-light: #757f88;   /* Gris más claro para descripciones */
-    --color-border: #e0e0e0;        /* Borde tenue */
-    --color-card-bg: #f1f9f1;       /* Verde muy suave para fondo de mini-tarjetas */
-    --color-error: #c62828;         /* Rojo oscuro */
-    --color-success: #2e7d32;       /* Verde oscuro para mensajes de éxito */
-
-    /* NUEVAS VARIABLES RESPONSIVE */
-    --radius: clamp(8px, 1.5vw, 12px);                 /* Radio responsive */
+    --color-primary: #1b5e20;
+    --color-secondary: #2e7d32;
+    --color-accent: #43a047;
+    --color-bg: #e8f5e9;
+    --color-surface: #ffffff;
+    --color-text: #263238;
+    --color-muted: #546e7a;
+    --color-muted-light: #757f88;
+    --color-border: #e0e0e0;
+    --color-card-bg: #f1f9f1;
+    --color-error: #c62828;
+    --color-success: #2e7d32;
+    --radius: clamp(8px, 1.5vw, 12px);
     --transition-speed: 0.25s;
-
     --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10);
-
     --font-family: 'Roboto', sans-serif;
-
-    /* Variables responsivas para espaciado */
     --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
     --spacing-sm: clamp(0.5rem, 1.5vw, 0.75rem);
     --spacing-md: clamp(0.75rem, 2vw, 1rem);
     --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
     --spacing-xl: clamp(1.5rem, 3vw, 2rem);
     --spacing-xxl: clamp(2rem, 4vw, 3rem);
-
-    /* Variables para sidebar - AJUSTADA LA ANCHURA MÁXIMA PARA CONSISTENCIA */
-    --sidebar-width: clamp(200px, 20vw, 250px); /* Establecido a 250px como máximo */
+    --sidebar-width: clamp(200px, 20vw, 250px);
     --sidebar-width-collapsed: 60px;
-
-    /* Variables para tipografía responsive */
     --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
     --font-size-sm: clamp(0.8rem, 2.2vw, 0.9rem);
     --font-size-base: clamp(0.9rem, 2.5vw, 1rem);
@@ -50,9 +32,6 @@
     --font-size-xxl: clamp(1.5rem, 5vw, 2rem);
 }
 
-/* ----------------------------------------------------------
-   Reset básico y ajustes de scroll (DEBEN SER IDÉNTICAS EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 * {
     margin: 0;
     padding: 0;
@@ -61,7 +40,7 @@
 
 html, body {
     height: 100%;
-    overflow-x: hidden;    /* Evitar scroll horizontal */
+    overflow-x: hidden;
     background-color: var(--color-bg);
     font-family: var(--font-family);
     color: var(--color-text);
@@ -73,17 +52,11 @@ a {
     color: inherit;
 }
 
-/* ----------------------------------------------------------
-   Contenedor principal de dashboard (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
 }
 
-/* ----------------------------------------------------------
-   Sidebar (barra lateral fija) (DEBE SER IDÉNTICA EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 .sidebar {
     position: fixed;
     top: 0;
@@ -91,7 +64,7 @@ a {
     bottom: 0;
     width: var(--sidebar-width);
     min-width: 200px;
-    max-width: 250px; /* Establecido a 250px como máximo */
+    max-width: 250px;
     background-color: var(--color-primary);
     color: #fff;
     display: flex;
@@ -112,10 +85,10 @@ a {
 }
 
 h1 {
-    font-size: var(--font-size-xxl);   /* Tamaño XXL uniforme */
-    font-weight: 700;                  /* Negrita */
-    color: var(--color-primary);       /* Color principal */
-    margin: var(--spacing-lg) 0;       /* Margen vertical uniforme, sin margen horizontal */
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: var(--spacing-lg) 0;
     line-height: 1.2;
 }
 
@@ -152,9 +125,6 @@ h1 {
     margin: 1rem 0;
 }
 
-/* ----------------------------------------------------------
-   .menu-item: ahora con font-size para asegurar consistencia de tamaño
----------------------------------------------------------- */
 .menu-item {
     display: flex;
     align-items: center;
@@ -180,16 +150,12 @@ h1 {
     padding-top: 1rem;
 }
 
-/* ----------------------------------------------------------
-   Estilos para botón "Cerrar sesión" dentro del sidebar
----------------------------------------------------------- */
 .menu-item.logout-btn {
     background: none;
     border: none;
     width: 100%;
     text-align: left;
     cursor: pointer;
-    /* Hereda font-size de .menu-item para mantener consistencia */
 }
 
 .menu-item.logout-btn:hover {
@@ -197,13 +163,10 @@ h1 {
     color: #fff;
 }
 
-/* ----------------------------------------------------------
-   Contenido principal (respetando el ancho de la sidebar y márgenes responsive)
----------------------------------------------------------- */
 .main-content {
     flex-grow: 1;
-    margin-left: var(--sidebar-width);            /* Espacio para la sidebar fija */
-    padding: var(--spacing-xl);                   /* Igual que en index-styles.css */
+    margin-left: var(--sidebar-width);
+    padding: var(--spacing-xl);
     background-color: var(--color-bg);
     display: flex;
     flex-direction: column;
@@ -212,7 +175,6 @@ h1 {
     max-width: 100%;
 }
 
-/* Ajuste para sidebar collapsed */
 @media (max-width: 1200px) and (min-width: 769px) {
     .main-content {
         margin-left: var(--sidebar-width-collapsed);
@@ -220,15 +182,11 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   Título de sección (Ahora a la izquierda)
----------------------------------------------------------- */
 .habit-section .section-title,
 .habit-table-container h3,
 .main-content > h1 {
     color: var(--color-primary);
     margin-bottom: var(--spacing-lg);
-    /* Alineado a la izquierda como en index-styles.css */
     text-align: left;
 }
 
@@ -236,21 +194,15 @@ h1 {
     font-size: var(--font-size-xl);
 }
 
-/* ----------------------------------------------------------
-   Section Header (flex responsivo)
----------------------------------------------------------- */
 .section-header {
     display: flex;
-    justify-content: space-between; /* Mantiene el espacio si hay botones */
+    justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-xl);
     flex-wrap: wrap;
     gap: var(--spacing-sm);
 }
 
-/* ----------------------------------------------------------
-   Mensajes de éxito y error
----------------------------------------------------------- */
 .success-message,
 .error-message {
     margin-bottom: var(--spacing-md);
@@ -270,16 +222,13 @@ h1 {
     color: #fff;
 }
 
-/* ----------------------------------------------------------
-   Contenedor de gráficos pie (alineación y espaciado responsivo)
----------------------------------------------------------- */
 .chart-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: var(--spacing-lg);
     justify-items: center;
     margin-top: var(--spacing-xl);
-    padding: var(--spacing-xs); /* Añadido padding para evitar corte de hover */
+    padding: var(--spacing-xs);
 }
 
 @media (min-width: 1200px) {
@@ -330,9 +279,6 @@ h1 {
     padding: var(--spacing-md);
 }
 
-/* ----------------------------------------------------------
-   Tablas de registros y progreso
----------------------------------------------------------- */
 .records-table {
     width: 100%;
     border-collapse: collapse;
@@ -360,7 +306,6 @@ h1 {
     background-color: #f1f1f1;
 }
 
-/* Centrar columnas de “Acción” si existen */
 .records-table th:nth-child(3),
 .records-table td:nth-child(3),
 .records-table th:nth-child(4),
@@ -368,9 +313,6 @@ h1 {
     text-align: center;
 }
 
-/* ----------------------------------------------------------
-   Botones pequeños de acción (añadir, editar, eliminar)
----------------------------------------------------------- */
 .btn-sm {
     display: inline-flex;
     align-items: center;
@@ -404,9 +346,6 @@ h1 {
     background-color: #e53935;
 }
 
-/* ----------------------------------------------------------
-   Barra de progreso dentro de la tabla de hábitos
----------------------------------------------------------- */
 .progress-bar {
     width: 100%;
     background-color: #f0f0f0;
@@ -427,9 +366,6 @@ h1 {
     color: #333;
 }
 
-/* ----------------------------------------------------------
-   Contenedor de tabla de hábitos (sección inferior)
----------------------------------------------------------- */
 .habit-table-container {
     margin-top: var(--spacing-xxl);
 }
@@ -456,17 +392,11 @@ h1 {
     text-decoration: underline;
 }
 
-/* ----------------------------------------------------------
-   Historial de registros (tabla adicional)
----------------------------------------------------------- */
 .records-table + h3 {
     margin-top: var(--spacing-xxl);
     color: var(--color-primary);
 }
 
-/* ----------------------------------------------------------
-   Enlaces generales y estilos de texto
----------------------------------------------------------- */
 .link {
     color: var(--color-accent);
     transition: color var(--transition-speed);
@@ -476,12 +406,8 @@ h1 {
     color: var(--color-secondary);
 }
 
-/* ----------------------------------------------------------
-   Mobile Header (para pantallas pequeñas, cuando sidebar está oculta)
-   (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 .mobile-header {
-    display: none; /* Oculto por defecto */
+    display: none;
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-md) var(--spacing-lg);
@@ -489,19 +415,19 @@ h1 {
     color: white;
     position: sticky;
     top: 0;
-    z-index: 1001; /* Más alto que la sidebar para estar siempre visible */
+    z-index: 1001;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .mobile-header .logo {
-    max-width: 80px; /* Tamaño del logo en el header móvil */
+    max-width: 80px;
 }
 
 .mobile-menu-btn {
     background: none;
     border: none;
     color: white;
-    font-size: 2rem; /* Tamaño del icono de la hamburguesa */
+    font-size: 2rem;
     cursor: pointer;
     padding: var(--spacing-xs);
     display: flex;
@@ -509,20 +435,16 @@ h1 {
     justify-content: center;
 }
 
-/* ----------------------------------------------------------
-   Mobile Menu Overlay (el menú que aparece al hacer click en hamburguesa)
-   (DEBE SER IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 .mobile-menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
-    z-index: 1002; /* Por encima de todo lo demás */
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1002;
     display: flex;
-    justify-content: flex-end; /* Para que el menú se deslice desde la derecha */
+    justify-content: flex-end;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -535,10 +457,10 @@ h1 {
 
 .mobile-menu-content {
     background-color: var(--color-primary);
-    width: 280px; /* Ancho del menú desplegable */
-    max-width: 80%; /* Asegurar que no sea demasiado ancho en pantallas pequeñas */
+    width: 280px;
+    max-width: 80%;
     height: 100%;
-    transform: translateX(100%); /* Inicialmente fuera de la pantalla */
+    transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
@@ -547,7 +469,7 @@ h1 {
 }
 
 .mobile-menu-overlay.open .mobile-menu-content {
-    transform: translateX(0); /* Deslizar hacia adentro */
+    transform: translateX(0);
 }
 
 .mobile-menu-content .menu-top,
@@ -557,13 +479,13 @@ h1 {
 }
 
 .mobile-menu-content .menu-item {
-    padding: var(--spacing-md) var(--spacing-lg); /* Ajustar padding para el menú móvil */
+    padding: var(--spacing-md) var(--spacing-lg);
     font-size: var(--font-size-lg);
-    justify-content: flex-start; /* Asegurar icono y texto alineados a la izquierda */
+    justify-content: flex-start;
 }
 
 .mobile-menu-content .menu-divider {
-    margin: var(--spacing-xxl) var(--spacing-lg); /* Ajustar margen para el menú móvil */
+    margin: var(--spacing-xxl) var(--spacing-lg);
 }
 
 .mobile-close-btn {
@@ -572,26 +494,22 @@ h1 {
     color: white;
     font-size: 2rem;
     cursor: pointer;
-    align-self: flex-end; /* Alinear a la derecha dentro del menú */
+    align-self: flex-end;
     padding: var(--spacing-xs) var(--spacing-lg);
     margin-bottom: var(--spacing-md);
 }
 
-/* ----------------------------------------------------------
-   Ajustes responsivos (DEBEN SER IDÉNTICOS EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 @media (max-width: 768px) {
     .sidebar {
-        display: none;            /* Ocultar la sidebar fija */
+        display: none;
     }
     .dashboard-container {
         flex-direction: column;
     }
     .main-content {
-        margin-left: 0;           /* Eliminar el margen de la sidebar */
-        padding: var(--spacing-md); /* Reducir padding en móvil */
+        margin-left: 0;
+        padding: var(--spacing-md);
     }
-    /* Mostrar el mobile header en pantallas pequeñas */
     .mobile-header {
         display: flex;
     }
@@ -601,19 +519,16 @@ h1 {
         gap: var(--spacing-sm);
     }
     .chart-container {
-        grid-template-columns: 1fr; /* Una columna para los gráficos */
+        grid-template-columns: 1fr;
         gap: var(--spacing-md);
     }
     .records-table th,
     .records-table td {
-        padding: var(--spacing-xs);          /* Reducir padding de tabla */
-        font-size: var(--font-size-sm);       /* Reducir tamaño de fuente de tabla */
+        padding: var(--spacing-xs);
+        font-size: var(--font-size-sm);
     }
 }
 
-/* ----------------------------------------------------------
-   Preferencias de accesibilidad (IDÉNTICO EN TODOS TUS CSS DE LAYOUT)
----------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;

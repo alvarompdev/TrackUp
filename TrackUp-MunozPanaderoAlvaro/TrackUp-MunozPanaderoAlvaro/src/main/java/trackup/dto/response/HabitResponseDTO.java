@@ -88,14 +88,6 @@ public class HabitResponseDTO {
         this.userId = habit.getUser() != null ? habit.getUser().getId() : null;
     }
 
-    public Long getHabitTypeId() {
-        return habitTypeId;
-    }
-
-    public void setHabitTypeId(Long habitTypeId) {
-        this.habitTypeId = habitTypeId;
-    }
-
     /**
      * Getters y Setters
      */
@@ -161,6 +153,14 @@ public class HabitResponseDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getHabitTypeId() {
+        return habitTypeId;
+    }
+
+    public void setHabitTypeId(Long habitTypeId) {
+        this.habitTypeId = habitTypeId;
     }
 
 }

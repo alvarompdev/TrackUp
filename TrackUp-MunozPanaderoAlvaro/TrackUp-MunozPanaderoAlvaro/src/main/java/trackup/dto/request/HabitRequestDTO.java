@@ -3,7 +3,6 @@ package trackup.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 
 /**
@@ -40,8 +39,6 @@ public class HabitRequestDTO {
 
     @Schema(description = "Fecha de finalización (formato ISO: YYYY-MM-dd)", example = "2024-12-31", format = "date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    // ****** IMPORTANTE: He quitado @NotNull y @Future para que endDate sea opcional
-    // ****** y la validación personalizada de fechas tenga prioridad.
     private LocalDate endDate;
 
     @Schema(description = "ID del usuario propietario", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -79,7 +76,9 @@ public class HabitRequestDTO {
         this.habitTypeId = habitTypeId;
     }
 
-    // --- Getters y Setters ---
+    /**
+     * Getters y Setters
+     */
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getHabitTypeName() { return habitTypeName; }
@@ -99,18 +98,12 @@ public class HabitRequestDTO {
     public Long getHabitTypeId() { return habitTypeId; }
     public void setHabitTypeId(Long habitTypeId) { this.habitTypeId = habitTypeId; }
 
-    // --- MÉTODO DE VALIDACIÓN DE FECHAS PERSONALIZADO ---
-    // Este método es CRUCIAL para la validación de que endDate no sea anterior a startDate.
     @AssertTrue(message = "La fecha de fin no puede ser anterior a la fecha de inicio.")
     public boolean isEndDateAfterStartDate() {
-        // Si endDate es nula, significa que el hábito no tiene fecha de fin, lo cual es válido.
-        // Si startDate es nula (aunque ya tenemos @NotNull, esta validación de contingencia es segura),
-        // también consideramos que no hay problema en esta validación cruzada.
         if (startDate == null || endDate == null) {
             return true;
         }
-        // Retorna true si endDate es igual o posterior a startDate.
-        // Si endDate es anterior a startDate, retorna false, disparando el mensaje de error.
+
         return !endDate.isBefore(startDate);
     }
 

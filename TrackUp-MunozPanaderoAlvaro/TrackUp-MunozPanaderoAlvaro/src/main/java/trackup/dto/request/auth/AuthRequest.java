@@ -2,6 +2,11 @@ package trackup.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Clase que representa la solicitud de autenticación.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 public class AuthRequest {
 
     @NotBlank(message = "El nombre de usuario es obligatorio")

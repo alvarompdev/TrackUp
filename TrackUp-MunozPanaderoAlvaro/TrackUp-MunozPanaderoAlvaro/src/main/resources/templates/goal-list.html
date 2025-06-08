@@ -10,7 +10,6 @@
 <body>
 <div class="dashboard-container">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo-container">
       <a th:href="@{/}" aria-label="Volver al inicio">
@@ -46,7 +45,7 @@
           <span class="material-icons">person</span>
           <span>Perfil</span>
         </a>
-        <!-- Botón de Cerrar Sesión -->
+
         <form th:action="@{/logout}" method="post" style="width: 100%;">
           <button type="submit" class="menu-item logout-btn">
             <span class="material-icons">logout</span>
@@ -57,10 +56,8 @@
     </nav>
   </aside>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content">
 
-    <!-- Sección de Metas -->
     <section class="goal-section">
       <div class="section-header">
         <h1 class="section-title">Mis Metas</h1>
@@ -69,11 +66,9 @@
         </a>
       </div>
 
-      <!-- Mensajes de Feedback -->
       <div th:if="${successMsg != null and !successMsg.isEmpty()}" class="success-message" th:text="${successMsg}"></div>
       <div th:if="${errorMsg != null and !errorMsg.isEmpty()}" class="error-message" th:text="${errorMsg}"></div>
 
-      <!-- GRID DE TARJETAS DE METAS -->
       <div class="goals-section">
         <div th:if="${#lists.isEmpty(goals)}" class="empty-msg">
           Aún no tienes metas creadas. ¡Empieza una hoy!
@@ -103,12 +98,10 @@
 </div>
 
 <script>
-  // Espera 5 segundos y oculta los mensajes flash (éxito y error)
   setTimeout(() => {
     document.querySelectorAll('.success-message, .error-message').forEach(msg => {
       msg.style.transition = 'opacity 0.5s ease-out';
       msg.style.opacity = '0';
-      // Opcional: elimina del DOM para liberar espacio
       setTimeout(() => msg.remove(), 500);
     });
   }, 5000);

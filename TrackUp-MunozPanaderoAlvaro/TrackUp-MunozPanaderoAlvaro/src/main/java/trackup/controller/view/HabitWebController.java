@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError; // Asegúrate de que esta importación esté
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trackup.dto.request.HabitRequestDTO;
@@ -15,11 +15,15 @@ import trackup.dto.response.HabitResponseDTO;
 import trackup.services.HabitService;
 import trackup.services.HabitTypeService;
 import trackup.services.UserService;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors; // Asegúrate de que esta importación esté
+import java.util.stream.Collectors;
 
+/**
+ * Controlador para manejar las vistas de los hábitos del usuario.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @Controller
 @RequestMapping("/habits")
 public class HabitWebController {
@@ -144,11 +148,10 @@ public class HabitWebController {
             Model model) {
 
         if (result.hasErrors()) {
-            // Recolectar todos los errores del BindingResult en una sola cadena para mostrar
             String validationErrors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(". "));
-            model.addAttribute("errorMsg", validationErrors); // Usamos errorMsg para ambos tipos de errores
+            model.addAttribute("errorMsg", validationErrors);
             model.addAttribute("habit", dto);
             model.addAttribute("userId", dto.getUserId());
             model.addAttribute("habitTypes", habitTypeService.getAllHabitTypes());
@@ -168,8 +171,7 @@ public class HabitWebController {
         } catch (IllegalArgumentException e) {
             ra.addFlashAttribute("errorMsg", e.getMessage());
             ra.addFlashAttribute("habit", dto);
-            // Ya no es necesario pasar BindingResult si todos los errores se consolidan en errorMsg
-            // ra.addFlashAttribute("org.springframework.validation.BindingResult.habit", result);
+
             if (dto.getId() == null) {
                 return "redirect:/habits/new?userId=" + dto.getUserId();
             } else {

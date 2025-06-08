@@ -1,44 +1,26 @@
-/* ==========================================================================
-   habit-goal-list-styles.css – Estilos para la gestión de hábitos y metas - VERSIÓN RESPONSIVE FINAL
-   ========================================================================== */
-
-/* ----------------------------------------------------------
-   1) Variables globales (coherentes con index-styles.css)
----------------------------------------------------------- */
 :root {
-    /* COLORES ORIGINALES - MANTENIDOS EXACTOS */
-    --color-primary: #1b5e20;    /* Verde bosque oscuro */
-    --color-secondary: #2e7d32;  /* Verde medio */
-    --color-accent: #43a047;     /* Verde vivo */
-    --color-bg: #e8f5e9;         /* Fondo muy suave verdoso */
-    --color-surface: #ffffff;    /* Tarjetas blancas */
-    --color-text: #263238;       /* Gris oscuro azulado */
-    --color-muted: #546e7a;      /* Gris azulado medio */
-    --color-error: #c62828;      /* Rojo oscuro */
-    --color-success: #2e7d32;    /* Verde oscuro para éxitos */
-
-    /* NUEVAS VARIABLES RESPONSIVE - COHERENTES CON index-styles.css */
-    --radius: clamp(8px, 1.5vw, 12px); /* Radio responsive */
-    --transition-speed: 0.25s; /* Velocidad de transición ligeramente ajustada para consistencia */
-
-    --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08); /* Añadido para consistencia */
-    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10); /* Añadido para consistencia */
-
+    --color-primary: #1b5e20;
+    --color-secondary: #2e7d32;
+    --color-accent: #43a047;
+    --color-bg: #e8f5e9;
+    --color-surface: #ffffff;
+    --color-text: #263238;
+    --color-muted: #546e7a;
+    --color-error: #c62828;
+    --color-success: #2e7d32;
+    --radius: clamp(8px, 1.5vw, 12px);
+    --transition-speed: 0.25s;
+    --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10);
     --font-family: 'Roboto', sans-serif;
-
-    /* Variables responsivas para espaciado - COHERENTES CON index-styles.css */
     --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
     --spacing-sm: clamp(0.5rem, 1.5vw, 0.75rem);
     --spacing-md: clamp(0.75rem, 2vw, 1rem);
     --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
     --spacing-xl: clamp(1.5rem, 3vw, 2rem);
     --spacing-xxl: clamp(2rem, 4vw, 3rem);
-
-    /* Variables para sidebar - COHERENTES CON index-styles.css - ANCHURA MÁXIMA AJUSTADA */
-    --sidebar-width: clamp(200px, 20vw, 250px); /* Establecido a 250px como máximo */
+    --sidebar-width: clamp(200px, 20vw, 250px);
     --sidebar-width-collapsed: 60px;
-
-    /* Variables para tipografía responsive - COHERENTES CON index-styles.css */
     --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
     --font-size-sm: clamp(0.8rem, 2.2vw, 0.9rem);
     --font-size-base: clamp(0.9rem, 2.5vw, 1rem);
@@ -47,9 +29,6 @@
     --font-size-xxl: clamp(1.5rem, 5vw, 2rem);
 }
 
-/* ----------------------------------------------------------
-   2) Reset básico y ajustes de scroll
----------------------------------------------------------- */
 * {
     margin: 0;
     padding: 0;
@@ -57,7 +36,7 @@
 }
 
 html {
-    font-size: clamp(14px, 1.5vw, 16px); /* Base font-size responsive */
+    font-size: clamp(14px, 1.5vw, 16px);
 }
 
 html, body {
@@ -73,47 +52,40 @@ body {
     line-height: 1.6;
 }
 
-/* ----------------------------------------------------------
-   3) Dashboard Container
----------------------------------------------------------- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
-    background-color: var(--color-bg); /* Añadido para consistencia */
-    position: relative; /* Añadido para consistencia */
+    background-color: var(--color-bg);
+    position: relative;
 }
 
-/* ----------------------------------------------------------
-   4) Sidebar (fija y responsiva) - ANCHURA MÁXIMA AJUSTADA
----------------------------------------------------------- */
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: var(--sidebar-width); /* Usamos la variable responsive */
-    min-width: 200px; /* Añadido para consistencia con index-styles.css */
-    max-width: 250px; /* Establecido a 250px como máximo para consistencia */
+    width: var(--sidebar-width);
+    min-width: 200px;
+    max-width: 250px;
     background-color: var(--color-primary);
     color: #fff;
     display: flex;
     flex-direction: column;
-    padding: var(--spacing-md) 0; /* Usamos variable responsive */
+    padding: var(--spacing-md) 0;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1); /* Añadido para consistencia */
-    transition: transform var(--transition-speed), width var(--transition-speed); /* Añadido para transiciones suaves */
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition-speed), width var(--transition-speed);
 }
 
 h1 {
-    font-size: var(--font-size-xxl);   /* Tamaño XXL uniforme */
-    font-weight: 700;                  /* Negrita */
-    color: var(--color-primary);       /* Color principal */
-    margin: var(--spacing-lg) 0;       /* Margen vertical uniforme, sin margen horizontal */
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: var(--spacing-lg) 0;
     line-height: 1.2;
 }
 
-/* Sidebar collapsed en pantallas medianas (coherente con index-styles.css) */
 @media (max-width: 1200px) and (min-width: 769px) {
     .sidebar {
         width: var(--sidebar-width-collapsed);
@@ -139,15 +111,15 @@ h1 {
 
 .logo-container {
     text-align: center;
-    margin-bottom: var(--spacing-xl); /* Usamos variable responsive */
-    padding: 0 var(--spacing-md); /* Añadido para consistencia */
+    margin-bottom: var(--spacing-xl);
+    padding: 0 var(--spacing-md);
 }
 
 .logo {
-    max-width: min(120px, 60%); /* Usamos min() para responsividad */
-    height: auto; /* Asegura que la altura se ajuste proporcionalmente */
+    max-width: min(120px, 60%);
+    height: auto;
     transition: transform var(--transition-speed);
-    cursor: pointer; /* Añadido para UX */
+    cursor: pointer;
 }
 
 .logo:hover {
@@ -170,32 +142,31 @@ h1 {
 .menu-divider {
     height: 1px;
     background-color: rgba(255, 255, 255, 0.2);
-    margin: var(--spacing-md) 0; /* Usamos variable responsive */
+    margin: var(--spacing-md) 0;
 }
 
 .menu-item {
     display: flex;
     align-items: center;
-    padding: var(--spacing-sm) var(--spacing-lg); /* Usamos variables responsive */
+    padding: var(--spacing-sm) var(--spacing-lg);
     color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
-    font-size: var(--font-size-base); /* Usamos variable responsive */
+    font-size: var(--font-size-base);
     transition: background-color var(--transition-speed), color var(--transition-speed);
-    min-height: 44px; /* Tamaño mínimo para touch devices */
-    background-color: transparent; /* Asegurar consistencia para botones */
-    border: none; /* Elimina borde nativo para logout-btn */
-    width: 100%; /* Ocupar ancho completo */
-    text-align: left; /* Alinear icono y texto a la izquierda */
-    cursor: pointer; /* Puntero de mano */
+    min-height: 44px;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
 }
 
 .menu-item .material-icons {
-    margin-right: var(--spacing-sm); /* Usamos variable responsive */
-    flex-shrink: 0; /* Añadido para consistencia */
+    margin-right: var(--spacing-sm);
+    flex-shrink: 0;
 }
 
-/* Hover y activo —> mismo estilo para todos los .menu-item, incluido logout-btn */
 .menu-item:hover,
 .menu-item.logout-btn:hover,
 .menu-item.active {
@@ -205,13 +176,9 @@ h1 {
 
 .menu-item.profile {
     margin-top: auto;
-    padding-top: var(--spacing-md); /* Usamos variable responsive */
+    padding-top: var(--spacing-md);
 }
 
-/* ----------------------------------------------------------
-   4.1) Ajustes específicos para el botón Cerrar Sesión
----------------------------------------------------------- */
-/* Hereda las mismas propiedades de .menu-item, no requiere margen extra */
 .menu-item.logout-btn {
     background: none;
     border: none;
@@ -220,21 +187,17 @@ h1 {
     cursor: pointer;
 }
 
-/* ----------------------------------------------------------
-   5) Main Content (con margen para la sidebar fija y responsiva)
----------------------------------------------------------- */
 .main-content {
     flex-grow: 1;
-    padding: var(--spacing-xl); /* Usamos variable responsive */
-    margin-left: var(--sidebar-width); /* Margen dinámico según el ancho de la sidebar */
-    display: flex; /* Añadido para consistencia */
-    flex-direction: column; /* Añadido para consistencia */
-    transition: margin-left var(--transition-speed); /* Añadido para transiciones suaves */
-    width: calc(100% - var(--sidebar-width)); /* Asegura que el contenido ocupe el espacio restante */
-    max-width: 100%; /* Asegura que no desborde */
+    padding: var(--spacing-xl);
+    margin-left: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
+    transition: margin-left var(--transition-speed);
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
 }
 
-/* Ajuste para sidebar collapsed (coherente con index-styles.css) */
 @media (max-width: 1200px) and (min-width: 769px) {
     .main-content {
         margin-left: var(--sidebar-width-collapsed);
@@ -242,42 +205,33 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   6) Separaciones entre secciones (usando variables responsivas)
----------------------------------------------------------- */
 .habit-section {
-    margin-bottom: var(--spacing-xl); /* Usamos variable responsive */
+    margin-bottom: var(--spacing-xl);
 }
 
 .habits-section {
-    margin-bottom: var(--spacing-lg); /* Usamos variable responsive */
+    margin-bottom: var(--spacing-lg);
 }
 
 .habit-type-section .section-title {
-    margin-top: var(--spacing-lg); /* Usamos variable responsive */
+    margin-top: var(--spacing-lg);
 }
 
-/* ----------------------------------------------------------
-   7) Section Headers (responsivo)
----------------------------------------------------------- */
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-lg); /* Usamos variable responsive */
-    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
-    gap: var(--spacing-sm); /* Espaciado entre elementos cuando se envuelven */
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
 }
 
 .section-title {
-    font-size: var(--font-size-xl); /* Usamos variable responsive */
+    font-size: var(--font-size-xl);
     color: var(--color-primary);
-    line-height: 1.2; /* Añadido para consistencia */
+    line-height: 1.2;
 }
 
-/* ----------------------------------------------------------
-   8) Botones genéricos (responsivos)
----------------------------------------------------------- */
 .btn,
 .btn-create,
 .btn-cancel,
@@ -286,17 +240,17 @@ h1 {
     align-items: center;
     background-color: var(--color-primary);
     color: #fff;
-    padding: var(--spacing-sm) var(--spacing-md); /* Usamos variables responsive */
+    padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 500;
     transition: background-color var(--transition-speed), transform var(--transition-speed);
-    font-size: var(--font-size-base); /* Añadido para responsividad */
+    font-size: var(--font-size-base);
 }
 
 .btn-create .material-icons,
 .btn-primary .material-icons {
-    margin-right: var(--spacing-xs); /* Usamos variable responsive */
+    margin-right: var(--spacing-xs);
 }
 
 .btn:hover,
@@ -311,21 +265,18 @@ h1 {
 }
 
 .btn-cancel:hover {
-    background-color: #455a64; /* Color ligeramente más oscuro para hover */
+    background-color: #455a64;
     transform: translateY(-2px);
 }
 
-/* ----------------------------------------------------------
-   9) Feedback Messages (responsivos)
----------------------------------------------------------- */
 .success-message,
 .error-message {
-    margin-bottom: var(--spacing-md); /* Usamos variable responsive */
-    padding: var(--spacing-sm) var(--spacing-md); /* Usamos variables responsive */
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius);
     font-weight: 500;
-    width: 100%; /* Asegura que ocupen todo el ancho disponible */
-    font-size: var(--font-size-base); /* Usamos variable responsive */
+    width: 100%;
+    font-size: var(--font-size-base);
 }
 
 .success-message {
@@ -342,27 +293,23 @@ h1 {
     text-align: center;
     color: var(--color-muted);
     font-style: italic;
-    margin: var(--spacing-md) 0; /* Usamos variable responsive */
-    font-size: var(--font-size-sm); /* Usamos variable responsive */
-    padding: var(--spacing-md); /* Añadido para consistencia */
+    margin: var(--spacing-md) 0;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-md);
 }
 
-/* ----------------------------------------------------------
-   10) Habit & Goal Cards: Grid Responsivo
----------------------------------------------------------- */
 .habits-section,
 .goals-section {
     display: grid;
-    /* Grid dinámico: 2 columnas en pantallas grandes, 1 en pequeñas */
-    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); /* Responsivo con min() */
-    gap: var(--spacing-lg); /* Usamos variable responsive */
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: var(--spacing-lg);
 }
 
 .habit-card,
 .goal-card {
     background-color: var(--color-surface);
     border-radius: var(--radius);
-    box-shadow: var(--shadow-light); /* Usamos variable de sombra */
+    box-shadow: var(--shadow-light);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -371,20 +318,19 @@ h1 {
 
 .habit-card:hover,
 .goal-card:hover {
-    box-shadow: var(--shadow-medium); /* Usamos variable de sombra */
+    box-shadow: var(--shadow-medium);
     transform: translateY(-4px);
 }
 
-/* Header de la tarjeta */
 .habit-header,
 .goal-header {
     background-color: var(--color-secondary);
-    padding: var(--spacing-md); /* Usamos variable responsive */
+    padding: var(--spacing-md);
     display: flex;
     align-items: center;
     position: relative;
-    flex-wrap: wrap; /* Permitir que los elementos se envuelvan si es necesario */
-    justify-content: center; /* Centrar elementos si se envuelven */
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .habit-header .badge,
@@ -392,56 +338,53 @@ h1 {
     background-color: #d0f0d0;
     color: var(--color-primary);
     border-radius: var(--radius);
-    padding: var(--spacing-xs) var(--spacing-sm); /* Usamos variables responsive */
-    font-size: var(--font-size-base); /* Usamos variable responsive */
-    margin-left: var(--spacing-md); /* Usamos variable responsive */
-    margin-right: var(--spacing-xs); /* Usamos variable responsive */
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-base);
+    margin-left: var(--spacing-md);
+    margin-right: var(--spacing-xs);
     font-weight: 600;
 }
 
 .habit-header h3,
 .goal-header h3 {
     color: #fff;
-    font-size: var(--font-size-lg); /* Usamos variable responsive */
+    font-size: var(--font-size-lg);
     margin: 0 auto;
-    text-align: center; /* Centrar el título */
-    flex-grow: 1; /* Permite que el título ocupe el espacio disponible */
+    text-align: center;
+    flex-grow: 1;
 }
 
-/* Descripción */
 .habit-description,
 .goal-description {
-    padding: var(--spacing-md); /* Usamos variable responsive */
+    padding: var(--spacing-md);
     flex-grow: 1;
     color: var(--color-text);
-    font-size: var(--font-size-base); /* Usamos variable responsive */
+    font-size: var(--font-size-base);
 }
 
-/* Meta de hábito */
 .habit-meta {
-    padding: 0 var(--spacing-md) var(--spacing-md); /* Usamos variable responsive */
+    padding: 0 var(--spacing-md) var(--spacing-md);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: var(--font-size-sm); /* Usamos variable responsive */
+    font-size: var(--font-size-sm);
     color: var(--color-muted);
-    flex-wrap: wrap; /* Permitir que los elementos se envuelvan */
-    gap: var(--spacing-xs); /* Espaciado entre elementos */
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
 }
 
 .habit-meta .meta-right {
     display: flex;
-    gap: var(--spacing-md); /* Usamos variable responsive */
+    gap: var(--spacing-md);
 }
 
-/* Acciones de la tarjeta */
 .habit-actions,
 .goal-actions {
-    padding: var(--spacing-md); /* Usamos variable responsive */
+    padding: var(--spacing-md);
     display: flex;
     justify-content: flex-end;
-    gap: var(--spacing-sm); /* Usamos variable responsive */
-    flex-wrap: wrap; /* Asegura que los botones se envuelvan en pantallas pequeñas */
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
 .btn-sm {
@@ -449,16 +392,16 @@ h1 {
     align-items: center;
     background-color: var(--color-primary);
     color: #fff;
-    padding: var(--spacing-xs) var(--spacing-sm); /* Usamos variables responsive */
+    padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius);
-    font-size: var(--font-size-sm); /* Usamos variable responsive */
+    font-size: var(--font-size-sm);
     text-decoration: none;
     transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
 .btn-sm .material-icons {
-    margin-right: var(--spacing-xs); /* Usamos variable responsive */
-    font-size: var(--font-size-base); /* Ajustar tamaño de icono si es necesario */
+    margin-right: var(--spacing-xs);
+    font-size: var(--font-size-base);
 }
 
 .btn-sm.btn-edit:hover {
@@ -475,13 +418,10 @@ h1 {
     transform: translateY(-1px);
 }
 
-/* ----------------------------------------------------------
-   11) Sección de Tipos de Hábito: Scroll vertical si hay muchos elementos (responsivo)
----------------------------------------------------------- */
 .habit-type-list ul {
-    max-height: clamp(250px, 60vh, 500px); /* Usamos clamp para altura máxima responsive */
+    max-height: clamp(250px, 60vh, 500px);
     overflow-y: auto;
-    padding-right: var(--spacing-xs); /* Usamos variable responsive */
+    padding-right: var(--spacing-xs);
 }
 
 .type-item {
@@ -489,13 +429,13 @@ h1 {
     justify-content: space-between;
     align-items: center;
     background-color: var(--color-surface);
-    padding: var(--spacing-sm) var(--spacing-md); /* Usamos variables responsive */
+    padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius);
-    margin-bottom: var(--spacing-sm); /* Usamos variable responsive */
-    box-shadow: var(--shadow-light); /* Usamos variable de sombra */
+    margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-light);
     transition: background-color var(--transition-speed);
-    flex-wrap: wrap; /* Permitir que los elementos se envuelvan si es necesario */
-    gap: var(--spacing-xs); /* Espaciado entre elementos cuando se envuelven */
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
 }
 
 .type-item:hover {
@@ -505,39 +445,36 @@ h1 {
 .type-name {
     font-weight: 500;
     color: var(--color-text);
-    font-size: var(--font-size-base); /* Usamos variable responsive */
-    flex-grow: 1; /* Permite que el nombre ocupe el espacio disponible */
+    font-size: var(--font-size-base);
+    flex-grow: 1;
 }
 
-/* ----------------------------------------------------------
-   12) Formulario de Tipo de Hábito: Scroll vertical si el contenido es largo (responsivo)
----------------------------------------------------------- */
 .habit-type-form-section {
-    margin-top: var(--spacing-lg); /* Usamos variable responsive */
+    margin-top: var(--spacing-lg);
     background-color: var(--color-surface);
-    padding: var(--spacing-md); /* Usamos variable responsive */
+    padding: var(--spacing-md);
     border-radius: var(--radius);
-    box-shadow: var(--shadow-light); /* Usamos variable de sombra */
-    max-height: clamp(300px, 80vh, 600px); /* Usamos clamp para altura máxima responsive */
+    box-shadow: var(--shadow-light);
+    max-height: clamp(300px, 80vh, 600px);
     overflow-y: auto;
 }
 
 .habit-type-form-section label {
     display: block;
     font-weight: 500;
-    margin-bottom: var(--spacing-xs); /* Usamos variable responsive */
+    margin-bottom: var(--spacing-xs);
     color: var(--color-text);
-    font-size: var(--font-size-base); /* Usamos variable responsive */
+    font-size: var(--font-size-base);
 }
 
 .habit-type-form-section input[type="text"] {
     width: 100%;
-    padding: var(--spacing-sm); /* Usamos variable responsive */
+    padding: var(--spacing-sm);
     border: 1px solid var(--color-muted);
     border-radius: var(--radius);
-    margin-bottom: var(--spacing-md); /* Usamos variable responsive */
+    margin-bottom: var(--spacing-md);
     transition: border-color var(--transition-speed);
-    font-size: var(--font-size-base); /* Usamos variable responsive */
+    font-size: var(--font-size-base);
 }
 
 .habit-type-form-section input[type="text"]:focus {
@@ -548,19 +485,14 @@ h1 {
 .button-group {
     display: flex;
     justify-content: flex-end;
-    gap: var(--spacing-sm); /* Usamos variable responsive */
-    flex-wrap: wrap; /* Asegura que los botones se envuelvan */
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
 .habit-type-section .habit-type-list {
-    margin-top: var(--spacing-lg); /* Usamos variable responsive */
+    margin-top: var(--spacing-lg);
 }
 
-/* ----------------------------------------------------------
-   13) Media Queries para diferentes dispositivos (Coherente con index-styles.css)
----------------------------------------------------------- */
-
-/* Pantallas muy grandes (monitores de escritorio) - ANCHURA MÁXIMA AJUSTADA */
 @media (min-width: 1400px) {
     .main-content {
         max-width: calc(100vw - var(--sidebar-width));
@@ -569,38 +501,34 @@ h1 {
 
     .habits-section,
     .goals-section {
-        grid-template-columns: repeat(3, 1fr); /* 3 columnas en pantallas muy grandes */
-        gap: var(--spacing-xl); /* Mayor separación */
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-xl);
     }
 }
 
-/* Pantallas grandes (laptops) */
 @media (max-width: 1199px) and (min-width: 992px) {
     .habits-section,
     .goals-section {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Ajuste para asegurar 2 columnas o más */
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: var(--spacing-md);
     }
 }
 
-/* Tablets */
 @media (max-width: 991px) and (min-width: 769px) {
     .habits-section,
     .goals-section {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajuste para pantallas más pequeñas */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: var(--spacing-md);
     }
 }
 
-/* Móviles y tablets pequeñas - Sidebar móvil (coherente con index-styles.css) */
 @media (max-width: 768px) {
     .sidebar {
-        transform: translateX(-100%); /* Ocultar sidebar por defecto */
-        width: min(280px, 80vw); /* Ancho responsive para sidebar - esta es la anchura cuando se despliega el menú móvil */
+        transform: translateX(-100%);
+        width: min(280px, 80vw);
         transition: transform var(--transition-speed);
     }
 
-    /* Clase para mostrar la sidebar en móvil (ej. al hacer clic en un botón de menú) */
     .sidebar.mobile-open {
         transform: translateX(0);
     }
@@ -610,43 +538,42 @@ h1 {
     }
 
     .main-content {
-        margin-left: 0; /* No hay margen izquierdo cuando la sidebar está oculta */
-        width: 100%; /* Ocupa todo el ancho */
-        padding: var(--spacing-md); /* Espaciado ajustado */
+        margin-left: 0;
+        width: 100%;
+        padding: var(--spacing-md);
     }
 
     .section-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-sm); /* Espaciado ajustado */
+        gap: var(--spacing-sm);
     }
 
     .btn-create {
-        align-self: flex-start; /* Alinea el botón al inicio si se envuelve */
+        align-self: flex-start;
     }
 
     .habits-section,
     .goals-section {
-        grid-template-columns: 1fr; /* Una columna en móviles */
-        gap: var(--spacing-md); /* Espaciado ajustado */
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
     }
 
     .habit-header .badge,
     .goal-header .badge {
-        margin-left: var(--spacing-xs); /* Ajuste de margen para pantallas pequeñas */
+        margin-left: var(--spacing-xs);
     }
     .habit-header h3,
     .goal-header h3 {
-        font-size: var(--font-size-base); /* Tamaño de fuente más pequeño para títulos de tarjetas */
+        font-size: var(--font-size-base);
     }
 
     .habit-type-list ul,
     .habit-type-form-section {
-        padding: var(--spacing-sm); /* Reducir padding en móviles */
+        padding: var(--spacing-sm);
     }
 }
 
-/* Móviles pequeños - MEJORADO (coherente con index-styles.css) */
 @media (max-width: 480px) {
     .main-content {
         padding: var(--spacing-sm);
@@ -659,24 +586,23 @@ h1 {
 
     .habit-card,
     .goal-card {
-        padding: var(--spacing-sm); /* Reducir padding de las tarjetas */
+        padding: var(--spacing-sm);
     }
 
     .btn-sm {
-        font-size: var(--font-size-xs); /* Botones más pequeños */
-        padding: var(--spacing-xxs) var(--spacing-xs); /* Ajustar padding */
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xxs) var(--spacing-xs);
     }
 
     .habit-type-form-section input[type="text"] {
-        padding: var(--spacing-xs); /* Reducir padding del input */
+        padding: var(--spacing-xs);
     }
 }
 
-/* Pantallas muy pequeñas (coherente con index-styles.css) */
 @media (max-width: 320px) {
     .habit-header .badge,
     .goal-header .badge {
-        margin-left: 0; /* Eliminar margen si el espacio es muy limitado */
+        margin-left: 0;
         margin-right: 0;
         padding: var(--spacing-xxs) var(--spacing-xs);
         font-size: var(--font-size-xs);
@@ -690,9 +616,6 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   14) Preferencias de accesibilidad (coherente con index-styles.css)
----------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -701,13 +624,8 @@ h1 {
     }
 }
 
-/* ----------------------------------------------------------
-   15) Utilidades responsivas adicionales (coherente con index-styles.css)
----------------------------------------------------------- */
-
-/* Contenedor para botones móviles (hamburger menu, etc.) */
 .mobile-header {
-    display: none; /* Por defecto oculto */
+    display: none;
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-sm) var(--spacing-md);
@@ -739,7 +657,6 @@ h1 {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Overlay para cerrar sidebar en móviles */
 .sidebar-overlay {
     display: none;
     position: fixed;

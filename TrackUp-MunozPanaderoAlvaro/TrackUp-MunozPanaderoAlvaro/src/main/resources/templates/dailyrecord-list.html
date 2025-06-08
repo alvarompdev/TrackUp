@@ -46,7 +46,7 @@
           <span class="material-icons">person</span>
           <span>Perfil</span>
         </a>
-        <!-- Botón de Cerrar Sesión -->
+
         <form th:action="@{/logout}" method="post" style="width: 100%;">
           <button type="submit" class="menu-item logout-btn">
             <span class="material-icons">logout</span>
@@ -141,7 +141,7 @@
       </div>
 
       <div th:if="${!#lists.isEmpty(records)}" style="margin-top: 2rem;">
-        <h3>Historial de Registros</h3>
+        <h1>Historial de Registros</h1>
         <table class="records-table">
           <thead>
           <tr>
@@ -178,7 +178,6 @@
 
 <script th:inline="javascript">
   /*<![CDATA[*/
-  // Cambiado: Accede a las variables 'overallCompleted' y 'overallNotCompleted' como se pasan desde el controlador
   const overallCompleted = [[${overallCompleted}]];
   const overallNotCompleted = [[${overallNotCompleted}]];
 
@@ -190,7 +189,6 @@
   const monthlyTotal = [[${monthlyTotal}]];
   const monthlyNotCompleted = monthlyTotal - monthlyCompleted;
 
-  // 1. Desde Siempre
   if (overallCompleted + overallNotCompleted > 0) {
     const ctxOverall = document.getElementById('overallPieChart').getContext('2d');
     new Chart(ctxOverall, {
@@ -222,7 +220,6 @@
     });
   }
 
-  // 2. Esta Semana
   if (weeklyTotal > 0) {
     const ctxWeekly = document.getElementById('weeklyPieChart').getContext('2d');
     new Chart(ctxWeekly, {
@@ -254,7 +251,6 @@
     });
   }
 
-  // 3. Este Mes
   if (monthlyTotal > 0) {
     const ctxMonthly = document.getElementById('monthlyPieChart').getContext('2d');
     new Chart(ctxMonthly, {

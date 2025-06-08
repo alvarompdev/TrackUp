@@ -1,7 +1,6 @@
 package trackup.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.time.LocalDate;
 
 /**
@@ -25,7 +24,7 @@ public class DailyRecordResponseDTO {
     private Long habitId; // ID del hábito al que pertenece el registro diario
 
     private Long userId;
-    private String habitName; // Nombre del hábito asociado
+    private String habitName;
 
     /**
      * Constructor vacío del DTO
@@ -46,22 +45,6 @@ public class DailyRecordResponseDTO {
         this.completed = completed;
         this.habitId = habitId;
         this.userId = userId;
-        this.habitName = habitName;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getHabitName() {
-        return habitName;
-    }
-
-    public void setHabitName(String habitName) {
         this.habitName = habitName;
     }
 
@@ -98,6 +81,22 @@ public class DailyRecordResponseDTO {
 
     public void setHabitId(Long habitId) {
         this.habitId = habitId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getHabitName() {
+        return habitName;
+    }
+
+    public void setHabitName(String habitName) {
+        this.habitName = habitName;
     }
 
 }

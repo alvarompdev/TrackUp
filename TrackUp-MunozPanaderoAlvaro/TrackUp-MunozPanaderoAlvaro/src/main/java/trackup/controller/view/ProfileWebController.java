@@ -8,16 +8,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import trackup.dto.response.UserResponseDTO;
 import trackup.services.UserService;
-
 import java.util.Optional;
 
+/**
+ * Controlador para manejar las vistas del perfil del usuario.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @Controller
 @RequestMapping("/profile")
 public class ProfileWebController {
 
     private final UserService userService;
 
-    // Inyectamos el servicio que recupera usuarios
     public ProfileWebController(UserService userService) {
         this.userService = userService;
     }
@@ -32,7 +35,7 @@ public class ProfileWebController {
 
         UserResponseDTO user = userOpt.get();
         model.addAttribute("user", user);
-        model.addAttribute("userId", user.getId()); // suponiendo que el DTO tiene `getId()`
+        model.addAttribute("userId", user.getId());
 
         return "profile";
     }

@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 import trackup.entity.User;
 import trackup.repository.UserRepository;
 
+/**
+ * Servicio para cargar los detalles del usuario desde la base de datos.
+ *
+ * @author Álvaro Muñoz Panadero - alvaromp.dev@gmail.com
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

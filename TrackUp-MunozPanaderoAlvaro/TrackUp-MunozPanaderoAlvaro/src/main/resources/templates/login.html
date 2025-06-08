@@ -2,21 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Iniciar Sesión - TrackUp</title>
+  <title>TrackUp - Iniciar Sesión</title>
   <link rel="icon" th:href="@{/img/logo1.png}" type="image/png" />
   <link rel="stylesheet" th:href="@{/css/auth.css}" />
 </head>
 <body>
 <div class="auth-container">
 
-  <!-- Logo -->
   <div class="logo-container">
     <img th:src="@{/img/logo1.png}" alt="Logo de la aplicación" class="logo" />
   </div>
 
   <h2>Iniciar Sesión</h2>
 
-  <!-- Mostrar errores -->
   <div th:if="${param.error}" class="error">
     Credenciales incorrectas. Por favor, inténtalo de nuevo.
   </div>

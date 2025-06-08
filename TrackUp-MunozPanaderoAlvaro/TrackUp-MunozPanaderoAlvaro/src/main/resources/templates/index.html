@@ -4,20 +4,13 @@
     <meta charset="UTF-8" />
     <title>TrackUp - Inicio</title>
     <link rel="icon" type="image/png" th:href="@{/img/logo1.png}">
-
-    <!-- Carga de CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/index-styles.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- Chart.js para las gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="dashboard-container">
 
-    <!-- ───────────────────────────────────────────────────────────────
-         SIDEBAR
-    ─────────────────────────────────────────────────────────────── -->
     <aside class="sidebar">
         <div class="logo-container">
             <a th:href="@{/}" aria-label="Volver al inicio">
@@ -67,21 +60,12 @@
         </nav>
     </aside>
 
-
-    <!-- ───────────────────────────────────────────────────────────────
-         MAIN CONTENT
-    ─────────────────────────────────────────────────────────────── -->
     <main class="main-content">
-        <!-- Saludo -->
         <header class="header">
             <h1>¡Bienvenido, <span th:text="${username}">Usuario</span>!</h1>
         </header>
 
-        <!-- ───────────────────────────────────────────────────────────────
-             MITAD SUPERIOR: Hábitos | Metas | Registros Recientes
-        ─────────────────────────────────────────────────────────────── -->
         <section class="summary-section">
-            <!-- 1) Hábitos Actuales -->
             <div class="summary-card-container">
                 <a th:href="@{/habits/user/{userId}(userId=${userId})}" class="summary-card habits">
                     <h3>Hábitos Actuales</h3>
@@ -104,7 +88,6 @@
                 </a>
             </div>
 
-            <!-- 2) Metas Actuales -->
             <div class="summary-card-container">
                 <a th:href="@{/goals/user/{userId}(userId=${userId})}" class="summary-card goals">
                     <h3>Metas Actuales</h3>
@@ -122,7 +105,6 @@
                 </a>
             </div>
 
-            <!-- 3) Registros Recientes -->
             <div class="summary-card-container">
                 <a th:href="@{/daily-records/user/{userId}(userId=${userId})}" class="summary-card records">
                     <h3>Registros Recientes</h3>
@@ -153,23 +135,17 @@
             </div>
         </section>
 
-        <!-- ───────────────────────────────────────────────────────────────
-             MITAD INFERIOR: SOLO LAS 3 GRÁFICAS DE REGISTROS
-        ─────────────────────────────────────────────────────────────── -->
         <section class="habit-section">
             <div class="section-header">
                 <h1 class="section-title">Registros Diarios</h1>
             </div>
 
-            <!-- Mensajes de éxito / error (si viniesen por parámetro) -->
             <div th:if="${successMsg}" class="success-message" th:text="${successMsg}"></div>
             <div th:if="${param.error}" class="error-message">
                 Error: <span th:text="${param.error}">error</span>
             </div>
 
-            <!-- ─── GRÁFICOS CIRCULARES ─────────────────────────────────────── -->
             <div class="chart-container">
-                <!-- Desde Siempre -->
                 <div class="chart-box">
                     <h4>Desde Siempre</h4>
                     <canvas id="overallPieChart"
@@ -180,7 +156,6 @@
                     </p>
                 </div>
 
-                <!-- Esta Semana -->
                 <div class="chart-box">
                     <h4>Esta Semana</h4>
                     <canvas id="weeklyPieChart"
@@ -191,7 +166,6 @@
                     </p>
                 </div>
 
-                <!-- Este Mes -->
                 <div class="chart-box">
                     <h4>Este Mes</h4>
                     <canvas id="monthlyPieChart"
@@ -203,7 +177,6 @@
                 </div>
             </div>
 
-            <!-- ─── SCRIPT PARA LOS PIE CHARTS ────────────────────────────────── -->
             <script th:inline="javascript">
                 /*<![CDATA[*/
                 const overallCompleted    = [[${completedCount}    ?: 0]];
@@ -220,7 +193,6 @@
             </script>
 
             <script>
-                // 1. Desde Siempre
                 if (overallCompleted + overallNotCompleted > 0) {
                     const ctxOverall = document.getElementById('overallPieChart').getContext('2d');
                     new Chart(ctxOverall, {
@@ -252,7 +224,6 @@
                     });
                 }
 
-                // 2. Esta Semana
                 if (weeklyTotal > 0) {
                     const ctxWeekly = document.getElementById('weeklyPieChart').getContext('2d');
                     new Chart(ctxWeekly, {
@@ -284,7 +255,6 @@
                     });
                 }
 
-                // 3. Este Mes
                 if (monthlyTotal > 0) {
                     const ctxMonthly = document.getElementById('monthlyPieChart').getContext('2d');
                     new Chart(ctxMonthly, {
