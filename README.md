@@ -60,21 +60,35 @@ Para un detalle exhaustivo de cada sección (introducción, análisis, diseño, 
 ```
 trackup/
 ├── src/main/java/trackup
-│   ├── controller          # Controladores REST
+│   ├── controller             # Controladores REST
+│   │   ├── auth               # Controlador para la autenticación del usuario
+│   │   └── view               # Controladores de la página web 
 │   ├── dto
-│   │   ├── request         # DTOs de entrada
-│   │   └── response        # DTOs de salida
-│   ├── entity              # Entidades JPA
-│   ├── repository          # Repositorios Spring Data
-│   ├── service             # Interfaces de la lógica de negocio
-│   │   └── impl           # Implementaciones de los servicios
-│   └── TrackUpApplication.java # Clase principal
+│   │   ├── request            # DTOs de entrada
+│   │   └── response           # DTOs de salida
+│   ├── entity                 # Entidades JPA
+│   ├── repository             # Repositorios Spring Data
+│   ├── security               # Clases necesarias para el registro y autenticación de los usuarios
+│   ├── services               # Interfaces de la lógica de negocio
+│   │   └── impl               # Implementaciones de los servicios
+│   └── MainApp.java           # Clase principal
 ├── src/main/resources
+│   ├── static                 # Elementos estáticos de la página web
+│   │   └── css                # CSSs de todas las páginas web
+│   │   └── img                # Logo de la aplicación
+│   ├── templates              # HTMLs de todas las páginas web
 │   └── application.properties # Configuración
+├── src/test/java/trackup
+│   ├── controller             # Pruebas de los controladores REST
+│   ├── dto                    # Pruebas de los DTOs
+│   ├── entity                 # Pruebas de las entidades JPA
+│   ├── repository             # Pruebas de los repositorios Spring Data
+│   └── services            
+│       └── impl               # Pruebas de las implementaciones de los servicios
 ├── scripts/
-│   ├── docker-compose.yml  # Configuración Docker
-│   └── init.sql           # Script de inicialización de BD
-└── docs/                   # Documentación del proyecto
+│   ├── docker-compose.yml     # Configuración Docker
+│   └── trackup_db_script.sql  # Script de inicialización de BD
+└── docs/                      # Documentación del proyecto
 ```
 
 ## Requisitos previos
